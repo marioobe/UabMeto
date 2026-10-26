@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "lesson-001-salam",
+  "topicId": "topic-01-salam",
+  "order": 1,
+  "title": "Salam dan sapaan",
+  "summary": "Kerangka validasi untuk pelajaran pertama. Belum berisi materi Bahasa Dawan dan tidak boleh diterbitkan.",
+  "status": "UNVALIDATED",
+  "validation": {
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "sources": [],
+    "audioLicense": null,
+    "consentRef": null
+  },
+  "objectives": [
+    "[PLACEHOLDER-OBJ-001]",
+    "[PLACEHOLDER-OBJ-002]"
+  ],
+  "vocabulary": [
+    {
+      "id": "vocab-001",
+      "dawan": "[PLACEHOLDER-DWN-101]",
+      "indonesian": "[PLACEHOLDER-IDN-101]",
+      "notes": "Isi setelah sumber dan reviewer tersedia.",
+      "audio": null
+    },
+    {
+      "id": "vocab-002",
+      "dawan": "[PLACEHOLDER-DWN-102]",
+      "indonesian": "[PLACEHOLDER-IDN-102]",
+      "notes": "Isi setelah sumber dan reviewer tersedia.",
+      "audio": null
+    },
+    {
+      "id": "vocab-003",
+      "dawan": "[PLACEHOLDER-DWN-103]",
+      "indonesian": "[PLACEHOLDER-IDN-103]",
+      "notes": "Isi setelah sumber dan reviewer tersedia.",
+      "audio": null
+    }
+  ],
+  "dialogues": [
+    {
+      "id": "dlg-001",
+      "title": "Dialog sapaan",
+      "lines": [
+        {
+          "speaker": "A",
+          "dawan": "[PLACEHOLDER-DWN-110]",
+          "indonesian": "[PLACEHOLDER-IDN-110]",
+          "audio": null
+        },
+        {
+          "speaker": "B",
+          "dawan": "[PLACEHOLDER-DWN-111]",
+          "indonesian": "[PLACEHOLDER-IDN-111]",
+          "audio": null
+        }
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "id": "ex-001",
+      "type": "multiple_choice",
+      "skill": "reading",
+      "prompt": "Pilih padanan yang benar.",
+      "explanation": "Penjelasan diisi setelah materi divalidasi.",
+      "content": {
+        "options": [
+          {
+            "id": "opt-a",
+            "text": "[PLACEHOLDER-OPT-101]"
+          },
+          {
+            "id": "opt-b",
+            "text": "[PLACEHOLDER-OPT-102]"
+          }
+        ],
+        "correctOptionId": "opt-a"
+      }
+    },
+    {
+      "id": "ex-002",
+      "type": "match",
+      "skill": "reading",
+      "prompt": "Cocokkan pasangan berikut.",
+      "content": {
+        "pairs": [
+          {
+            "leftId": "left-001",
+            "rightId": "right-001"
+          },
+          {
+            "leftId": "left-002",
+            "rightId": "right-002"
+          },
+          {
+            "leftId": "left-003",
+            "rightId": "right-003"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ex-003",
+      "type": "sentence_order",
+      "skill": "writing",
+      "prompt": "Susun kalimat berikut.",
+      "explanation": "Penjelasan diisi setelah materi divalidasi.",
+      "content": {
+        "tokens": [
+          "[PLACEHOLDER-TOK-101]",
+          "[PLACEHOLDER-TOK-102]",
+          "[PLACEHOLDER-TOK-103]"
+        ],
+        "correctOrder": [
+          "[PLACEHOLDER-TOK-101]",
+          "[PLACEHOLDER-TOK-102]",
+          "[PLACEHOLDER-TOK-103]"
+        ]
+      }
+    },
+    {
+      "id": "ex-004",
+      "type": "listening",
+      "skill": "listening",
+      "prompt": "Dengarkan audio lalu pilih jawaban.",
+      "explanation": "Penjelasan diisi setelah materi divalidasi.",
+      "content": {
+        "audioRef": "audio/lesson-001-salam/dlg-001-line-1.ogg",
+        "options": [
+          {
+            "id": "opt-a",
+            "text": "[PLACEHOLDER-OPT-103]"
+          },
+          {
+            "id": "opt-b",
+            "text": "[PLACEHOLDER-OPT-104]"
+          }
+        ],
+        "correctOptionId": "opt-a"
+      }
+    },
+    {
+      "id": "ex-005",
+      "type": "speaking",
+      "skill": "speaking",
+      "prompt": "Ucapkan ulang contoh berikut.",
+      "content": {
+        "targetAudioRef": "audio/lesson-001-salam/vocab-001.ogg"
+      }
+    }
+  ]
+}

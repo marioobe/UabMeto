@@ -1,0 +1,10 @@
+lesson_id,topic_id,item_type,item_id,text_ref,variant,speaker_profile,takes,format,target_bitrate_kbps,license_status,consent_ref,status,notes
+lesson-001-salam,topic-01-salam,vocabulary,vocab-001,[PLACEHOLDER-DWN-101],TTU-Kefamenanu,[profil penutur],2,ogg-vorbis,32,pending,,NEEDED,
+lesson-001-salam,topic-01-salam,vocabulary,vocab-002,[PLACEHOLDER-DWN-102],TTU-Kefamenanu,[profil penutur],2,ogg-vorbis,32,pending,,NEEDED,
+lesson-001-salam,topic-01-salam,vocabulary,vocab-003,[PLACEHOLDER-DWN-103],TTU-Kefamenanu,[profil penutur],2,ogg-vorbis,32,pending,,NEEDED,
+lesson-001-salam,topic-01-salam,dialogue_line,dlg-001-line-1,[PLACEHOLDER-DWN-110],TTU-Kefamenanu,[profil penutur A],2,ogg-vorbis,32,pending,,NEEDED,
+lesson-001-salam,topic-01-salam,dialogue_line,dlg-001-line-2,[PLACEHOLDER-DWN-111],TTU-Kefamenanu,[profil penutur B],2,ogg-vorbis,32,pending,,NEEDED,
+lesson-001-salam,topic-01-salam,example,EXM-101,[PLACEHOLDER-DWN-130],TTU-Kefamenanu,[profil penutur],2,ogg-vorbis,32,pending,,NEEDED,
+lesson-001-salam,topic-01-salam,example,EXM-102,[PLACEHOLDER-DWN-131],TTU-Kefamenanu,[profil penutur],2,ogg-vorbis,32,pending,,NEEDED,
+lesson-001-salam,topic-01-salam,exercise_prompt,ex-004,[PLACEHOLDER-DWN-140],TTU-Kefamenanu,[profil penutur],1,ogg-vorbis,32,pending,,NEEDED,
+lesson-001-salam,topic-01-salam,exercise_target,ex-005,[PLACEHOLDER-DWN-120],TTU-Kefamenanu,[profil penutur],1,ogg-vorbis,32,pending,,NEEDED,

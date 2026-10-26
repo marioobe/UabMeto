@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0.0",
+  "variant": "TTU-Kefamenanu",
+  "source": "PRD.md#3.2",
+  "notes": "Registry topik. Belum ada pelajaran terbit. Jangan menambah topik tanpa perubahan PRD dan persetujuan pengguna.",
+  "topics": [
+    {
+      "id": "topic-01-salam",
+      "order": 1,
+      "title": "Salam dan sapaan",
+      "icon": "waving_hand",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-02-perkenalan",
+      "order": 2,
+      "title": "Perkenalan diri",
+      "icon": "badge",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-03-keluarga",
+      "order": 3,
+      "title": "Keluarga dan hubungan",
+      "icon": "family_restroom",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-04-angka-waktu-hari",
+      "order": 4,
+      "title": "Angka, waktu, dan hari",
+      "icon": "schedule",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-05-aktivitas",
+      "order": 5,
+      "title": "Aktivitas sehari-hari",
+      "icon": "checklist",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-06-makanan",
+      "order": 6,
+      "title": "Makanan dan minuman",
+      "icon": "restaurant",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-07-rumah",
+      "order": 7,
+      "title": "Rumah dan benda sekitar",
+      "icon": "chair",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-08-tempat-arah",
+      "order": 8,
+      "title": "Tempat dan arah",
+      "icon": "map",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-09-belanja",
+      "order": 9,
+      "title": "Belanja dan tawar-menawar",
+      "icon": "shopping_basket",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-10-budaya",
+      "order": 10,
+      "title": "Budaya dan adat Dawan",
+      "icon": "texture",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-11-kesehatan-darurat",
+      "order": 11,
+      "title": "Kesehatan dan keadaan darurat",
+      "icon": "health_and_safety",
+      "status": "planned",
+      "lessons": []
+    },
+    {
+      "id": "topic-12-sekolah-pekerjaan",
+      "order": 12,
+      "title": "Sekolah, pekerjaan, dan kegiatan sosial",
+      "icon": "school",
+      "status": "planned",
+      "lessons": []
+    }
+  ]
+}

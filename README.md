@@ -11,12 +11,17 @@ Platform: Android, Unity 6 (`6000.6.0f1`).
 
 | Path | Keterangan |
 |---|---|
+| `docs/design/README.md` | status desain & status per layar |
 | `docs/design/design-review-stitch.md` | tinjauan & keputusan atas mockup Stitch |
+| `docs/design/remediation.md` | 18 butir remediasi ber-ID |
 | `docs/design/design-tokens.md` | token warna, tipografi, komponen |
 | `docs/design/screens.md` | inventaris layar, state, landscape |
+| `docs/design/topic-scope.md` | 12 topik resmi & topik yang dikeluarkan |
+| `docs/design/content-inventory.md` | 8 teks Dawan & 10 klaim yang dilarang |
 | `docs/design/content-binding.md` | pemetaan UI ke JSON/Firestore/Worker |
 | `docs/design/accessibility.md` | kontras terukur & audit target sentuh |
-| `docs/design/approved/` | referensi visual yang disetujui |
+| `docs/design/reference/` | referensi visual Stitch (bukan final) |
+| `docs/testing/f1-gate-criteria.md` | syarat lulus F1 dan gate perangkat |
 
 ## Isi repository
 

@@ -53,12 +53,33 @@ Aditif, tidak memutus klien. `schemaVersion` naik ke `1.1.0`.
 |---|---|---|---|
 | `xp` | integer | ya | 1–100; diberikan sekali saat pelajaran selesai |
 | `estimatedMinutes` | integer | ya | 1–30; hanya tampilan |
+| `examples` | array | ya (minimal 1) | contoh kalimat; lihat §3.1.1 |
+
+#### 3.1.1 `examples[]`
+
+```json
+{
+  "id": "exm-001",
+  "dawan": "[PLACEHOLDER-DWN-130]",
+  "indonesian": "[PLACEHOLDER-IDN-130]",
+  "context": "situasi pemakaian",
+  "audio": null
+}
+```
+
+Alasan: PRD §3.3 mewajibkan contoh kalimat, tetapi skema 1.0.0 belum
+memilikinya. Tanpa field ini, contoh kalimat tidak bisa masuk jalur
+validasi yang sama dengan kosakata.
+
+Status: **usulan, belum disetujui.** Sampai disetujui, contoh kalimat
+hanya dicatat di `content/validation/lesson-001-salam/examples.csv` dan
+tidak boleh tampil di UI.
 
 ### 3.2 `content/schema/path.schema.json` (baru)
 
 ```json
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.0.0",
   "topics": [
     {
       "id": "topic-01-salam",
@@ -67,7 +88,7 @@ Aditif, tidak memutus klien. `schemaVersion` naik ke `1.1.0`.
       "summary": "…",
       "icon": "waving_hand",
       "lessons": [
-        { "lessonId": "lesson-001", "order": 1 }
+        { "lessonId": "lesson-001-salam", "order": 1 }
       ]
     }
   ]

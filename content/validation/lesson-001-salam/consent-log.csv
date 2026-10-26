@@ -1,0 +1,2 @@
+consent_id,speaker_ref,variant,scope,recorded_at,consent_method,license,revocable,evidence_location,status,notes
+[CONSENT-001],[SPEAKER-001],TTU-Kefamenanu,[kosakata/dialog/contoh],,,,ya,[lokasi bukti di luar repo],PENDING,"Jangan simpan data pribadi di repositori"

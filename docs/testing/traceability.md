@@ -132,7 +132,7 @@ ID: `AC-<bagian PRD>.<nomor>`.
 | AC-6.9.1 | Desain Stitch diterjemahkan ke UI Unity | Review desain + PlayMode | NOT RUN (Stitch selesai & disetujui arah; UI Unity belum) |
 | AC-6.9.2 | Seluruh menu Bahasa Indonesia | Review UI | NOT RUN (mockup & `ui-strings` rencana sesuai) |
 | AC-6.9.3 | Portrait & landscape | PlayMode + device | NOT RUN (spesifikasi landscape ada di `screens.md` §12) |
-| AC-6.9.4 | Tombol/teks mudah dibaca | Review aksesibilitas | NOT RUN (kontras terhitung + audit target sentuh ada) |
+| AC-6.9.4 | Tombol/teks mudah dibaca | Review aksesibilitas | NOT RUN (5 kontras gagal, 12 target sentuh gagal; REM-P1-08 OPEN) |
 | AC-6.9.5 | Lancar di perangkat rendah | Profiling device | BLOCKED (belum ada device) |
 | AC-6.9.6 | Ukuran unduhan/instalasi terukur | Build nyata | BLOCKED (audio belum ada) |
 | AC-6.9.7 | APK dapat dipasang & diuji di perangkat | Device test | BLOCKED (belum ada device) |
@@ -144,15 +144,18 @@ ID: `AC-<bagian PRD>.<nomor>`.
   Catatan: 6.6.6 baru pada tingkat logika keputusan, bukan integrasi
   D1/Firestore nyata.
 - `NOT RUN`: mayoritas fitur yang belum dibangun. Empat butir UI (6.9.1–6.9.4)
-  kini punya artefak desain, tetapi belum ada UI Unity yang diuji.
+  punya artefak desain, tetapi belum ada UI Unity yang diuji.
 - `BLOCKED`: butir yang memerlukan akun layanan, perangkat, atau korpus.
 
-Perubahan F0.5:
+Perubahan F0.5 dan persiapan:
 
 - Arah visual Stitch disetujui; konten mockup ditolak.
 - Daftar topik dikembalikan ke PRD §3.2.
 - Varian bahasa dikunci ke TTU/Kefamenanu.
 - Token, layar, pemetaan konten, dan aksesibilitas didokumentasikan.
+- 18 butir remediasi dicatat dengan ID; semuanya `OPEN`.
+- Aksesibilitas **belum lulus**: 5 kontras dan 12 target sentuh gagal.
+- Paket validasi pelajaran pertama disiapkan; isinya masih `UNVALIDATED`.
 - Belum ada kode UI, build, atau pengujian perangkat pada tahap ini.
 
 Matriks ini diperbarui pada setiap gate.

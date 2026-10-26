@@ -67,7 +67,7 @@ coverage/
 
 # --- Design source packages ---
 # Paket Stitch mentah tidak disimpan. Yang di-commit hanya hasil yang
-# disetujui di docs/design/approved/.
+# disetujui di docs/design/reference/.
 stitch_uab_meto_design_system.zip
 
 # --- OS noise ---

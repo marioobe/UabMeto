@@ -1,8 +1,9 @@
 # Aksesibilitas UI
 
-Status: **F0.5 — spesifikasi, belum diuji di perangkat.** Angka kontras
-dihitung dari token `design-tokens.md`. Pengujian nyata dilakukan pada F1
-dan gate perangkat.
+Status: **F0.5 — spesifikasi, belum diuji dan belum lulus.** Angka kontras
+dihitung dari token `design-tokens.md`. Tidak ada klaim kelulusan
+aksesibilitas sampai koreksi dan pengujian dilakukan. Daftar kerja:
+`remediation.md` REM-P1-08.
 
 ## 1. Standar yang dipakai
 
@@ -37,38 +38,43 @@ dan gate perangkat.
 
 ### 2.2 Gagal dan wajib diperbaiki
 
-| Pemakaian di mockup | Rasio | Perbaikan |
-|---|---|---|
-| `status-danger` `#C6544C` sebagai teks di `surface-card` | 3.61 | ganti `danger-text` `#FFB4AB` |
-| `status-danger` `#C6544C` sebagai teks di `canvas` | 4.20 | ganti `danger-text` |
-| `status-danger` pada `danger-panel` untuk label 12 sp | 3.92 | ganti `danger-text` |
-| `primary` `#FFEFD7` di atas `accent` | 1.31 | ganti `on-accent` |
-| `outline` di `surface-high` untuk teks < 14 sp | 4.53 | naikkan ke `text-muted` |
+| ID | Pemakaian di mockup | Rasio | Perbaikan |
+|---|---|---|---|
+| REM-P1-08.C1 | `status-danger` `#C6544C` sebagai teks di `surface-card` | 3.61 | ganti `danger-text` `#FFB4AB` |
+| REM-P1-08.C2 | `status-danger` `#C6544C` sebagai teks di `canvas` | 4.20 | ganti `danger-text` |
+| REM-P1-08.C3 | `status-danger` pada `danger-panel` untuk label 12 sp | 3.92 | ganti `danger-text` |
+| REM-P1-08.C4 | `primary` `#FFEFD7` di atas `accent` | 1.31 | ganti `on-accent` |
+| REM-P1-08.C5 | `outline` di `surface-high` untuk teks < 14 sp | 4.53 | naikkan ke `text-muted` |
 
 Aturan: `danger-fill` hanya untuk isian, garis, dan ikon. Semua teks bahaya
 memakai `danger-text`.
 
+**Lima pasangan gagal. Belum ada yang diperbaiki; status `OPEN`.**
+
 ## 3. Audit target sentuh mockup
 
-| Elemen | Ukuran mockup | Status |
-|---|---|---|
-| Tombol primer/sekunder | 48 | lulus |
-| Tile jawaban | 56 | lulus |
-| Tombol mikrofon | 64 | lulus |
-| Tombol putar audio | 48 | lulus |
-| Item bottom nav | 48–64 | lulus |
-| Checkbox usia/ketentuan (label) | 48 | lulus |
-| Tombol tampilkan sandi | 40 | gagal |
-| Tombol tutup modal | 32 | gagal |
-| "Bersihkan" data offline | 40 | gagal |
-| "Ubah Waktu" | 44 | gagal |
-| Chip pertanyaan cepat | 38 | gagal |
-| Tombol kecepatan audio 1.0×/0.8× | 26 | gagal |
-| Segmented "Audio Tersedia" | 24–28 | gagal |
-| Tab peringkat | 40 | gagal |
-| "Nanti Saja" | 40 | gagal |
-| "Simpan Kata" | 40 | gagal |
-| Chip state pratinjau | 30 | gagal (debug saja) |
+| ID | Elemen | Ukuran mockup | Status |
+|---|---|---|---|
+| — | Tombol primer/sekunder | 48 | lulus |
+| — | Tile jawaban | 56 | lulus |
+| — | Tombol mikrofon | 64 | lulus |
+| — | Tombol putar audio | 48 | lulus |
+| — | Item bottom nav | 48–64 | lulus |
+| — | Checkbox usia/ketentuan (label) | 48 | lulus |
+| REM-P1-08.T1 | Tombol tampilkan sandi | 40 | gagal |
+| REM-P1-08.T2 | Tombol tutup modal | 32 | gagal |
+| REM-P1-08.T3 | Avatar di header | 32 | gagal (bila dapat ditekan) |
+| REM-P1-08.T4 | "Bersihkan" data offline | 40 | gagal |
+| REM-P1-08.T5 | "Ubah Waktu" | 44 | gagal |
+| REM-P1-08.T6 | Chip pertanyaan cepat | 38 | gagal |
+| REM-P1-08.T7 | Tombol kecepatan audio 1.0×/0.8× | 26 | gagal |
+| REM-P1-08.T8 | Segmented "Audio Tersedia" | 24–28 | gagal |
+| REM-P1-08.T9 | Tab peringkat | 40 | gagal |
+| REM-P1-08.T10 | "Nanti Saja" | 40 | gagal |
+| REM-P1-08.T11 | "Simpan Kata" | 40 | gagal |
+| REM-P1-08.T12 | Chip state pratinjau | 30 | gagal (debug saja) |
+
+**Dua belas target gagal. Belum ada yang diperbaiki; status `OPEN`.**
 
 Perbaikan: semua target interaktif minimal 48 dp, termasuk area sentuh yang
 lebih besar dari ikon visual. Jarak antar target minimal 8 dp.

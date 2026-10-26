@@ -1,0 +1,3 @@
+id,lesson_id,dawan_text,indonesian_text,context,source_id,reviewer,reviewed_at,status,notes
+EXM-101,lesson-001-salam,[PLACEHOLDER-DWN-130],[PLACEHOLDER-IDN-130],[situasi pemakaian],[SRC-0101],"","",PENDING,"Calon field examples[] pada skema 1.1.0"
+EXM-102,lesson-001-salam,[PLACEHOLDER-DWN-131],[PLACEHOLDER-IDN-131],[situasi pemakaian],[SRC-0101],"","",PENDING,"Calon field examples[] pada skema 1.1.0"
