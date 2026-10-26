@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Project Path="UabMeto.Tests.EditMode.csproj" />
+  <Project Path="UabMeto.Core.csproj" />
+  <Project Path="UabMeto.Editor.csproj" />
+  <Project Path="UabMeto.App.csproj" />
+</Solution>

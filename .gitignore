@@ -1,0 +1,71 @@
+# ---------------------------------------------------------------------------
+# Uab Meto — Git ignore
+# Repository ini hanya boleh berisi kode, dokumentasi, dan konten yang aman.
+# ---------------------------------------------------------------------------
+
+# --- Unity generated ---
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+.utmp/
+sysinfo.txt
+crashlytics-build.properties
+
+# --- IDE / tooling ---
+.vs/
+.idea/
+.vscode/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# --- Build artifacts ---
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# --- Node tooling ---
+node_modules/
+npm-debug.log*
+coverage/
+
+# --- Secrets & local configuration (WAJIB) ---
+.env
+.env.*
+!.env.example
+*.local.*
+!*.local.example
+**/google-services.json
+**/GoogleService-Info.plist
+**/service-account*.json
+**/*serviceAccount*.json
+**/*service_account*.json
+*.keystore
+*.jks
+**/keystore.properties
+**/local.properties
+
+# --- OS noise ---
+.DS_Store
+Thumbs.db
+desktop.ini

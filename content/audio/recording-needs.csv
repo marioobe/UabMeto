@@ -1,0 +1,4 @@
+lesson_id,topic_id,item_type,item_id,dawan_text,variant,speaker_profile,takes,format,target_bitrate_kbps,license_status,consent_ref,status,notes
+lesson-001,topic-01,vocabulary,vocab-001,[PLACEHOLDER-DWN-001],TTU-Kefamenanu,dewasa-perempuan,2,ogg-vorbis,32,pending,,NEEDED,Contoh baris; isi setelah materi divalidasi
+lesson-001,topic-01,dialogue_line,dlg-001-line-1,[PLACEHOLDER-DWN-010],TTU-Kefamenanu,dewasa-laki-laki,2,ogg-vorbis,32,pending,,NEEDED,Contoh baris; isi setelah materi divalidasi
+lesson-001,topic-01,exercise_prompt,ex-003-prompt,[PLACEHOLDER-DWN-020],TTU-Kefamenanu,dewasa-perempuan,1,ogg-vorbis,32,pending,,NEEDED,Contoh baris; isi setelah materi divalidasi

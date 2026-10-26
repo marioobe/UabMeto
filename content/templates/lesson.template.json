@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "lesson-template",
+  "topicId": "topic-01",
+  "order": 1,
+  "title": "Judul pelajaran",
+  "summary": "Ringkasan singkat pelajaran.",
+  "status": "UNVALIDATED",
+  "validation": {
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "sources": [],
+    "audioLicense": null,
+    "consentRef": null
+  },
+  "objectives": [
+    "[PLACEHOLDER-OBJ-001]"
+  ],
+  "vocabulary": [
+    {
+      "id": "vocab-001",
+      "dawan": "[PLACEHOLDER-DWN-001]",
+      "indonesian": "[PLACEHOLDER-IDN-001]",
+      "notes": "Catatan penggunaan.",
+      "audio": null
+    }
+  ],
+  "dialogues": [
+    {
+      "id": "dlg-001",
+      "title": "Judul dialog",
+      "lines": [
+        {
+          "speaker": "A",
+          "dawan": "[PLACEHOLDER-DWN-010]",
+          "indonesian": "[PLACEHOLDER-IDN-010]",
+          "audio": null
+        }
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "id": "ex-001",
+      "type": "multiple_choice",
+      "skill": "reading",
+      "prompt": "Pilih jawaban yang benar.",
+      "explanation": "Penjelasan jawaban.",
+      "content": {
+        "options": [
+          {
+            "id": "opt-a",
+            "text": "[PLACEHOLDER-OPT-001]"
+          },
+          {
+            "id": "opt-b",
+            "text": "[PLACEHOLDER-OPT-002]"
+          }
+        ],
+        "correctOptionId": "opt-a"
+      }
+    }
+  ]
+}

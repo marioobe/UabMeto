@@ -1,0 +1,18 @@
+# Contoh struktur konfigurasi lokal Worker.
+# Salin menjadi .dev.vars (diabaikan Git) dan isi dengan nilai nyata
+# HANYA di mesin pengembangan. Jangan commit nilai asli.
+
+FIREBASE_PROJECT_ID="your-firebase-project-id"
+
+# JSON service account utuh dalam satu baris.
+# Jangan menaruh file service account di repository.
+FIREBASE_SERVICE_ACCOUNT_JSON='{"type":"service_account","project_id":"...","client_email":"...","private_key":"..."}'
+
+# Daftar UID admin dipisahkan koma. Diverifikasi di Worker.
+ADMIN_UIDS="uid-admin-1"
+
+SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="replace-me"
+
+# Lingkungan: development | staging | production
+APP_ENV="development"

@@ -1,0 +1,19 @@
+* text=auto
+
+*.cs      text diff=csharp
+*.json    text
+*.md      text
+*.yml     text
+*.yaml    text
+
+# Aset biner — jangan dinormalisasi
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.ogg     binary
+*.wav     binary
+*.mp3     binary
+*.ttf     binary
+*.otf     binary
+*.apk     binary
+*.aab     binary

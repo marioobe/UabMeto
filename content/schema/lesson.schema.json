@@ -1,0 +1,332 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:uabmeto:schema:lesson:1.0.0",
+  "title": "Uab Meto Lesson",
+  "description": "Skema satu pelajaran Bahasa Dawan varian TTU. Aturan penerbitan ditegakkan oleh tools/content-validator.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "topicId",
+    "order",
+    "title",
+    "status",
+    "validation",
+    "objectives",
+    "vocabulary",
+    "dialogues",
+    "exercises"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^lesson-[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "topicId": {
+      "type": "string",
+      "pattern": "^topic-[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "order": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "UNVALIDATED",
+        "draft",
+        "in_review",
+        "validated",
+        "published"
+      ]
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewedBy",
+        "reviewedAt",
+        "sources",
+        "audioLicense",
+        "consentRef"
+      ],
+      "properties": {
+        "reviewedBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "audioLicense": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "consentRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "vocabulary": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/vocabularyItem"
+      }
+    },
+    "dialogues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dialogue"
+      }
+    },
+    "exercises": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/exercise"
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "citation"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^SRC-[A-Z0-9-]+$"
+        },
+        "citation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "license": {
+          "type": "string"
+        }
+      }
+    },
+    "audioRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "durationMs",
+        "license",
+        "consentRef"
+      ],
+      "description": "Baseline format audio adalah Ogg Vorbis (.ogg). Kompatibilitas format lain harus diuji sebelum dipakai.",
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "^audio/[A-Za-z0-9._/-]+\\.ogg$"
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "bitrateKbps": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 128
+        },
+        "license": {
+          "type": "string",
+          "minLength": 1
+        },
+        "consentRef": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "vocabularyItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "dawan",
+        "indonesian",
+        "audio"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^vocab-[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "dawan": {
+          "type": "string",
+          "minLength": 1
+        },
+        "indonesian": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        },
+        "audio": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/audioRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "dialogueLine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "speaker",
+        "dawan",
+        "indonesian",
+        "audio"
+      ],
+      "properties": {
+        "speaker": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dawan": {
+          "type": "string",
+          "minLength": 1
+        },
+        "indonesian": {
+          "type": "string",
+          "minLength": 1
+        },
+        "audio": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/audioRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "dialogue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "lines"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^dlg-[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lines": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/dialogueLine"
+          }
+        }
+      }
+    },
+    "exercise": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "skill",
+        "prompt",
+        "content"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^ex-[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "type": {
+          "enum": [
+            "multiple_choice",
+            "match",
+            "sentence_order",
+            "listening",
+            "writing",
+            "speaking"
+          ]
+        },
+        "skill": {
+          "enum": [
+            "reading",
+            "writing",
+            "listening",
+            "speaking"
+          ]
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "content": {
+          "type": "object",
+          "description": "Struktur bergantung pada type. Aturan per tipe ditegakkan oleh validator (lihat docs/content/schema.md)."
+        }
+      }
+    }
+  }
+}
