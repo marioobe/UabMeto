@@ -1,6 +1,6 @@
 # Matriks Traceability PRD → Verifikasi
 
-Status: **F0.** Sebagian besar butir belum dapat diuji karena fitur belum
+Status: **F0.5.** Sebagian besar butir belum dapat diuji karena fitur belum
 diimplementasikan. Tidak ada status `PASS` kecuali yang benar-benar dijalankan.
 
 ## Legenda status
@@ -129,21 +129,30 @@ ID: `AC-<bagian PRD>.<nomor>`.
 
 | ID | Persyaratan | Verifikasi | Status |
 |---|---|---|---|
-| AC-6.9.1 | Desain Stitch diterjemahkan ke UI Unity | Review desain + PlayMode | BLOCKED (mockup belum ada) |
-| AC-6.9.2 | Seluruh menu Bahasa Indonesia | Review UI | NOT RUN |
-| AC-6.9.3 | Portrait & landscape | PlayMode + device | NOT RUN |
-| AC-6.9.4 | Tombol/teks mudah dibaca | Review aksesibilitas | NOT RUN |
+| AC-6.9.1 | Desain Stitch diterjemahkan ke UI Unity | Review desain + PlayMode | NOT RUN (Stitch selesai & disetujui arah; UI Unity belum) |
+| AC-6.9.2 | Seluruh menu Bahasa Indonesia | Review UI | NOT RUN (mockup & `ui-strings` rencana sesuai) |
+| AC-6.9.3 | Portrait & landscape | PlayMode + device | NOT RUN (spesifikasi landscape ada di `screens.md` §12) |
+| AC-6.9.4 | Tombol/teks mudah dibaca | Review aksesibilitas | NOT RUN (kontras terhitung + audit target sentuh ada) |
 | AC-6.9.5 | Lancar di perangkat rendah | Profiling device | BLOCKED (belum ada device) |
 | AC-6.9.6 | Ukuran unduhan/instalasi terukur | Build nyata | BLOCKED (audio belum ada) |
 | AC-6.9.7 | APK dapat dipasang & diuji di perangkat | Device test | BLOCKED (belum ada device) |
 | AC-6.9.8 | Target API 36 saat rilis | Inspeksi manifest APK | NOT RUN |
 
-## Ringkasan F0
+## Ringkasan F0.5
 
 - `PASS`: 2 butir (gate penerbitan 6.2.6; logika idempotensi 6.6.6).
   Catatan: 6.6.6 baru pada tingkat logika keputusan, bukan integrasi
   D1/Firestore nyata.
-- `NOT RUN`: mayoritas fitur yang belum dibangun.
+- `NOT RUN`: mayoritas fitur yang belum dibangun. Empat butir UI (6.9.1–6.9.4)
+  kini punya artefak desain, tetapi belum ada UI Unity yang diuji.
 - `BLOCKED`: butir yang memerlukan akun layanan, perangkat, atau korpus.
+
+Perubahan F0.5:
+
+- Arah visual Stitch disetujui; konten mockup ditolak.
+- Daftar topik dikembalikan ke PRD §3.2.
+- Varian bahasa dikunci ke TTU/Kefamenanu.
+- Token, layar, pemetaan konten, dan aksesibilitas didokumentasikan.
+- Belum ada kode UI, build, atau pengujian perangkat pada tahap ini.
 
 Matriks ini diperbarui pada setiap gate.

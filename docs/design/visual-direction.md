@@ -1,7 +1,9 @@
-# Arah Visual Awal
+# Arah Visual
 
-Status: **usulan F0, belum final.** UI final menunggu mockup Stitch yang
-disetujui. Layar Unity saat ini hanya wireframe netral.
+Status: **F0.5 — arah disetujui, rincian dikunci di `design-tokens.md`.**
+Sumber arah: paket Stitch `stitch_uab_meto_design_system.zip`. Nilai warna
+dan tipografi di bawah adalah ringkasan; bila berbeda, `design-tokens.md`
+yang berlaku.
 
 ## 1. Prinsip
 
@@ -16,34 +18,40 @@ disetujui. Layar Unity saat ini hanya wireframe netral.
 5. **Jujur.** Status offline, kuota, dan "belum dapat dinilai" ditampilkan
    jelas.
 
-## 2. Palet awal (usulan)
+## 2. Palet
 
 | Peran | Warna | Kode |
 |---|---|---|
-| Latar utama | Indigo malam | `#0E171C` |
+| Latar utama | Indigo malam | `#0B1519` |
 | Permukaan | Indigo lembut | `#16242B` |
 | Teks utama | Krem hangat | `#F4EBDD` |
+| Teks sekunder | Pasir redup | `#B8AEA0` |
 | Aksen utama | Kuning tenun | `#F3D08F` |
 | Aksen sekunder | Terakota | `#C96F4A` |
 | Sukses | Hijau daun | `#5FA97A` |
 | Peringatan | Oranye | `#E39B5C` |
-| Bahaya | Merah bata | `#C6544C` |
+| Bahaya (isian) | Merah bata | `#C6544C` |
+| Bahaya (teks) | Merah muda | `#FFB4AB` |
 
-Palet ini belum diuji kontras. Target kontras teks minimal 4.5:1.
+Kontras terukur ada di `accessibility.md`. `#C6544C` tidak boleh dipakai
+sebagai warna teks.
 
 ## 3. Tipografi
 
-- Judul: sans-serif geometris, tebal.
-- Isi: sans-serif humanis, ukuran minimal 16 sp pada layar 360 dp.
-- Teks Dawan dan Indonesia dibedakan dengan warna/label, bukan hanya gaya.
+- Judul: Plus Jakarta Sans, tebal.
+- Isi: Inter, ukuran minimal 16 sp pada layar 360 dp.
+- Metadata: 12 sp, bukan untuk instruksi.
+- Teks Dawan dan Indonesia dibedakan dengan label + warna, bukan hanya gaya.
 - Hindari font dekoratif untuk teks materi.
+- Cakupan glif `ā`, `’`, `ʔ` wajib diuji sebelum prefab dibuat.
 
 ## 4. Spasi & bentuk
 
 - Skala 4/8/12/16/24/32.
-- Sudut membulat 12–20 px untuk kartu.
+- Sudut membulat 12–16 px untuk kartu, 24 px untuk pil.
 - Tombol utama minimal 48×48 dp.
 - Satu aksen motif tenun per layar, bukan lapisan pola penuh.
+- Tanpa bayangan dan tanpa blur.
 
 ## 5. Komponen dasar
 

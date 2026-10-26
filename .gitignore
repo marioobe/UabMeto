@@ -65,6 +65,11 @@ coverage/
 **/keystore.properties
 **/local.properties
 
+# --- Design source packages ---
+# Paket Stitch mentah tidak disimpan. Yang di-commit hanya hasil yang
+# disetujui di docs/design/approved/.
+stitch_uab_meto_design_system.zip
+
 # --- OS noise ---
 .DS_Store
 Thumbs.db

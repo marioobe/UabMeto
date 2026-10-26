@@ -1,11 +1,12 @@
 # Prompt Stitch
 
-Status: **bahan masukan, bukan mockup final.** Prompt ini belum dijalankan.
-Hasil Stitch harus ditinjau dan disetujui sebelum dijadikan acuan UI Unity.
+Status: **sudah dijalankan (2026-10-26).** Hasilnya ditinjau di
+`design-review-stitch.md`. Arah visual disetujui; konten di dalam mockup
+tidak disetujui. Prompt disimpan sebagai jejak, bukan spesifikasi aktif.
 
-Gunakan bersama `visual-direction.md` dan `screens.md`. Semua teks contoh
-memakai Bahasa Indonesia. Jangan memakai kata Dawan karangan; gunakan
-placeholder seperti `[PLACEHOLDER-DWN-001]`.
+Gunakan bersama `visual-direction.md`, `design-tokens.md`, dan `screens.md`.
+Semua teks contoh memakai Bahasa Indonesia. Jangan memakai kata Dawan
+karangan; gunakan placeholder seperti `[PLACEHOLDER-DWN-001]`.
 
 ## Prompt 0 — Design system
 
