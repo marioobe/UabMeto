@@ -2,6 +2,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UabMeto.Editor
 {
@@ -40,12 +41,18 @@ namespace UabMeto.Editor
             cameraObject.tag = "MainCamera";
             var camera = cameraObject.AddComponent<Camera>();
             camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.backgroundColor = new Color(0.055f, 0.090f, 0.110f, 1f);
+            camera.backgroundColor = UabMeto.App.UI.ThemeTokens.Hex("#0B1519");
             camera.orthographic = true;
             cameraObject.transform.position = new Vector3(0f, 0f, -10f);
 
-            var bootstrapObject = new GameObject("Bootstrap");
-            bootstrapObject.AddComponent<UabMeto.App.BootstrapScreen>();
+            var eventSystem = new GameObject(
+                "EventSystem",
+                typeof(EventSystem),
+                typeof(StandaloneInputModule));
+            eventSystem.transform.SetParent(null);
+
+            var bootstrapObject = new GameObject("AppRoot");
+            bootstrapObject.AddComponent<UabMeto.App.AppRoot>();
 
             EditorSceneManager.MarkSceneDirty(scene);
 

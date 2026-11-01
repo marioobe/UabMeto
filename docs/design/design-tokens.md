@@ -1,11 +1,12 @@
 # Token Desain
 
-Status: **F0.5 — dikunci untuk implementasi.** Dokumen ini menggantikan
-nilai warna dan tipografi di `DESIGN.md` Stitch bila terjadi perbedaan.
+Status: **F1 - diterapkan pada UI inti.** Dokumen ini menggantikan nilai
+warna dan tipografi di `DESIGN.md` Stitch bila terjadi perbedaan.
 
-Satu sumber kebenaran: `app/Assets/_Project/Scripts/App/UI/ThemeTokens.asset`
-(ScriptableObject) yang dibuat pada F1. Prefab dan skrip tidak boleh memuat
-kode hex mentah.
+Satu sumber kebenaran: `app/Assets/_Project/Scripts/App/UI/ThemeTokens.cs`
+dan aset `Resources/UI/ThemeTokens.asset`. Prefab dan skrip UI tidak boleh
+memuat kode hex mentah. Kontras diukur ulang dengan
+`node tools/design/contrast.mjs` (12/12 pasangan F1 lulus).
 
 ## 1. Prinsip
 
@@ -108,23 +109,27 @@ Aturan:
 
 | Berkas | Lisensi | Catatan |
 |---|---|---|
-| Inter | SIL OFL 1.1 | regular, medium, semibold, bold |
-| Plus Jakarta Sans | SIL OFL 1.1 | semibold, bold |
+| Inter | SIL OFL 1.1 | regular, semibold, bold |
+| Plus Jakarta Sans | SIL OFL 1.1 | regular, bold |
+| Noto Sans | SIL OFL 1.1 | fallback IPA |
 | Material Symbols Outlined | Apache 2.0 | subset ikon |
 
-Buat `TMP_FontAsset` dinamis: sampling 90, padding 9, atlas 1024,
-multi-atlas aktif. Sertakan berkas lisensi di `app/Assets/ThirdParty/`.
+`TMP_FontAsset` dinamis: sampling 90, padding 9, atlas 1024,
+multi-atlas aktif. Berkas lisensi, sumber, dan hash ada di
+`app/Assets/ThirdParty/`. Rantai fallback: PJS → Inter → Noto Sans.
 
 ### 3.2 Uji cakupan glif sebelum UI
 
-Font harus lulus uji render untuk:
+Uji render wajib untuk:
 
 ```
 ā ē ī ō ū ʼ ’ ‘ ʔ é è ê ñ
 ```
 
-Gagal render = ganti font sebelum prefab dibuat. Uji ini tidak memakai
-kata Dawan, hanya cakupan Unicode.
+Hasil yang benar-benar dijalankan: `FontGlyphTests` lulus untuk Inter,
+TMP Inter, fallback PJS, render `TextMeshPro`, dan codepoint ikon.
+Rincian di `docs/design/fonts-icons.md`. Uji ini tidak memakai kata
+Dawan, hanya cakupan Unicode, dan bukan klaim aksesibilitas.
 
 ## 4. Spasi dan bentuk
 

@@ -130,6 +130,18 @@ namespace UabMeto.Tests.EditMode
         }
 
         [Test]
+        public void LegacySchema_IsBlocked()
+        {
+            var lesson = ValidLesson();
+            lesson.SchemaVersion = "1.0.0";
+
+            var result = PublishGate.Evaluate(lesson);
+
+            Assert.IsFalse(result.Allowed);
+            Assert.That(result.Reasons, Has.Some.Contains("schemaVersion"));
+        }
+
+        [Test]
         public void NullMetadata_IsBlocked()
         {
             var result = PublishGate.Evaluate(null);

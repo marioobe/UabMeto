@@ -1,7 +1,9 @@
 # Status Desain
 
-Status: **F0.5 + persiapan remediasi.** Arah visual dan token dapat dipakai.
-Tidak ada layar yang final.
+Status: **F1 - UI inti diimplementasikan di Unity, belum ada layar final.**
+Arah visual dan token dapat dipakai. Hasil gate F1 ada di
+`docs/testing/f1-gate-result.md`; gate belum lulus karena konten, perangkat,
+dan sebagian aksesibilitas.
 
 ## 1. Ringkasan
 
@@ -11,7 +13,7 @@ Tidak ada layar yang final.
 | `visual-direction.md` | dikunci | ya, untuk arah umum |
 | `screens.md` | dikunci | ya, untuk inventaris & state |
 | `content-binding.md` | kontrak, ada usulan perubahan skema | ya, dengan catatan §3 |
-| `accessibility.md` | spesifikasi; **belum lulus** | ya, sebagai target |
+| `accessibility.md` | F1 diukur sebagian; **belum lulus penuh** | ya, sebagai target + hasil |
 | `design-review-stitch.md` | catatan temuan | ya, sebagai daftar kerja |
 | `remediation.md` | daftar kerja | ya, sumber status |
 | `reference/stitch-2026-10-26/` | referensi | hanya komposisi; teks tidak |

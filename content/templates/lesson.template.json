@@ -1,8 +1,10 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "id": "lesson-template",
   "topicId": "topic-01",
   "order": 1,
+  "xp": 0,
+  "estimatedMinutes": 1,
   "title": "Judul pelajaran",
   "summary": "Ringkasan singkat pelajaran.",
   "status": "UNVALIDATED",
@@ -59,6 +61,17 @@
         ],
         "correctOptionId": "opt-a"
       }
+    }
+  ],
+  "examples": [
+    {
+      "id": "exm-001",
+      "dawan": "[PLACEHOLDER-DWN-020]",
+      "indonesian": "[PLACEHOLDER-IDN-020]",
+      "context": "situasi pemakaian",
+      "status": "UNVALIDATED",
+      "sourceRef": null,
+      "audio": null
     }
   ]
 }

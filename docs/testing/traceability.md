@@ -1,7 +1,9 @@
 # Matriks Traceability PRD → Verifikasi
 
-Status: **F0.5.** Sebagian besar butir belum dapat diuji karena fitur belum
-diimplementasikan. Tidak ada status `PASS` kecuali yang benar-benar dijalankan.
+Status: **F1.** UI inti dan build F1 sudah dijalankan di Editor; konten
+tervalidasi, perangkat, dan fitur lanjutan belum. Tidak ada status `PASS`
+kecuali yang benar-benar dijalankan. Hasil lengkap:
+`docs/testing/f1-gate-result.md`.
 
 ## Legenda status
 
@@ -32,7 +34,7 @@ ID: `AC-<bagian PRD>.<nomor>`.
 
 | ID | Persyaratan | Verifikasi | Status |
 |---|---|---|---|
-| AC-6.2.1 | 12 topik tersedia | Validator + review konten | BLOCKED (belum ada korpus) |
+| AC-6.2.1 | 12 topik tersedia | Validator + review konten | PASS (registry + UI F1); korpus pelajaran belum |
 | AC-6.2.2 | Target 36 pelajaran | Review konten | BLOCKED |
 | AC-6.2.3 | Mencakup 4 keterampilan | Validator + review konten | NOT RUN (aturan skema ada) |
 | AC-6.2.4 | Setiap pelajaran memuat materi, contoh, latihan | Validator + review konten | NOT RUN (aturan skema ada) |
@@ -79,7 +81,7 @@ ID: `AC-<bagian PRD>.<nomor>`.
 | AC-6.5.4 | Lencana sesuai syarat | EditMode | NOT RUN |
 | AC-6.5.5 | Peringkat global & mingguan | Worker + PlayMode | NOT RUN |
 | AC-6.5.6 | Peringkat hanya nickname | Code review + UI test | NOT RUN |
-| AC-6.5.7 | Mulai dengan 5 hati | EditMode | NOT RUN |
+| AC-6.5.7 | Mulai dengan 5 hati | EditMode | NOT RUN (field data ada, UI/state belum) |
 | AC-6.5.8 | Hati berkurang hanya pada latihan tertentu | EditMode | NOT RUN |
 | AC-6.5.9 | Hati pulih otomatis/lewat latihan | EditMode | NOT RUN |
 | AC-6.5.10 | Ujian menilai 4 keterampilan | EditMode + PlayMode | NOT RUN |
@@ -94,7 +96,7 @@ ID: `AC-<bagian PRD>.<nomor>`.
 | AC-6.6.1 | Materi inti offline setelah login pertama | PlayMode + device | NOT RUN |
 | AC-6.6.2 | Audio bawaan diputar offline | PlayMode + device | NOT RUN |
 | AC-6.6.3 | Latihan inti selesai offline | PlayMode | NOT RUN |
-| AC-6.6.4 | Progres offline tersimpan di perangkat | PlayMode | NOT RUN |
+| AC-6.6.4 | Progres offline tersimpan di perangkat | PlayMode | PASS (local store F1); sinkron server belum |
 | AC-6.6.5 | Sinkron otomatis saat koneksi tersedia | PlayMode + Worker | NOT RUN |
 | AC-6.6.6 | Sinkron tidak menggandakan XP/hasil/lencana | EditMode (`SyncReconcilerTests`) + Worker | PASS (logika keputusan) |
 | AC-6.6.7 | Materi/audio diperbarui tanpa rebuild APK | Integrasi | NOT RUN |
@@ -129,33 +131,33 @@ ID: `AC-<bagian PRD>.<nomor>`.
 
 | ID | Persyaratan | Verifikasi | Status |
 |---|---|---|---|
-| AC-6.9.1 | Desain Stitch diterjemahkan ke UI Unity | Review desain + PlayMode | NOT RUN (Stitch selesai & disetujui arah; UI Unity belum) |
-| AC-6.9.2 | Seluruh menu Bahasa Indonesia | Review UI | NOT RUN (mockup & `ui-strings` rencana sesuai) |
-| AC-6.9.3 | Portrait & landscape | PlayMode + device | NOT RUN (spesifikasi landscape ada di `screens.md` §12) |
-| AC-6.9.4 | Tombol/teks mudah dibaca | Review aksesibilitas | NOT RUN (5 kontras gagal, 12 target sentuh gagal; REM-P1-08 OPEN) |
+| AC-6.9.1 | Desain Stitch diterjemahkan ke UI Unity | Review desain + PlayMode | PASS (subset F1; bukan semua layar) |
+| AC-6.9.2 | Seluruh menu Bahasa Indonesia | Review UI | PASS (subset F1) |
+| AC-6.9.3 | Portrait & landscape | PlayMode + device | PASS (editor 360×640/412×915/915×412); device NOT RUN |
+| AC-6.9.4 | Tombol/teks mudah dibaca | Review aksesibilitas | PASS (12/12 kontras, target F1 ≥48); audit penuh NOT RUN |
 | AC-6.9.5 | Lancar di perangkat rendah | Profiling device | BLOCKED (belum ada device) |
-| AC-6.9.6 | Ukuran unduhan/instalasi terukur | Build nyata | BLOCKED (audio belum ada) |
+| AC-6.9.6 | Ukuran unduhan/instalasi terukur | Build nyata | PASS (28.272.700 byte; audio belum ada) |
 | AC-6.9.7 | APK dapat dipasang & diuji di perangkat | Device test | BLOCKED (belum ada device) |
-| AC-6.9.8 | Target API 36 saat rilis | Inspeksi manifest APK | NOT RUN |
+| AC-6.9.8 | Target API 36 saat rilis | Inspeksi manifest APK | PASS (`aapt`: targetSdk 36) |
 
-## Ringkasan F0.5
+## Ringkasan F1 (2026-11-01)
 
-- `PASS`: 2 butir (gate penerbitan 6.2.6; logika idempotensi 6.6.6).
-  Catatan: 6.6.6 baru pada tingkat logika keputusan, bukan integrasi
-  D1/Firestore nyata.
-- `NOT RUN`: mayoritas fitur yang belum dibangun. Empat butir UI (6.9.1–6.9.4)
-  punya artefak desain, tetapi belum ada UI Unity yang diuji.
-- `BLOCKED`: butir yang memerlukan akun layanan, perangkat, atau korpus.
+- `PASS`: registry 12 topik, gate penerbitan, logika idempotensi, UI inti
+  F1, build APK, kontras F1, target sentuh F1, dan targetSdk 36.
+- `PARTIAL`: aksesibilitas penuh, banner offline, build tanpa warning,
+  dan beberapa butir UI yang baru mencakup subset F1.
+- `NOT RUN`: auth, hati, kuota, ujian, Tutor AI, lima jenis latihan lain,
+  sinkron server nyata, dan uji font 1.3×/2.0×.
+- `BLOCKED`: minimal satu pelajaran `validated`, sumber/reviewer/consent,
+  dan perangkat Android fisik.
 
-Perubahan F0.5 dan persiapan:
+Perubahan F1:
 
-- Arah visual Stitch disetujui; konten mockup ditolak.
-- Daftar topik dikembalikan ke PRD §3.2.
-- Varian bahasa dikunci ke TTU/Kefamenanu.
-- Token, layar, pemetaan konten, dan aksesibilitas didokumentasikan.
-- 18 butir remediasi dicatat dengan ID; semuanya `OPEN`.
-- Aksesibilitas **belum lulus**: 5 kontras dan 12 target sentuh gagal.
-- Paket validasi pelajaran pertama disiapkan; isinya masih `UNVALIDATED`.
-- Belum ada kode UI, build, atau pengujian perangkat pada tahap ini.
+- Shell empat tab, Beranda, Profil, alur pelajaran lima langkah, empty state,
+  nickname lokal, progress/outbox lokal, banner antrean, dan screenshot.
+- Build `uabmeto-f1.apk` 28.272.700 byte; 0 error, 4 warning.
+- EditMode 56/56; PlayMode 9/9; validator 36/36; CLI 0 error/4 warning.
+- F1 **tetap tidak lulus** karena F1-11..F1-14 dan gate perangkat belum
+  terpenuhi.
 
 Matriks ini diperbarui pada setiap gate.

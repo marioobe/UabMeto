@@ -45,6 +45,12 @@ namespace UabMeto.Core.Content
                 reasons.Add("Konten masih berisi placeholder.");
             }
 
+            if (!string.Equals(validation.SchemaVersion, "1.1.0", StringComparison.Ordinal))
+            {
+                reasons.Add(
+                    $"schemaVersion harus '1.1.0' agar dapat diterbitkan, ditemukan '{validation.SchemaVersion}'.");
+            }
+
             if (validation.Status != ValidationStatus.Validated)
             {
                 reasons.Add(

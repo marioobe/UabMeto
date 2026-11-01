@@ -1,7 +1,8 @@
 # Daftar Remediasi Desain
 
-Status: **semua butir OPEN.** Tidak ada yang boleh ditutup tanpa bukti
-verifikasi. Sumber temuan: `design-review-stitch.md`.
+Status: **diperbarui 2026-11-01 setelah implementasi F1.** Tidak ada yang
+boleh ditutup tanpa bukti verifikasi. Sumber temuan: `design-review-stitch.md`.
+Hasil gate F1 yang lengkap ada di `docs/testing/f1-gate-result.md`.
 
 ## 1. Cara pakai
 
@@ -23,26 +24,60 @@ Aturan:
 
 ## 2. Ringkasan
 
-| ID | Prioritas | Target | Status |
-|---|---|---|---|
-| REM-P0-01 | P0 | F1 | OPEN |
-| REM-P0-02 | P0 | F1 | OPEN |
-| REM-P0-03 | P0 | F1 (pipeline), konten menyusul | OPEN |
-| REM-P0-04 | P0 | F1 | OPEN |
-| REM-P0-05 | P0 | F1 | OPEN |
-| REM-P0-06 | P0 | F1 | OPEN |
-| REM-P0-07 | P0 | F1 | OPEN |
-| REM-P0-08 | P0 | F1 | OPEN |
-| REM-P1-01 | P1 | F1 | OPEN |
-| REM-P1-02 | P1 | F1 | OPEN |
-| REM-P1-03 | P1 | F1 | OPEN |
-| REM-P1-04 | P1 | F1 | OPEN |
-| REM-P1-05 | P1 | F1 | OPEN |
-| REM-P1-06 | P1 | F1 | OPEN |
-| REM-P1-07 | P1 | F1 | OPEN |
-| REM-P1-08 | P1 | F1 | OPEN |
-| REM-P1-09 | P1 | F1 | OPEN |
-| REM-P1-10 | P1 | F2 | OPEN |
+| ID | Prioritas | Target | Status | Bukti ringkas |
+|---|---|---|---|---|
+| REM-P0-01 | P0 | F1 | CLOSED (F1) | `TopicPathTests` 12 ID; PlayMode 12 baris; `topics.json` |
+| REM-P0-02 | P0 | F1 | CLOSED (F1) | `TopicPathTests`; APK scan 0 istilah dialek luar TTU |
+| REM-P0-03 | P0 | F1 (pipeline), konten menyusul | IN PROGRESS | validator 36/36; CLI PASS 0 error; gate C#; konten belum ada |
+| REM-P0-04 | P0 | F1 | CLOSED (F1) | UI memakai XP/durasi/versi runtime; tanpa klaim AI |
+| REM-P0-05 | P0 | F1 | IN PROGRESS | XP/durasi dari JSON; kuota dan pengurangan hati belum aktif |
+| REM-P0-06 | P0 | F1 | IN PROGRESS | aturan consent lulus; belum ada penutur/audio nyata |
+| REM-P0-07 | P0 | F1 | CLOSED (F1) | tidak ada panel debug; APK scan 0 string panel |
+| REM-P0-08 | P0 | F1 | CLOSED (F1) | `ThemeTokens` satu sumber; tanpa shadow/blur/gradien; kontras lulus |
+| REM-P1-01 | P1 | F1 | IN PROGRESS | screenshot 360×640, 412×915, 915×412; tujuh layar dua kolom belum |
+| REM-P1-02 | P1 | F1 | OPEN | layar auth/ujian belum ada |
+| REM-P1-03 | P1 | F1 | OPEN | baru `multiple_choice`; lima jenis lain belum |
+| REM-P1-04 | P1 | F1 | IN PROGRESS | validasi 3–20 + persist lokal; alur daftar belum ada |
+| REM-P1-05 | P1 | F1 | OPEN | hapus akun belum ada |
+| REM-P1-06 | P1 | F1 | IN PROGRESS | banner offline ada; sesi/login offline belum ada |
+| REM-P1-07 | P1 | F1 | OPEN | Tutor AI masih placeholder |
+| REM-P1-08 | P1 | F1 | IN PROGRESS | kontras 12/12 PASS; target sentuh 2/2 tes; belum uji perangkat/TalkBack |
+| REM-P1-09 | P1 | F1 | IN PROGRESS | shell 4 tab konsisten; header layar lain belum lengkap |
+| REM-P1-10 | P1 | F2 | CLOSED (F1) | tidak ada "Simpan Kata"; dicatat untuk F2 |
+
+### 2.1 Catatan bukti F1
+
+- **REM-P0-01:** `TopicPathTests.CanonicalPath_IsExactlyTheTwelvePrdTopics`
+  membandingkan urutan ID dengan daftar PRD; PlayMode
+  `Shell_HasFourTabsAndTwelveTopics` menemukan 12 baris.
+- **REM-P0-02:** `TopicPathTests.UiSource_DoesNotContainOutOfScopeDialectLabels`
+  dan `TopicRegistry_DoesNotContainForbiddenTerms`; pencarian APK F1 untuk
+  Amarasi/Amanuban/Sonbai/Mutis/Miomafo = 0.
+- **REM-P0-03:** `npm test` 36/36; CLI `0 error, 4 warning` (audio contoh);
+  `PublishGateTests` dan `ContentRepositoryTests` menolak placeholder,
+  status non-validated, contoh kosong, dan fixture sebagai konten terbit.
+  Isi Dawan tervalidasi tetap **belum ada**.
+- **REM-P0-04:** Beranda/Profil membaca `pendingXp`, `completedLessonIds`,
+  `Application.version`; tidak ada nama model AI, latensi, atau angka karangan.
+- **REM-P0-05:** `xp` dan `estimatedMinutes` dibaca dari JSON pelajaran.
+  Kuota Worker, regenerasi hati, dan pengurangan hati **belum** diimplementasikan;
+  jangan menutup butir ini sebelum itu ada.
+- **REM-P0-06:** Validator menolak audio tanpa `consentRef`; belum ada
+  rekaman, penutur, atau izin nyata.
+- **REM-P0-07:** Tidak ada panel debug di `Scripts/App`; APK F1 tidak memuat
+  "Simulasi Jaringan" atau "Pratinjau Status Sistem".
+- **REM-P0-08:** UI dibangun dari `ThemeTokens`; `tools/design/contrast.mjs`
+  lulus 12/12 pasangan F1 (ambang 4.5:1); tidak ada shadow/blur/gradien.
+- **REM-P1-01:** Tangkapan layar F1 ada di `Builds/screenshots/`; layout dua
+  kolom untuk tujuh layar penuh belum diuji.
+- **REM-P1-04:** `LocalStoreTests` menguji 3–20 karakter, penolakan karakter
+  kontrol, dan persistensi; alur pendaftaran akun belum ada.
+- **REM-P1-06:** Banner antrean sinkron diuji PlayMode; banner offline
+  belum diuji dengan mock jaringan, dan sesi/auth belum ada.
+- **REM-P1-08:** `AccessibilityTests` 2/2 lulus untuk target sentuh ≥48 dp
+  pada Beranda, Profil, tiga langkah pelajaran, dan dialog nama; kontras
+  12/12 lulus. Ini **bukan** audit TalkBack atau uji perangkat.
+- **REM-P1-10:** Pencarian UI/APK untuk "Simpan Kata" = 0.
 
 ## 3. P0 — menghalangi F1
 

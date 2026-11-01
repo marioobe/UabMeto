@@ -1,8 +1,9 @@
 # Aksesibilitas UI
 
-Status: **F0.5 — spesifikasi, belum diuji dan belum lulus.** Angka kontras
-dihitung dari token `design-tokens.md`. Tidak ada klaim kelulusan
-aksesibilitas sampai koreksi dan pengujian dilakukan. Daftar kerja:
+Status: **F1 — UI inti sudah diukur, belum lulus penuh.** Angka kontras
+diukur dari `ThemeTokens.cs` lewat `tools/design/contrast.mjs`; target sentuh
+diukur lewat `AccessibilityTests` PlayMode. Ini belum audit TalkBack,
+belum uji perangkat, dan belum uji skala font 1.3×/2.0×. Daftar kerja:
 `remediation.md` REM-P1-08.
 
 ## 1. Standar yang dipakai
@@ -49,7 +50,33 @@ aksesibilitas sampai koreksi dan pengujian dilakukan. Daftar kerja:
 Aturan: `danger-fill` hanya untuk isian, garis, dan ikon. Semua teks bahaya
 memakai `danger-text`.
 
-**Lima pasangan gagal. Belum ada yang diperbaiki; status `OPEN`.**
+**Lima pasangan gagal pada mockup lama. Di UI F1, teks bahaya memakai
+`danger-text`, teks di atas `accent` memakai `on-accent`, dan label kecil
+memakai `text-muted`.**
+
+### 2.3 Pengukuran ulang UI F1 (2026-11-01)
+
+`node tools/design/contrast.mjs` membaca token langsung dari
+`ThemeTokens.cs` dan menguji 12 pasangan yang dipakai UI F1. Hasil:
+**12/12 PASS** pada ambang 4.5:1.
+
+| Teks | Latar | Rasio |
+|---|---|---|
+| `TextPrimary` | `Canvas` | 15.65 |
+| `TextMuted` | `Canvas` | 8.45 |
+| `TextMuted` | `SurfaceCard` | 7.27 |
+| `TextMuted` | `SurfaceHigh` | 6.58 |
+| `Outline` | `SurfaceCard` | 5.00 |
+| `Accent` | `Canvas` | 12.53 |
+| `OnAccent` | `Accent` | 12.53 |
+| `Warning` | `SurfaceCard` | 6.89 |
+| `Success` | `Canvas` | 6.55 |
+| `Success` | `SurfaceCard` | 5.63 |
+| `DangerText` | `DangerPanel` | 10.15 |
+| `OnAccent` | `Warning` | 8.02 |
+
+`DangerFill` tidak dipakai sebagai warna teks; pasangan
+`DangerFill`/`SurfaceCard` (3.61:1) tetap tidak boleh dipakai untuk teks.
 
 ## 3. Audit target sentuh mockup
 
@@ -74,10 +101,23 @@ memakai `danger-text`.
 | REM-P1-08.T11 | "Simpan Kata" | 40 | gagal |
 | REM-P1-08.T12 | Chip state pratinjau | 30 | gagal (debug saja) |
 
-**Dua belas target gagal. Belum ada yang diperbaiki; status `OPEN`.**
+**Dua belas target gagal pada mockup lama.**
 
 Perbaikan: semua target interaktif minimal 48 dp, termasuk area sentuh yang
 lebih besar dari ikon visual. Jarak antar target minimal 8 dp.
+
+### 3.1 Pengukuran ulang UI F1 (2026-11-01)
+
+`AccessibilityTests` (PlayMode) mengukur semua `Selectable` aktif di:
+
+- Beranda,
+- Profil,
+- pembuka, materi, dan latihan pelajaran,
+- dialog nama panggilan.
+
+Hasil: **2/2 tes lulus, 0 target < 48 dp.** Ini belum mencakup layar yang
+belum dibangun (auth, ujian, Tutor AI, Peringkat) dan bukan audit TalkBack.
+Sub-butir T1–T12 tetap belum semuanya dipetakan ke UI F1.
 
 ## 4. Skala font
 
@@ -135,11 +175,12 @@ Jangan pernah menyampaikan status hanya dengan warna.
 
 ## 9. Checklist sebelum build F1
 
-- [ ] Semua pasangan warna di UI ada di tabel kontras.
-- [ ] Tidak ada `danger-fill` sebagai teks.
-- [ ] Tidak ada teks di bawah 14 sp kecuali metadata.
-- [ ] Semua target sentuh ≥ 48 dp.
-- [ ] Uji 1.3× dan 2.0× pada 360 × 640.
-- [ ] Uji portrait dan landscape.
-- [ ] Setiap status punya ikon + teks.
-- [ ] Setiap tombol ikon punya label.
+- [x] Semua pasangan warna di UI F1 ada di tabel kontras (12/12 PASS).
+- [x] Tidak ada `danger-fill` sebagai teks di UI F1.
+- [ ] Tidak ada teks di bawah 14 sp kecuali metadata — belum diaudit penuh.
+- [x] Semua target sentuh di layar F1 yang diuji ≥ 48 dp (2/2 tes).
+- [ ] Uji 1.3× dan 2.0× pada 360 × 640 — belum dijalankan.
+- [x] Uji portrait dan landscape di Editor (360×640, 412×915, 915×412).
+- [x] Setiap status F1 punya ikon + teks.
+- [x] Setiap tombol ikon F1 punya label aksesibilitas.
+- [ ] Audit TalkBack dan perangkat fisik — belum dijalankan.

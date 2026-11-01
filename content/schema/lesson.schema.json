@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:uabmeto:schema:lesson:1.0.0",
+  "$id": "urn:uabmeto:schema:lesson:1.1.0",
   "title": "Uab Meto Lesson",
-  "description": "Skema satu pelajaran Bahasa Dawan varian TTU. Aturan penerbitan ditegakkan oleh tools/content-validator.",
+  "description": "Skema satu pelajaran Bahasa Dawan varian TTU versi 1.1.0. Aturan penerbitan ditegakkan oleh tools/content-validator. XP pada konten adalah nilai tampilan; hadiah XP aktual ditentukan server.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -16,11 +16,14 @@
     "objectives",
     "vocabulary",
     "dialogues",
-    "exercises"
+    "exercises",
+    "xp",
+    "estimatedMinutes",
+    "examples"
   ],
   "properties": {
     "schemaVersion": {
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "id": {
       "type": "string",
@@ -33,6 +36,24 @@
     "order": {
       "type": "integer",
       "minimum": 1
+    },
+    "xp": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Nilai XP untuk tampilan. Hadiah XP aktual dihitung server dari versi materi terbit; nilai dari klien tidak dipercaya."
+    },
+    "estimatedMinutes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 120,
+      "description": "Perkiraan durasi untuk tampilan. Bukan batas waktu, syarat lulus, atau dasar penalti."
+    },
+    "examples": {
+      "type": "array",
+      "description": "Contoh kalimat atau ungkapan. Wajib punya sumber dan status validasi yang dapat ditelusuri.",
+      "items": {
+        "$ref": "#/$defs/example"
+      }
     },
     "title": {
       "type": "string",
@@ -148,6 +169,61 @@
         },
         "license": {
           "type": "string"
+        }
+      }
+    },
+    "example": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "dawan",
+        "indonesian",
+        "context",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^exm-[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "dawan": {
+          "type": "string",
+          "minLength": 1
+        },
+        "indonesian": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "UNVALIDATED",
+            "draft",
+            "in_review",
+            "validated",
+            "published"
+          ]
+        },
+        "sourceRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^SRC-[A-Z0-9-]+$"
+        },
+        "audio": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/audioRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },

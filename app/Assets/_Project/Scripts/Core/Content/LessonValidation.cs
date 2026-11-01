@@ -9,6 +9,9 @@ namespace UabMeto.Core.Content
     /// </summary>
     public sealed class LessonValidation
     {
+        /// <summary>Versi skema konten. Penerbitan hanya boleh dari 1.1.0.</summary>
+        public string SchemaVersion { get; set; } = "1.1.0";
+
         public ValidationStatus Status { get; set; } = ValidationStatus.Draft;
 
         /// <summary>Identitas peninjau (penutur lokal / ahli varian TTU).</summary>

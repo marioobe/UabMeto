@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "node --test",
-    "validate": "node src/validate.mjs --root ../../content"
+    "validate": "node src/validate.mjs --root ../../content",
+    "migrate": "node src/migrate.mjs"
   }
 }

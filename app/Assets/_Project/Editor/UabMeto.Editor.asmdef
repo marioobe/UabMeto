@@ -3,7 +3,8 @@
     "rootNamespace": "UabMeto.Editor",
     "references": [
         "UabMeto.Core",
-        "UabMeto.App"
+        "UabMeto.App",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [
         "Editor"

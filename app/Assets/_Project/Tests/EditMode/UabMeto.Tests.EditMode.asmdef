@@ -3,6 +3,9 @@
     "rootNamespace": "UabMeto.Tests.EditMode",
     "references": [
         "UabMeto.Core",
+        "UabMeto.App",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

@@ -1,7 +1,8 @@
 # Kriteria Gate F1
 
-Status: **belum berlaku.** F1 belum dimulai. Dokumen ini menetapkan syarat
-yang harus dipenuhi sebelum F1 dinyatakan lulus.
+Status: **F1 sedang berjalan; gate belum lulus.** Dokumen ini menetapkan
+syarat yang harus dipenuhi sebelum F1 dinyatakan lulus. Hasil aktual ada di
+`docs/testing/f1-gate-result.md`.
 
 ## 1. Prinsip
 

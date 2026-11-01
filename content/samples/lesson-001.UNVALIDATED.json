@@ -1,8 +1,10 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "id": "lesson-001",
   "topicId": "topic-01",
   "order": 1,
+  "xp": 0,
+  "estimatedMinutes": 1,
   "title": "Contoh Pelajaran - Salam dan Sapaan",
   "summary": "Konten contoh untuk pengujian teknis. Bukan materi Bahasa Dawan yang valid dan tidak boleh diterbitkan.",
   "status": "UNVALIDATED",
@@ -129,6 +131,26 @@
       "content": {
         "targetAudioRef": "audio/lesson-001/vocab-001.ogg"
       }
+    }
+  ],
+  "examples": [
+    {
+      "id": "exm-001",
+      "dawan": "[PLACEHOLDER-DWN-020]",
+      "indonesian": "[PLACEHOLDER-IDN-020]",
+      "context": "situasi pemakaian",
+      "status": "UNVALIDATED",
+      "sourceRef": null,
+      "audio": null
+    },
+    {
+      "id": "exm-002",
+      "dawan": "[PLACEHOLDER-DWN-021]",
+      "indonesian": "[PLACEHOLDER-IDN-021]",
+      "context": "situasi pemakaian",
+      "status": "UNVALIDATED",
+      "sourceRef": null,
+      "audio": null
     }
   ]
 }

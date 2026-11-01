@@ -21,10 +21,12 @@ function loadJson(relativePath) {
 
 function makeValidatedLesson() {
   return {
-    schemaVersion: "1.0.0",
+    schemaVersion: "1.1.0",
     id: "lesson-900",
     topicId: "topic-99",
     order: 1,
+    xp: 10,
+    estimatedMinutes: 5,
     title: "Pelajaran uji",
     status: "validated",
     validation: {
@@ -58,6 +60,17 @@ function makeValidatedLesson() {
           ],
           correctOptionId: "opt-a"
         }
+      }
+    ],
+    examples: [
+      {
+        id: "exm-001",
+        dawan: "contoh-uji",
+        indonesian: "contoh uji",
+        context: "situasi uji",
+        status: "validated",
+        sourceRef: "SRC-0001",
+        audio: null
       }
     ]
   };
@@ -238,4 +251,154 @@ test("gate penerbitan menolak konten draft", () => {
 
   assert.equal(gate.allowed, false);
   assert.ok(gate.reasons.some((message) => message.includes('status harus "validated"')));
+});
+
+test("schemaVersion tidak dikenal ditolak", () => {
+  const lesson = makeValidatedLesson();
+  lesson.schemaVersion = "2.0.0";
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("schemaVersion")));
+});
+
+test("skema 1.0.0 dapat dibaca tetapi tidak dapat diterbitkan", () => {
+  const lesson = makeValidatedLesson();
+  lesson.schemaVersion = "1.0.0";
+  delete lesson.xp;
+  delete lesson.estimatedMinutes;
+  delete lesson.examples;
+
+  const result = evaluateLesson(lesson);
+  assert.deepEqual(result.errors, []);
+  assert.ok(result.warnings.some((message) => message.includes("legacy")));
+
+  const gate = publishGate(lesson);
+  assert.equal(gate.allowed, false);
+  assert.ok(gate.reasons.some((message) => message.includes("1.1.0")));
+});
+
+test("xp hilang pada skema 1.1.0 ditolak", () => {
+  const lesson = makeValidatedLesson();
+  delete lesson.xp;
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("xp")));
+});
+
+test("xp negatif ditolak", () => {
+  const lesson = makeValidatedLesson();
+  lesson.xp = -1;
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("xp")));
+});
+
+test("estimatedMinutes nol ditolak", () => {
+  const lesson = makeValidatedLesson();
+  lesson.estimatedMinutes = 0;
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("estimatedMinutes")));
+});
+
+test("examples hilang pada skema 1.1.0 ditolak", () => {
+  const lesson = makeValidatedLesson();
+  delete lesson.examples;
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("examples")));
+});
+
+test("pelajaran validated tanpa contoh kalimat ditolak", () => {
+  const lesson = makeValidatedLesson();
+  lesson.examples = [];
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("contoh kalimat")));
+});
+
+test("contoh validated tanpa sourceRef ditolak", () => {
+  const lesson = makeValidatedLesson();
+  lesson.examples[0].sourceRef = null;
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("sourceRef")));
+});
+
+test("contoh validated berstatus UNVALIDATED ditolak", () => {
+  const lesson = makeValidatedLesson();
+  lesson.examples[0].status = "UNVALIDATED";
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("status harus")));
+});
+
+test("pelajaran UNVALIDATED dengan contoh validated ditolak", () => {
+  const lesson = loadJson("templates/lesson.template.json");
+  lesson.examples[0].status = "validated";
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes('status harus "UNVALIDATED"')));
+});
+
+test("id contoh duplikat ditolak", () => {
+  const lesson = makeValidatedLesson();
+  lesson.examples.push(structuredClone(lesson.examples[0]));
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("duplikat")));
+});
+
+test("audio contoh non-ogg ditolak", () => {
+  const lesson = makeValidatedLesson();
+  lesson.examples[0].audio = {
+    file: "audio/lesson-900/exm-001.mp3",
+    durationMs: 1000,
+    license: "CC-BY-4.0",
+    consentRef: "CONSENT-0001"
+  };
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("Ogg Vorbis")));
+});
+
+test("sourceRef contoh harus berpola SRC", () => {
+  const lesson = makeValidatedLesson();
+  lesson.examples[0].sourceRef = "src-0001";
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes("berpola SRC")));
+});
+
+test("contoh published pada pelajaran validated ditolak", () => {
+  const lesson = makeValidatedLesson();
+  lesson.examples[0].status = "published";
+
+  const result = evaluateLesson(lesson);
+
+  assert.ok(result.errors.some((message) => message.includes('tidak boleh "published"')));
+});
+
+test("lessonHasAudio mendeteksi audio pada contoh", () => {
+  const lesson = makeValidatedLesson();
+  lesson.examples[0].audio = {
+    file: "audio/lesson-900/exm-001.ogg",
+    durationMs: 1000,
+    license: "CC-BY-4.0",
+    consentRef: "CONSENT-0001"
+  };
+
+  assert.equal(lessonHasAudio(lesson), true);
 });

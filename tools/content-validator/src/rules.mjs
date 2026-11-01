@@ -12,6 +12,8 @@
 export const LESSON_STATUSES = ["UNVALIDATED", "draft", "in_review", "validated", "published"];
 export const EXERCISE_TYPES = ["multiple_choice", "match", "sentence_order", "listening", "writing", "speaking"];
 export const SKILLS = ["reading", "writing", "listening", "speaking"];
+export const SCHEMA_VERSIONS = ["1.0.0", "1.1.0"];
+export const CURRENT_SCHEMA_VERSION = "1.1.0";
 
 const PLACEHOLDER = /^\[PLACEHOLDER-[A-Z0-9]+(-[A-Z0-9]+)*\]$/;
 const PLACEHOLDER_ANYWHERE = /\[PLACEHOLDER/i;
@@ -22,6 +24,7 @@ const PATTERNS = {
   vocab: /^vocab-[a-z0-9]+(-[a-z0-9]+)*$/,
   dialogue: /^dlg-[a-z0-9]+(-[a-z0-9]+)*$/,
   exercise: /^ex-[a-z0-9]+(-[a-z0-9]+)*$/,
+  example: /^exm-[a-z0-9]+(-[a-z0-9]+)*$/,
   source: /^SRC-[A-Z0-9]+(-[A-Z0-9]+)*$/
 };
 
@@ -109,7 +112,11 @@ export function lessonHasAudio(lesson) {
     ? lesson.exercises.some((exercise) => isObject(exercise) && exercise.type === "listening")
     : false;
 
-  return vocabularyAudio || dialogueAudio || exerciseAudio;
+  const exampleAudio = Array.isArray(lesson?.examples)
+    ? lesson.examples.some((example) => isObject(example) && isObject(example.audio))
+    : false;
+
+  return vocabularyAudio || dialogueAudio || exerciseAudio || exampleAudio;
 }
 
 function checkAudioRef(audio, path, errors, warnings, options) {
@@ -333,6 +340,70 @@ function checkExercise(exercise, index, errors, warnings, options) {
 }
 
 /**
+ * Memeriksa satu contoh kalimat pada skema 1.1.0.
+ * Contoh yang diterbitkan wajib punya sumber dan status tervalidasi.
+ */
+function checkExample(example, index, lessonStatus, errors, warnings, options) {
+  const path = `examples[${index}]`;
+
+  if (!isObject(example)) {
+    errors.push(`${path}: harus objek.`);
+    return;
+  }
+
+  if (!isNonEmptyString(example.id) || !PATTERNS.example.test(example.id)) {
+    errors.push(`${path}.id tidak sesuai pola exm-....`);
+  }
+
+  if (!isNonEmptyString(example.dawan)) {
+    errors.push(`${path}.dawan wajib diisi.`);
+  }
+
+  if (!isNonEmptyString(example.indonesian)) {
+    errors.push(`${path}.indonesian wajib diisi.`);
+  }
+
+  if (!isNonEmptyString(example.context)) {
+    errors.push(`${path}.context wajib diisi.`);
+  }
+
+  if (!LESSON_STATUSES.includes(example.status)) {
+    errors.push(`${path}.status tidak dikenal: ${example.status}.`);
+  }
+
+  if (
+    example.sourceRef !== undefined &&
+    example.sourceRef !== null &&
+    example.sourceRef !== "" &&
+    (!isNonEmptyString(example.sourceRef) || !PATTERNS.source.test(example.sourceRef))
+  ) {
+    errors.push(`${path}.sourceRef harus berpola SRC-....`);
+  }
+
+  if (lessonStatus === "validated" || lessonStatus === "published") {
+    if (!isNonEmptyString(example.sourceRef)) {
+      errors.push(`${path}.sourceRef wajib untuk contoh pada pelajaran tervalidasi.`);
+    }
+
+    if (example.status !== "validated" && example.status !== "published") {
+      errors.push(`${path}.status harus "validated" atau "published" pada pelajaran tervalidasi.`);
+    }
+  }
+
+  if (lessonStatus === "UNVALIDATED" && example.status !== "UNVALIDATED") {
+    errors.push(`${path}.status harus "UNVALIDATED" pada pelajaran UNVALIDATED.`);
+  }
+
+  if (lessonStatus !== "published" && example.status === "published") {
+    errors.push(`${path}.status tidak boleh "published" bila pelajaran belum published.`);
+  }
+
+  if ("audio" in example) {
+    checkAudioRef(example.audio, `${path}.audio`, errors, warnings, options);
+  }
+}
+
+/**
  * Memeriksa kelengkapan metadata validasi. Mengembalikan daftar masalah.
  * Dipakai oleh gate penerbitan dan pemeriksaan integritas konten terbit.
  */
@@ -405,7 +476,32 @@ export function publishGate(lesson) {
     reasons.push(`status harus "validated", ditemukan "${lesson.status}"`);
   }
 
+  if (lesson.schemaVersion !== CURRENT_SCHEMA_VERSION) {
+    reasons.push(
+      `schemaVersion harus "${CURRENT_SCHEMA_VERSION}" agar dapat diterbitkan, ditemukan "${lesson.schemaVersion}"`
+    );
+  }
+
   reasons.push(...metadataIssues(lesson));
+
+  if (!Array.isArray(lesson.examples) || lesson.examples.length === 0) {
+    reasons.push("minimal satu contoh kalimat diperlukan untuk penerbitan");
+  } else {
+    lesson.examples.forEach((example, index) => {
+      if (!isObject(example)) {
+        reasons.push(`examples[${index}] harus objek`);
+        return;
+      }
+
+      if (!isNonEmptyString(example.sourceRef) || !PATTERNS.source.test(example.sourceRef)) {
+        reasons.push(`examples[${index}].sourceRef wajib berpola SRC-...`);
+      }
+
+      if (example.status !== "validated" && example.status !== "published") {
+        reasons.push(`examples[${index}].status harus "validated" atau "published"`);
+      }
+    });
+  }
 
   for (const text of walkStrings(lesson, "")) {
     if (PLACEHOLDER_ANYWHERE.test(text.value)) {
@@ -430,8 +526,16 @@ export function evaluateLesson(lesson, options = {}) {
     return { errors: ["root harus objek JSON"], warnings };
   }
 
-  if (lesson.schemaVersion !== "1.0.0") {
-    errors.push(`schemaVersion harus "1.0.0", ditemukan "${lesson.schemaVersion}".`);
+  if (!SCHEMA_VERSIONS.includes(lesson.schemaVersion)) {
+    errors.push(
+      `schemaVersion harus salah satu dari ${SCHEMA_VERSIONS.join(", ")}, ditemukan "${lesson.schemaVersion}".`
+    );
+  }
+
+  if (lesson.schemaVersion === "1.0.0") {
+    warnings.push(
+      "schemaVersion 1.0.0 bersifat legacy: dapat dibaca, tetapi tidak dapat diterbitkan sebelum dimigrasikan ke 1.1.0."
+    );
   }
 
   if (!isNonEmptyString(lesson.id) || !PATTERNS.lesson.test(lesson.id)) {
@@ -484,6 +588,42 @@ export function evaluateLesson(lesson, options = {}) {
 
   const requireAudioFiles = lesson.status === "validated" || lesson.status === "published";
   const audioOptions = { ...options, requireAudioFiles };
+
+  const isCurrentSchema = lesson.schemaVersion === CURRENT_SCHEMA_VERSION;
+
+  if (isCurrentSchema) {
+    if (!Number.isInteger(lesson.xp) || lesson.xp < 0) {
+      errors.push("xp harus bilangan bulat >= 0.");
+    }
+
+    if (
+      !Number.isInteger(lesson.estimatedMinutes) ||
+      lesson.estimatedMinutes < 1 ||
+      lesson.estimatedMinutes > 120
+    ) {
+      errors.push("estimatedMinutes harus bilangan bulat 1-120.");
+    }
+
+    if (!Array.isArray(lesson.examples)) {
+      errors.push("examples harus array.");
+    } else {
+      if ((lesson.status === "validated" || lesson.status === "published") && lesson.examples.length === 0) {
+        errors.push("pelajaran tervalidasi wajib punya minimal satu contoh kalimat.");
+      }
+
+      const exampleIds = new Set();
+      lesson.examples.forEach((example, index) => {
+        checkExample(example, index, lesson.status, errors, warnings, audioOptions);
+        if (isObject(example) && isNonEmptyString(example.id)) {
+          if (exampleIds.has(example.id)) {
+            errors.push(`examples[${index}].id duplikat: ${example.id}.`);
+          } else {
+            exampleIds.add(example.id);
+          }
+        }
+      });
+    }
+  }
 
   if (!Array.isArray(lesson.vocabulary)) {
     errors.push("vocabulary harus array.");

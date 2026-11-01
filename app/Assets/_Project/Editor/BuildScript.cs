@@ -8,13 +8,13 @@ using UnityEngine;
 namespace UabMeto.Editor
 {
     /// <summary>
-    /// Entry point build APK lokal (F0). Dijalankan via:
+    /// Entry point build APK lokal (F1). Dijalankan via:
     /// Unity.exe -batchmode -quit -projectPath app -executeMethod UabMeto.Editor.BuildScript.BuildAndroid
     /// </summary>
     public static class BuildScript
     {
         private const string OutputFolderName = "Builds/Android";
-        private const string OutputFileName = "uabmeto-f0.apk";
+        private const string OutputFileName = "uabmeto-f1.apk";
 
         private static string RepositoryRoot =>
             Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
