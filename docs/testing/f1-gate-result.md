@@ -16,7 +16,7 @@ tervalidasi, perangkat fisik, dan sebagian aksesibilitas belum terpenuhi.
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
 | Target sentuh F1 | **PASS (UI F1)** — 2/2 tes, semua `Selectable` aktif ≥ 48 dp |
 | Konten tervalidasi | **BLOCKED** — belum ada pelajaran `validated` |
-| Perangkat fisik | **BLOCKED** — tidak ada perangkat terhubung |
+| Perangkat fisik | **BLOCKED** — tidak ada perangkat lokal; alokasi remote Android ditolak |
 | Gate F1 | **TIDAK LULUS** |
 
 ## 2. Build
@@ -189,7 +189,10 @@ terlihat, tetapi banner offline belum diuji dengan mock jaringan.
 1. **Blocker konten:** siapkan satu pelajaran `validated` dengan sumber,
    reviewer, dan (bila ada audio) consent. Jangan mengarang teks Dawan.
 2. **Blocker perangkat:** sambungkan perangkat Android fisik, lalu jalankan
-   D1-01..D1-07. Emulator tidak menggantikan gate ini.
+   D1-01..D1-07. Emulator tidak menggantikan gate ini. Pada 2026-11-01
+   katalog remote sudah dicoba, tetapi alokasi Android (Pixel 6, Pixel 4a,
+   Pixel 3a XL) ditolak dengan pesan `requires a plan upgrade`; tidak ada
+   perangkat yang dialokasikan dan tidak ada klaim uji perangkat.
 3. **Aksesibilitas:** ulangi pengukuran pada perangkat, uji font 1.3×/2.0×,
    dan petakan C1–C5/T1–T12 yang tersisa.
 4. **Build:** putuskan apakah 4 warning dapat diterima atau harus dihilangkan
