@@ -1,9 +1,10 @@
 # Laporan Gate F1
 
-Tanggal: 2026-11-01 (WITA)
+Tanggal: 2026-11-03 (WITA)
 Lingkungan: Windows, Unity `6000.6.0f1`, Android build-tools `36.1.0`.
-Status gate: **TIDAK LULUS.** Build dan tes UI lulus, tetapi syarat konten
-tervalidasi, perangkat fisik, dan sebagian aksesibilitas belum terpenuhi.
+Status gate: **TIDAK LULUS.** Build, tes UI, dan verifikasi dasar perangkat
+fisik lulus; syarat konten tervalidasi, alur pelajaran rilis, aksesibilitas
+penuh, dan sisa gate perangkat belum terpenuhi.
 
 ## 1. Ringkasan keputusan
 
@@ -11,20 +12,21 @@ tervalidasi, perangkat fisik, dan sebagian aksesibilitas belum terpenuhi.
 |---|---|
 | Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
 | Tes EditMode | **PASS** — 56 lulus, 0 gagal, 0 dilewati |
-| Tes PlayMode | **PASS** — 9 lulus, 0 gagal, 0 dilewati |
+| Tes PlayMode | **PASS** — 11 lulus, 0 gagal, 0 dilewati |
 | Validator konten | **PASS** — 36/36 tes; CLI 0 error, 4 warning audio |
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
-| Target sentuh F1 | **PASS (UI F1)** — 2/2 tes, semua `Selectable` aktif ≥ 48 dp |
+| Target sentuh F1 | **PASS (UI F1)** — 4/4 tes aksesibilitas/layout |
 | Konten tervalidasi | **BLOCKED** — belum ada pelajaran `validated` |
-| Perangkat fisik | **BLOCKED** — tidak ada perangkat lokal; alokasi remote Android ditolak |
+| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-07 lulus; D1-03..D1-06 belum |
 | Gate F1 | **TIDAK LULUS** |
 
 ## 2. Build
 
 - Path: `D:\01_Uab_Meto\Builds\Android\uabmeto-f1.apk`
-- Ukuran: **28.272.700 byte**
-- Hasil: `Succeeded`, 0 error, 4 warning dari `BuildSummary`
-- Durasi build: 553,8 detik
+- Ukuran: **28.278.020 byte**
+- SHA-256: `D4416E0250AD0F188A45B142BE6A1764850D4C4BD0D6BF18A0FE3AF97BA3C465`
+- Hasil: `Succeeded`, 0 error, 3 warning
+- Durasi build: 200,9 detik
 - Paket: `id.uabmeto.app`
 - Versi: `0.1.0` (`versionCode 1`)
 - `minSdkVersion`: 26
@@ -32,21 +34,22 @@ tervalidasi, perangkat fisik, dan sebagian aksesibilitas belum terpenuhi.
 - ABI: `arm64-v8a` saja
 - Backend: IL2CPP Release
 - Ringkasan mesin: `Builds/Android/build-summary.json`
-- Log: `Builds/logs/f1-build.log`
+- Log: `Builds/logs/f1-build-modal-fix.log`
 
-Warning build yang tercatat: pragma shader TMP yang deprecated, argumen
-clang yang tidak terpakai, dan catatan IL2CPP bahwa beberapa metode TMP
-besar diberi berkas C++ sendiri. Tidak ada error kompilasi. Karena kriteria
+Tiga warning build semuanya berasal dari IL2CPP/TMP: `TMP_TextParsingUtilities`
+cctor dan dua metode `GenerateTextMesh` diberi berkas C++ sendiri karena besar.
+Tidak ada error kompilasi dan tidak ada warning kode proyek. Karena kriteria
 F1-25 menyebut "tanpa warning", butir itu **belum** boleh ditutup.
 
 Pemeriksaan APK:
 
 - `aapt dump badging` mengonfirmasi paket, versi, minSdk 26, targetSdk 36,
-  dan `native-code: 'arm64-v8a'`.
-- Tidak ada `lesson-001-salam`, `PLACEHOLDER-DWN`, atau teks fixture
-  `FIXTUR PENGEMBANGAN` di isi APK.
-- `topics.json` ada di aset build; tidak ada pelajaran tervalidasi karena
-  `Resources/Content/lessons` memang kosong.
+  dan label `Uab Meto`.
+- `aapt list` hanya memuat `lib/arm64-v8a/` (tidak ada ABI lain).
+- Tidak ada `lesson-001-salam`, `PLACEHOLDER-DWN`, `UNVALIDATED`, atau teks
+  fixture `FIXTUR PENGEMBANGAN` di isi APK.
+- `topics.json` ada di aset build; `Resources/Content/lessons` kosong, jadi
+  build rilis menampilkan empty state.
 - Pemindaian APK untuk pola kredensial (`AIza...`, private key,
   `service_account`, `client_secret`, `SUPABASE_SERVICE_ROLE`, `sk-...`)
   menghasilkan 0 temuan. Ini bukan jaminan keamanan menyeluruh.
@@ -55,16 +58,7 @@ Pemeriksaan APK:
 
 ### 3.1 EditMode
 
-Perintah:
-
-```powershell
-Unity.exe -batchmode -nographics -projectPath app `
-  -runTests -testPlatform EditMode `
-  -testResults Builds/logs/editmode-topic.xml `
-  -logFile Builds/logs/editmode-topic.log
-```
-
-Hasil: **56/56 lulus, 0 gagal, 0 dilewati.** Cakupan baru:
+Hasil: **56/56 lulus, 0 gagal, 0 dilewati.** Cakupan:
 
 - `TopicPathTests` — 12 ID topik persis PRD, tanpa topik ujian, tanpa label
   dialek luar TTU di UI/registry.
@@ -77,25 +71,18 @@ Hasil: **56/56 lulus, 0 gagal, 0 dilewati.** Cakupan baru:
 
 ### 3.2 PlayMode
 
-Perintah:
-
-```powershell
-Unity.exe -batchmode -projectPath app `
-  -runTests -testPlatform PlayMode `
-  -testResults Builds/logs/playmode-a11y.xml `
-  -logFile Builds/logs/playmode-a11y.log
-```
-
-Hasil: **9/9 lulus, 0 gagal, 0 dilewati.**
+Hasil: **11/11 lulus, 0 gagal, 0 dilewati.**
 
 - `Shell_HasFourTabsAndTwelveTopics`
 - `FixtureFlow_EnqueuesCompletion`
 - `AccessibilityTests.HomeAndProfile_TargetsAreAtLeast48Dp`
+- `AccessibilityTests.Profile_IdentityCardFitsContentAndScrollIsDraggable`
+- `AccessibilityTests.NicknameDialog_FitsCardAndHasCancel`
 - `AccessibilityTests.LessonAndModals_TargetsAreAtLeast48Dp`
 - 5 tes tangkapan layar (`ScreenshotTests`)
 
 PlayMode berjalan di Editor, bukan perangkat. Tes ini tidak membuktikan
-perilaku Android, lifecycle, keyboard, atau TalkBack.
+TalkBack, keyboard Android, lifecycle, atau rotasi perangkat.
 
 ### 3.3 Validator dan kontras
 
@@ -110,9 +97,9 @@ bukan konten terbit.
 
 ## 4. Tangkapan layar
 
-Semua dibuat dengan merender canvas Unity ke `RenderTexture`, bukan dari
-mockup Stitch dan bukan dari perangkat. Berkas ada di
-`Builds/screenshots/`:
+Tangkapan layar Editor dibuat dengan merender canvas Unity ke `RenderTexture`,
+bukan dari mockup Stitch. Salinan bukti ada di
+`docs/testing/evidence/f1-editor/` (asli di `Builds/screenshots/`):
 
 | Berkas | Isi |
 |---|---|
@@ -129,23 +116,62 @@ mockup Stitch dan bukan dari perangkat. Berkas ada di
 | `f1-after-completion-360x640.png` | Banner antrean setelah simpan |
 | `f1-lesson-intro-915x412.png` | Pembuka pelajaran landscape |
 
-Tidak ada tangkapan layar mode offline terpisah. Banner antrean sinkron
-terlihat, tetapi banner offline belum diuji dengan mock jaringan.
+Tangkapan layar perangkat fisik ada di
+`docs/testing/evidence/f1-device/` dan dirinci di
+`docs/testing/f1-device-evidence.md`.
 
-## 5. Status kriteria F1
+## 5. Uji perangkat fisik
+
+Perangkat: Xiaomi `24117RN76O`, Android 16 (API 36), layar 1080×2400,
+densitas 450 dpi, terhubung lewat ADB.
+
+- **D1-01 PASS** — APK `0.1.0` terpasang; `firstInstallTime`
+  2026-11-03 13:56:17, `lastUpdateTime` 2026-11-03 14:47:55.
+- **D1-02 PASS** — aplikasi dibuka, `UnityPlayerGameActivity` menjadi
+  foreground, tidak ada `FATAL EXCEPTION`/`AndroidRuntime`/`E/Unity`
+  exception di logcat.
+- **D1-07 PASS** — tombol back dari Profil kembali ke Beranda; back dari
+  dialog nama menutup dialog dan kembali ke Profil.
+- **D1-03 BLOCKED** — alur pelajaran rilis tidak dapat dijalankan karena
+  tidak ada pelajaran `validated`; fixture sengaja tidak ada di APK rilis.
+- **D1-04 NOT RUN** — mode offline belum diuji dengan mock/mode pesawat.
+- **D1-05 BLOCKED (perangkat)** — perangkat/launcher memaksa orientasi
+  portrait. `wm set-ignore-orientation-request true` + rotasi paksa membuat
+  aplikasi di-letterbox menjadi ±885×1080, bukan landscape penuh. Uji
+  landscape perangkat tidak sah; bukti landscape hanya dari Editor 915×412.
+- **D1-06 NOT RUN** — skala font sistem 1.3×/2.0× belum diuji.
+
+UI perangkat yang diperiksa: Beranda empty state, 12 topik, scroll,
+tab Tutor AI/Peringkat/Profil, kartu identitas, dialog nama, modal topik,
+dan tombol back. Tiga bug layout/input ditemukan dan diperbaiki:
+
+1. `ScrollRect` tidak menerima drag karena viewport tidak punya Graphic
+   raycast target. Ditambahkan area transparan dan tes PlayMode.
+2. Kartu identitas Profil memakai tinggi tetap 170 dp sehingga teks
+   bertumpuk dan avatar melebar. Diganti layout dinamis; tes PlayMode
+   memeriksa tinggi, avatar, dan tumpang tindih.
+3. Kartu modal memakai `ContentSizeFitter` pada panel tanpa layout group
+   sehingga isi bertumpuk. Kartu modal sekarang memakai `VerticalLayoutGroup`
+   + fitter; tombol `Batal` ditambahkan dan diuji.
+
+Garis putih melengkung di tepi kiri bukan bagian aplikasi: garis yang sama
+terlihat di home screen sistem (panel tepi OEM). Ini tidak dihitung sebagai
+temuan UI aplikasi.
+
+## 6. Status kriteria F1
 
 | Kriteria | Status | Catatan |
 |---|---|---|
 | F1-01 token | PASS | `ThemeTokens` satu sumber; UI dibangun dari token |
 | F1-02 glif | PASS | 7 tes TMP untuk `ā ē ī ō ū ʼ ’ ʔ` dan varian lain |
-| F1-03 empat tab | PASS | PlayMode + screenshot |
-| F1-04 12 topik | PASS | `TopicPathTests` + 12 baris PlayMode |
-| F1-05 empty state | PASS | Screenshot 360×640 dan 412×915 |
-| F1-06 alur pelajaran | PASS | PlayMode fixture, lima langkah |
+| F1-03 empat tab | PASS | PlayMode + screenshot + perangkat |
+| F1-04 12 topik | PASS | `TopicPathTests` + 12 baris PlayMode + perangkat |
+| F1-05 empty state | PASS | Screenshot Editor + perangkat |
+| F1-06 alur pelajaran | PASS (Editor fixture) | PlayMode fixture; tidak ada di APK rilis |
 | F1-07 outbox | PASS | `OutboxStore` + PlayMode; belum sinkron server |
 | F1-08 banner | PARTIAL | Antrean nyata; banner offline belum diuji mock |
 | F1-09 panel debug | PASS | Tidak ada panel; pemindaian APK 0 |
-| F1-10 portrait/landscape | PASS (editor) | 360×640, 412×915, 915×412; bukan perangkat |
+| F1-10 portrait/landscape | PASS (Editor) | 360×640, 412×915, 915×412; landscape perangkat BLOCKED |
 | F1-11 pelajaran validated | **BLOCKED** | Belum ada berkas `validated` |
 | F1-12 sumber | **BLOCKED** | Belum ada sumber yang dapat diperiksa |
 | F1-13 reviewer | **BLOCKED** | Belum ada `reviewedBy`/`reviewedAt` manusia |
@@ -155,16 +181,16 @@ terlihat, tetapi banner offline belum diuji dengan mock jaringan.
 | F1-17 placeholder rilis | PASS | Tidak ada token placeholder konten di APK |
 | F1-18 nama orang | PASS | Tidak ada nama orang nyata di UI/konten |
 | F1-19 kontras C1–C5 | PARTIAL | 12/12 pasangan F1 lulus; C1–C5 lama belum dipetakan semua |
-| F1-20 target T1–T12 | PARTIAL | 2 tes UI F1 lulus; 12 sub-butir layar penuh belum |
+| F1-20 target T1–T12 | PARTIAL | 4 tes UI F1 lulus; 12 sub-butir layar penuh belum |
 | F1-21 font 1.3×/2.0× | NOT RUN | Belum diuji; jangan klaim lulus |
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
-| F1-23 build IL2CPP ARM64 | PASS | Log build |
-| F1-24 APK di perangkat | **BLOCKED** | Tidak ada perangkat |
-| F1-25 tanpa warning | PARTIAL | 0 error; 4 warning build |
-| F1-26 ukuran APK | PASS | 28.272.700 byte |
+| F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
+| F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
+| F1-25 tanpa warning | PARTIAL | 0 error; 3 warning build TMP/IL2CPP |
+| F1-26 ukuran APK | PASS | 28.278.020 byte |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
-## 6. Keputusan yang dikunci
+## 7. Keputusan yang dikunci
 
 - Skema konten 1.1.0 dan gate penerbitan; konten 1.0.0 tidak dapat terbit.
 - 12 topik PRD; varian TTU/Kefamenanu.
@@ -175,27 +201,25 @@ terlihat, tetapi banner offline belum diuji dengan mock jaringan.
 - Hati dari PRD §3.8 **belum** diimplementasikan di F1; kartu "Selesai"
   menggantikan tampilan hati agar tidak menampilkan state palsu.
 
-## 7. Keputusan yang tertunda
+## 8. Keputusan yang tertunda
 
 - Sumber, reviewer manusia, dan izin audio untuk pelajaran pertama.
 - Regenerasi/pengurangan hati dan kuota Worker.
 - Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.
 - Tutor AI, lima jenis latihan lain, ujian akhir, auth, dan hapus akun.
-- Audit TalkBack dan uji font sistem 1.3×/2.0×.
+- Audit TalkBack, uji font sistem 1.3×/2.0×, dan uji landscape perangkat.
 - Build rilis tanpa warning dan signing key rilis.
 
-## 8. Risiko dan tindakan berikutnya
+## 9. Risiko dan tindakan berikutnya
 
 1. **Blocker konten:** siapkan satu pelajaran `validated` dengan sumber,
    reviewer, dan (bila ada audio) consent. Jangan mengarang teks Dawan.
-2. **Blocker perangkat:** sambungkan perangkat Android fisik, lalu jalankan
-   D1-01..D1-07. Emulator tidak menggantikan gate ini. Pada 2026-11-01
-   katalog remote sudah dicoba, tetapi alokasi Android (Pixel 6, Pixel 4a,
-   Pixel 3a XL) ditolak dengan pesan `requires a plan upgrade`; tidak ada
-   perangkat yang dialokasikan dan tidak ada klaim uji perangkat.
-3. **Aksesibilitas:** ulangi pengukuran pada perangkat, uji font 1.3×/2.0×,
-   dan petakan C1–C5/T1–T12 yang tersisa.
-4. **Build:** putuskan apakah 4 warning dapat diterima atau harus dihilangkan
-   sebelum F1-25 ditutup.
+2. **Gate perangkat:** selesaikan D1-03..D1-06. D1-03 memerlukan pelajaran
+   rilis; D1-05 memerlukan perangkat/launcher yang mendukung landscape atau
+   keputusan produk bahwa F1 portrait-only.
+3. **Aksesibilitas:** uji TalkBack, skala font 1.3×/2.0×, dan petakan
+   C1–C5/T1–T12 yang tersisa.
+4. **Build:** putuskan apakah 3 warning TMP/IL2CPP dapat diterima atau harus
+   dihilangkan sebelum F1-25 ditutup.
 5. **Offline:** tambahkan mock reachability atau uji mode pesawat untuk
    membuktikan banner offline.

@@ -15,7 +15,7 @@ namespace UabMeto.App.Content
         public LessonContent DevelopmentFixture { get; set; }
         public string[] Warnings { get; set; } = Array.Empty<string>();
 
-        public bool HasValidatedLessons => ValidatedLessons.Length > 0;
+        public bool HasValidatedLessons => ValidatedLessons != null && ValidatedLessons.Length > 0;
 
         public LessonContent FindLessonForTopic(string topicId)
         {

@@ -1,9 +1,11 @@
 # Matriks Traceability PRD → Verifikasi
 
-Status: **F1.** UI inti dan build F1 sudah dijalankan di Editor; konten
-tervalidasi, perangkat, dan fitur lanjutan belum. Tidak ada status `PASS`
-kecuali yang benar-benar dijalankan. Hasil lengkap:
-`docs/testing/f1-gate-result.md`.
+Status: **F1.** UI inti dan build F1 sudah dijalankan di Editor dan diuji
+dasar pada perangkat fisik portrait; konten tervalidasi, alur pelajaran
+rilis, landscape perangkat, dan fitur lanjutan belum. Tidak ada status
+`PASS` kecuali yang benar-benar dijalankan. Hasil lengkap:
+`docs/testing/f1-gate-result.md`; bukti perangkat:
+`docs/testing/f1-device-evidence.md`.
 
 ## Legenda status
 
@@ -133,31 +135,34 @@ ID: `AC-<bagian PRD>.<nomor>`.
 |---|---|---|---|
 | AC-6.9.1 | Desain Stitch diterjemahkan ke UI Unity | Review desain + PlayMode | PASS (subset F1; bukan semua layar) |
 | AC-6.9.2 | Seluruh menu Bahasa Indonesia | Review UI | PASS (subset F1) |
-| AC-6.9.3 | Portrait & landscape | PlayMode + device | PASS (editor 360×640/412×915/915×412); device NOT RUN |
+| AC-6.9.3 | Portrait & landscape | PlayMode + device | PASS (editor 360×640/412×915/915×412); landscape perangkat BLOCKED (OEM portrait lock) |
 | AC-6.9.4 | Tombol/teks mudah dibaca | Review aksesibilitas | PASS (12/12 kontras, target F1 ≥48); audit penuh NOT RUN |
-| AC-6.9.5 | Lancar di perangkat rendah | Profiling device | BLOCKED (belum ada device) |
-| AC-6.9.6 | Ukuran unduhan/instalasi terukur | Build nyata | PASS (28.272.700 byte; audio belum ada) |
-| AC-6.9.7 | APK dapat dipasang & diuji di perangkat | Device test | BLOCKED (belum ada device) |
+| AC-6.9.5 | Lancar di perangkat rendah | Profiling device | NOT RUN (perangkat tersedia; profiling belum) |
+| AC-6.9.6 | Ukuran unduhan/instalasi terukur | Build nyata | PASS (28.278.020 byte; audio belum ada) |
+| AC-6.9.7 | APK dapat dipasang & diuji di perangkat | Device test | PASS (D1-01/D1-02/D1-07); D1-03..D1-06 belum |
 | AC-6.9.8 | Target API 36 saat rilis | Inspeksi manifest APK | PASS (`aapt`: targetSdk 36) |
 
-## Ringkasan F1 (2026-11-01)
+## Ringkasan F1 (2026-11-03)
 
 - `PASS`: registry 12 topik, gate penerbitan, logika idempotensi, UI inti
-  F1, build APK, kontras F1, target sentuh F1, dan targetSdk 36.
+  F1, build APK, kontras F1, target sentuh F1, targetSdk 36, dan instalasi/
+  peluncuran/back pada perangkat fisik portrait.
 - `PARTIAL`: aksesibilitas penuh, banner offline, build tanpa warning,
-  dan beberapa butir UI yang baru mencakup subset F1.
+  landscape perangkat, dan beberapa butir UI yang baru mencakup subset F1.
 - `NOT RUN`: auth, hati, kuota, ujian, Tutor AI, lima jenis latihan lain,
-  sinkron server nyata, dan uji font 1.3×/2.0×.
+  sinkron server nyata, profiling perangkat, dan uji font 1.3×/2.0×.
 - `BLOCKED`: minimal satu pelajaran `validated`, sumber/reviewer/consent,
-  dan perangkat Android fisik.
+  dan alur pelajaran rilis (D1-03).
 
 Perubahan F1:
 
 - Shell empat tab, Beranda, Profil, alur pelajaran lima langkah, empty state,
   nickname lokal, progress/outbox lokal, banner antrean, dan screenshot.
-- Build `uabmeto-f1.apk` 28.272.700 byte; 0 error, 4 warning.
-- EditMode 56/56; PlayMode 9/9; validator 36/36; CLI 0 error/4 warning.
-- F1 **tetap tidak lulus** karena F1-11..F1-14 dan gate perangkat belum
-  terpenuhi.
+- Build `uabmeto-f1.apk` 28.278.020 byte; 0 error, 3 warning TMP/IL2CPP.
+- EditMode 56/56; PlayMode 11/11; validator 36/36; CLI 0 error/4 warning.
+- Uji perangkat menemukan dan memperbaiki scroll mati, kartu Profil
+  bertumpuk, dan kartu modal bertumpuk.
+- F1 **tetap tidak lulus** karena F1-11..F1-14 dan sisa gate perangkat
+  belum terpenuhi.
 
 Matriks ini diperbarui pada setiap gate.

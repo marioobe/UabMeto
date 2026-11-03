@@ -1,8 +1,9 @@
 # Daftar Remediasi Desain
 
-Status: **diperbarui 2026-11-01 setelah implementasi F1.** Tidak ada yang
+Status: **diperbarui 2026-11-03 setelah uji perangkat F1.** Tidak ada yang
 boleh ditutup tanpa bukti verifikasi. Sumber temuan: `design-review-stitch.md`.
-Hasil gate F1 yang lengkap ada di `docs/testing/f1-gate-result.md`.
+Hasil gate F1 yang lengkap ada di `docs/testing/f1-gate-result.md`; bukti
+perangkat ada di `docs/testing/f1-device-evidence.md`.
 
 ## 1. Cara pakai
 
@@ -34,15 +35,15 @@ Aturan:
 | REM-P0-06 | P0 | F1 | IN PROGRESS | aturan consent lulus; belum ada penutur/audio nyata |
 | REM-P0-07 | P0 | F1 | CLOSED (F1) | tidak ada panel debug; APK scan 0 string panel |
 | REM-P0-08 | P0 | F1 | CLOSED (F1) | `ThemeTokens` satu sumber; tanpa shadow/blur/gradien; kontras lulus |
-| REM-P1-01 | P1 | F1 | IN PROGRESS | screenshot 360×640, 412×915, 915×412; tujuh layar dua kolom belum |
+| REM-P1-01 | P1 | F1 | IN PROGRESS | screenshot Editor 360×640, 412×915, 915×412; landscape perangkat terhalang portrait lock OEM |
 | REM-P1-02 | P1 | F1 | OPEN | layar auth/ujian belum ada |
 | REM-P1-03 | P1 | F1 | OPEN | baru `multiple_choice`; lima jenis lain belum |
 | REM-P1-04 | P1 | F1 | IN PROGRESS | validasi 3–20 + persist lokal; alur daftar belum ada |
 | REM-P1-05 | P1 | F1 | OPEN | hapus akun belum ada |
 | REM-P1-06 | P1 | F1 | IN PROGRESS | banner offline ada; sesi/login offline belum ada |
 | REM-P1-07 | P1 | F1 | OPEN | Tutor AI masih placeholder |
-| REM-P1-08 | P1 | F1 | IN PROGRESS | kontras 12/12 PASS; target sentuh 2/2 tes; belum uji perangkat/TalkBack |
-| REM-P1-09 | P1 | F1 | IN PROGRESS | shell 4 tab konsisten; header layar lain belum lengkap |
+| REM-P1-08 | P1 | F1 | IN PROGRESS | kontras 12/12 PASS; target/layout 4/4 tes; UI perangkat portrait diperiksa; TalkBack/font scale belum |
+| REM-P1-09 | P1 | F1 | IN PROGRESS | shell 4 tab konsisten; tab perangkat diperiksa; header layar lain belum lengkap |
 | REM-P1-10 | P1 | F2 | CLOSED (F1) | tidak ada "Simpan Kata"; dicatat untuk F2 |
 
 ### 2.1 Catatan bukti F1
@@ -68,16 +69,40 @@ Aturan:
   "Simulasi Jaringan" atau "Pratinjau Status Sistem".
 - **REM-P0-08:** UI dibangun dari `ThemeTokens`; `tools/design/contrast.mjs`
   lulus 12/12 pasangan F1 (ambang 4.5:1); tidak ada shadow/blur/gradien.
-- **REM-P1-01:** Tangkapan layar F1 ada di `Builds/screenshots/`; layout dua
-  kolom untuk tujuh layar penuh belum diuji.
+- **REM-P1-01:** Tangkapan layar F1 ada di
+  `docs/testing/evidence/f1-editor/` (asli di `Builds/screenshots/`); layout dua
+  kolom untuk tujuh layar penuh belum diuji. Pada perangkat, launcher/OEM
+  memaksa portrait sehingga rotasi paksa menghasilkan letterbox, bukan
+  landscape penuh.
 - **REM-P1-04:** `LocalStoreTests` menguji 3–20 karakter, penolakan karakter
   kontrol, dan persistensi; alur pendaftaran akun belum ada.
 - **REM-P1-06:** Banner antrean sinkron diuji PlayMode; banner offline
   belum diuji dengan mock jaringan, dan sesi/auth belum ada.
-- **REM-P1-08:** `AccessibilityTests` 2/2 lulus untuk target sentuh ≥48 dp
-  pada Beranda, Profil, tiga langkah pelajaran, dan dialog nama; kontras
-  12/12 lulus. Ini **bukan** audit TalkBack atau uji perangkat.
+- **REM-P1-08:** `AccessibilityTests` 4/4 lulus untuk target sentuh ≥48 dp
+  pada Beranda, Profil, tiga langkah pelajaran, dan dialog nama, ditambah
+  pemeriksaan layout kartu Profil/modal dan raycast scroll; kontras 12/12
+  lulus. UI perangkat portrait sudah diperiksa, tetapi ini **bukan** audit
+  TalkBack, uji font scale, atau uji landscape perangkat.
 - **REM-P1-10:** Pencarian UI/APK untuk "Simpan Kata" = 0.
+
+### 2.2 Temuan uji perangkat 2026-11-03
+
+Uji dasar pada Xiaomi `24117RN76O` (Android 16/API 36) menemukan tiga bug
+yang tidak tertangkap screenshot Editor:
+
+1. **Scroll mati** — `ScrollRect` tidak punya Graphic raycast target di
+   viewport. Diperbaiki di `UIFactory.CreateScrollView`; tes PlayMode
+   memastikan viewport dapat menerima drag.
+2. **Kartu identitas Profil bertumpuk** — tinggi tetap 170 dp dan avatar
+   melebar. Diganti layout dinamis; tes PlayMode memeriksa tinggi, avatar,
+   dan tumpang tindih.
+3. **Kartu modal bertumpuk** — `ContentSizeFitter` dipasang tanpa layout
+   group pada panel. Diganti `VerticalLayoutGroup` + fitter; tombol `Batal`
+   ditambahkan dan diuji.
+
+Status perangkat: D1-01/D1-02/D1-07 lulus; D1-03 (pelajaran rilis),
+D1-04 (offline), D1-05 (landscape perangkat), dan D1-06 (font scale) belum.
+Garis putih di tepi kiri adalah panel tepi OEM, bukan UI aplikasi.
 
 ## 3. P0 — menghalangi F1
 
@@ -309,4 +334,5 @@ Aturan:
 - Perbaikan konten Dawan nyata (menunggu reviewer).
 - Rekaman audio (menunggu penutur dan izin).
 - Integrasi Firebase/Cloudflare/Supabase (menunggu akun).
-- Uji perangkat fisik (menunggu perangkat).
+- Uji perangkat fisik lanjutan (D1-03..D1-06); perangkat dasar sudah tersedia
+  dan diuji terbatas.

@@ -32,20 +32,19 @@ namespace UabMeto.App.UI
         {
             var theme = _shell.Theme;
             var card = UIFactory.CreatePanel("Identity", parent, theme.SurfaceCard, (int)theme.CornerRadius);
-            var layout = card.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 170f;
-            layout.preferredHeight = 170f;
 
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
-                theme.Space8,
-                new RectOffset(20, 20, 20, 20),
-                false);
-            UIFactory.Stretch(group);
-            group.GetComponent<VerticalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
+            // Kartu ini harus tumbuh mengikuti isi. Tinggi tetap membuat teks
+            // bertumpuk saat lebar efektif berbeda dari tangkapan Editor.
+            var cardLayout = card.gameObject.AddComponent<VerticalLayoutGroup>();
+            cardLayout.spacing = theme.Space8;
+            cardLayout.padding = new RectOffset(20, 20, 20, 20);
+            cardLayout.childControlWidth = true;
+            cardLayout.childControlHeight = true;
+            cardLayout.childForceExpandWidth = false;
+            cardLayout.childForceExpandHeight = false;
+            cardLayout.childAlignment = TextAnchor.MiddleCenter;
 
-            var avatar = UIFactory.CreatePanel("Avatar", group, theme.SurfaceHigh, 32);
+            var avatar = UIFactory.CreatePanel("Avatar", card.transform, theme.SurfaceHigh, 32);
             var avatarLayout = avatar.gameObject.AddComponent<LayoutElement>();
             avatarLayout.minWidth = 64f;
             avatarLayout.preferredWidth = 64f;
@@ -62,31 +61,34 @@ namespace UabMeto.App.UI
             UIFactory.Stretch(icon.rectTransform);
 
             var nickname = _shell.Profile.IsValid ? _shell.Profile.Nickname : "Pelajar";
-            UIFactory.CreateText(
+            var nicknameText = UIFactory.CreateText(
                 "Nickname",
-                group,
+                card.transform,
                 nickname,
                 theme.HeadingBoldFont,
                 theme.Heading2Size,
                 theme.TextPrimary,
                 TextAlignmentOptions.Center);
+            UIFactory.AddLayoutElement(nicknameText.gameObject, flexibleWidth: 1f);
 
-            UIFactory.CreateText(
+            var note = UIFactory.CreateText(
                 "Note",
-                group,
+                card.transform,
                 "Nama panggilan disimpan di perangkat. Belum ada akun server.",
                 theme.BodyFont,
                 theme.LabelSize,
                 theme.TextMuted,
                 TextAlignmentOptions.Center);
+            UIFactory.AddLayoutElement(note.gameObject, flexibleWidth: 1f);
 
-            UIFactory.CreateButton(
+            var edit = UIFactory.CreateButton(
                 "Edit",
-                group,
+                card.transform,
                 "Ubah nama",
                 theme,
                 _shell.ShowNicknameDialog,
                 primary: false);
+            UIFactory.AddLayoutElement(edit.gameObject, flexibleWidth: 1f);
         }
 
         private void BuildStats(RectTransform parent)

@@ -85,6 +85,92 @@ namespace UabMeto.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator Profile_IdentityCardFitsContentAndScrollIsDraggable()
+        {
+            _shell.ShowTab(ShellView.Tab.Profile);
+            yield return null;
+            _shell.RebuildLayout();
+
+            var identity = GameObject.Find("Identity").GetComponent<RectTransform>();
+            var avatar = GameObject.Find("Avatar").GetComponent<RectTransform>();
+            var nickname = GameObject.Find("Nickname").GetComponent<RectTransform>();
+            var note = GameObject.Find("Note").GetComponent<RectTransform>();
+            var edit = GameObject.Find("Edit").GetComponent<RectTransform>();
+
+            Assert.GreaterOrEqual(
+                identity.rect.height,
+                200f,
+                "Kartu identitas terlalu pendek; teks akan bertumpuk.");
+            Assert.LessOrEqual(
+                avatar.rect.width,
+                80f,
+                "Avatar melebar mengikuti lebar kartu, bukan lingkaran 64 dp.");
+
+            var nicknameBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(identity, nickname);
+            var noteBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(identity, note);
+            var editBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(identity, edit);
+            Assert.GreaterOrEqual(
+                nicknameBounds.min.y,
+                noteBounds.max.y - 0.5f,
+                "Nickname dan catatan bertumpuk.");
+            Assert.GreaterOrEqual(
+                noteBounds.min.y,
+                editBounds.max.y - 0.5f,
+                "Catatan dan tombol Ubah nama bertumpuk.");
+            Assert.GreaterOrEqual(
+                editBounds.min.y,
+                identity.rect.yMin - 0.5f,
+                "Tombol Ubah nama keluar dari kartu.");
+            Assert.LessOrEqual(
+                editBounds.max.y,
+                identity.rect.yMax + 0.5f,
+                "Tombol Ubah nama keluar dari kartu.");
+
+            var viewport = GameObject.Find("ProfileScroll")
+                .transform.Find("Viewport")
+                .GetComponent<RectTransform>();
+            var hitArea = viewport.GetComponent<Graphic>();
+            Assert.IsNotNull(hitArea, "Viewport scroll tidak punya Graphic raycast target.");
+            Assert.IsTrue(hitArea.raycastTarget, "Viewport scroll tidak menerima drag.");
+        }
+
+        [UnityTest]
+        public IEnumerator NicknameDialog_FitsCardAndHasCancel()
+        {
+            _shell.ShowNicknameDialog();
+            yield return null;
+            _shell.RebuildLayout();
+
+            var modal = GameObject.Find("NicknameModal");
+            Assert.IsNotNull(modal);
+            var card = modal.transform.Find("Card").GetComponent<RectTransform>();
+            var title = card.Find("Title").GetComponent<RectTransform>();
+            var body = card.Find("Body").GetComponent<RectTransform>();
+            var input = card.Find("Nickname").GetComponent<RectTransform>();
+            var error = card.Find("Error").GetComponent<RectTransform>();
+            var cancel = card.Find("Cancel").GetComponent<RectTransform>();
+            var save = card.Find("Save").GetComponent<RectTransform>();
+
+            Assert.GreaterOrEqual(card.rect.height, 280f, "Kartu dialog terlalu pendek.");
+            Assert.LessOrEqual(card.rect.height, 520f, "Kartu dialog keluar dari layar 360x640.");
+
+            var titleBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(card, title);
+            var bodyBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(card, body);
+            var inputBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(card, input);
+            var errorBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(card, error);
+            var cancelBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(card, cancel);
+            var saveBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(card, save);
+
+            Assert.GreaterOrEqual(titleBounds.min.y, bodyBounds.max.y - 0.5f, "Judul dan isi dialog bertumpuk.");
+            Assert.GreaterOrEqual(bodyBounds.min.y, inputBounds.max.y - 0.5f, "Isi dan input dialog bertumpuk.");
+            Assert.GreaterOrEqual(inputBounds.min.y, errorBounds.max.y - 0.5f, "Input dan pesan galat bertumpuk.");
+            Assert.GreaterOrEqual(errorBounds.min.y, cancelBounds.max.y - 0.5f, "Pesan galat dan Batal bertumpuk.");
+            Assert.GreaterOrEqual(cancelBounds.min.y, saveBounds.max.y - 0.5f, "Batal dan Simpan bertumpuk.");
+            Assert.GreaterOrEqual(saveBounds.min.y, card.rect.yMin - 0.5f, "Tombol Simpan keluar dari kartu.");
+            Assert.LessOrEqual(saveBounds.max.y, card.rect.yMax + 0.5f, "Tombol Simpan keluar dari kartu.");
+        }
+
+        [UnityTest]
         public IEnumerator LessonAndModals_TargetsAreAtLeast48Dp()
         {
             _shell.ShowLesson(

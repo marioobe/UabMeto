@@ -306,6 +306,13 @@ namespace UabMeto.App.UI
             Stretch(viewport);
             viewport.gameObject.AddComponent<RectMask2D>();
 
+            // ScrollRect hanya menerima drag jika ada Graphic yang menjadi
+            // raycast target. Tanpa ini, kartu yang raycastTarget=false membuat
+            // seluruh area konten tidak bisa digeser di perangkat.
+            var viewportHitArea = viewport.gameObject.AddComponent<Image>();
+            viewportHitArea.color = new Color(0f, 0f, 0f, 0f);
+            viewportHitArea.raycastTarget = true;
+
             var content = CreateRect("Content", viewport);
             content.anchorMin = new Vector2(0f, 1f);
             content.anchorMax = new Vector2(1f, 1f);

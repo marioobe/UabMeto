@@ -90,7 +90,11 @@ terhubung.
 | D1-06 | Ukuran font sistem 1.3× dan 2.0× | screenshot |
 | D1-07 | Perilaku tombol back | catatan |
 
-Status saat ini: **BLOCKED** — tidak ada perangkat terhubung.
+Status saat ini: **PARTIAL** — perangkat fisik terhubung dan D1-01/D1-02/
+D1-07 lulus. D1-03 terhalang karena belum ada pelajaran `validated` di APK
+rilis; D1-04 (offline), D1-05 (landscape perangkat; OEM memaksa portrait),
+dan D1-06 (font scale) belum dijalankan. Bukti:
+`docs/testing/f1-device-evidence.md`.
 
 ## 5. Bukti yang tidak diterima
 

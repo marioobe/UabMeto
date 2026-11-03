@@ -2,9 +2,11 @@
 
 Status: **F1 — UI inti sudah diukur, belum lulus penuh.** Angka kontras
 diukur dari `ThemeTokens.cs` lewat `tools/design/contrast.mjs`; target sentuh
-diukur lewat `AccessibilityTests` PlayMode. Ini belum audit TalkBack,
-belum uji perangkat, dan belum uji skala font 1.3×/2.0×. Daftar kerja:
-`remediation.md` REM-P1-08.
+diukur lewat `AccessibilityTests` PlayMode. Uji perangkat dasar portrait
+sudah dilakukan, tetapi ini belum audit TalkBack, belum uji landscape
+perangkat, dan belum uji skala font 1.3×/2.0×. Daftar kerja:
+`remediation.md` REM-P1-08; bukti perangkat:
+`docs/testing/f1-device-evidence.md`.
 
 ## 1. Standar yang dipakai
 
@@ -115,9 +117,13 @@ lebih besar dari ikon visual. Jarak antar target minimal 8 dp.
 - pembuka, materi, dan latihan pelajaran,
 - dialog nama panggilan.
 
-Hasil: **2/2 tes lulus, 0 target < 48 dp.** Ini belum mencakup layar yang
-belum dibangun (auth, ujian, Tutor AI, Peringkat) dan bukan audit TalkBack.
-Sub-butir T1–T12 tetap belum semuanya dipetakan ke UI F1.
+Hasil: **4/4 tes lulus, 0 target < 48 dp.** Tes tambahan memeriksa kartu
+identitas Profil (tinggi, avatar, tumpang tindih), kartu modal nama
+(tinggi, urutan tanpa tumpang tindih, tombol Batal/Simpan), dan viewport
+scroll yang dapat menerima drag. Uji perangkat portrait menemukan dan
+memvalidasi perbaikan tiga bug layout/input ini. Ini belum mencakup layar
+yang belum dibangun (auth, ujian, Tutor AI, Peringkat) dan bukan audit
+TalkBack. Sub-butir T1–T12 tetap belum semuanya dipetakan ke UI F1.
 
 ## 4. Skala font
 
@@ -172,15 +178,19 @@ Jangan pernah menyampaikan status hanya dengan warna.
 | Font Dawan belum diuji | Glif hilang | uji cakupan Unicode sebelum prefab |
 | Teks Indonesia panjang | Tombol pecah | uji panjang maksimum per kunci chrome |
 | Landscape tanpa mockup | Layout rusak | spesifikasi di `screens.md` §12 + uji screenshot |
+| Perangkat/launcher portrait-only | Rotasi paksa hanya letterbox; landscape perangkat tidak sah | catat sebagai batasan perangkat; uji landscape di perangkat lain atau putuskan F1 portrait-only |
 
 ## 9. Checklist sebelum build F1
 
 - [x] Semua pasangan warna di UI F1 ada di tabel kontras (12/12 PASS).
 - [x] Tidak ada `danger-fill` sebagai teks di UI F1.
 - [ ] Tidak ada teks di bawah 14 sp kecuali metadata — belum diaudit penuh.
-- [x] Semua target sentuh di layar F1 yang diuji ≥ 48 dp (2/2 tes).
+- [x] Semua target sentuh di layar F1 yang diuji ≥ 48 dp (4/4 tes).
 - [ ] Uji 1.3× dan 2.0× pada 360 × 640 — belum dijalankan.
 - [x] Uji portrait dan landscape di Editor (360×640, 412×915, 915×412).
+- [x] APK dipasang dan UI dasar portrait diperiksa di perangkat fisik.
+- [ ] Landscape perangkat — terhalang portrait lock OEM.
 - [x] Setiap status F1 punya ikon + teks.
 - [x] Setiap tombol ikon F1 punya label aksesibilitas.
-- [ ] Audit TalkBack dan perangkat fisik — belum dijalankan.
+- [ ] Audit TalkBack — belum dijalankan.
+- [ ] Uji keyboard Android dan skala font sistem — belum dijalankan.

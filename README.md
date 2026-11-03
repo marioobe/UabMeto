@@ -3,9 +3,12 @@
 Aplikasi pembelajaran Bahasa Dawan (Uab Meto) varian Timor Tengah Utara (TTU).
 Platform: Android, Unity 6 (`6000.6.0f1`).
 
-> **Status: F0.5 — arah desain dikunci.**
-> Belum ada integrasi layanan produksi, belum ada materi Bahasa Dawan tervalidasi,
-> dan belum ada pengujian pada perangkat fisik. UI Unity F1 belum dibangun.
+> **Status: F1 — UI inti dan build APK sudah ada; gate F1 belum lulus.**
+> Belum ada integrasi layanan produksi dan belum ada materi Bahasa Dawan
+> tervalidasi. APK sudah dipasang dan diuji dasar pada satu perangkat Android
+> fisik portrait; alur pelajaran rilis, landscape perangkat, offline, TalkBack,
+> dan skala font belum diuji. Lihat `docs/testing/f1-gate-result.md` dan
+> `docs/testing/f1-device-evidence.md`.
 
 ## Desain
 

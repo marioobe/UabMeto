@@ -469,9 +469,122 @@ namespace UabMeto.App.UI
             Action secondary = null,
             bool dismissible = false)
         {
+            var card = CreateModalCard("Modal", dismissible);
+
+            var heading = UIFactory.CreateText(
+                "Title",
+                card,
+                title,
+                _theme.HeadingBoldFont,
+                _theme.Heading2Size,
+                _theme.TextPrimary);
+            UIFactory.AddLayoutElement(heading.gameObject, preferredHeight: 30f);
+
+            var bodyText = UIFactory.CreateText(
+                "Body",
+                card,
+                body,
+                _theme.BodyFont,
+                _theme.BodySmallSize,
+                _theme.TextMuted);
+            UIFactory.AddLayoutElement(bodyText.gameObject, preferredHeight: 60f);
+
+            if (!string.IsNullOrWhiteSpace(secondaryLabel))
+            {
+                UIFactory.CreateButton(
+                    "Secondary",
+                    card,
+                    secondaryLabel,
+                    _theme,
+                    () =>
+                    {
+                        CloseModal();
+                        secondary?.Invoke();
+                    },
+                    primary: false);
+            }
+
+            UIFactory.CreateButton(
+                "Primary",
+                card,
+                primaryLabel,
+                _theme,
+                () =>
+                {
+                    CloseModal();
+                    primary?.Invoke();
+                });
+        }
+
+        public void ShowNicknameDialog()
+        {
+            var card = CreateModalCard("NicknameModal", false);
+
+            var heading = UIFactory.CreateText(
+                "Title",
+                card,
+                "Siapa nama panggilanmu?",
+                _theme.HeadingBoldFont,
+                _theme.Heading2Size,
+                _theme.TextPrimary);
+            UIFactory.AddLayoutElement(heading.gameObject, preferredHeight: 30f);
+
+            var body = UIFactory.CreateText(
+                "Body",
+                card,
+                "Nama ini disimpan di perangkat dan dipakai untuk menyapa. " +
+                "Belum ada akun server pada F1.",
+                _theme.BodyFont,
+                _theme.BodySmallSize,
+                _theme.TextMuted);
+            UIFactory.AddLayoutElement(body.gameObject, preferredHeight: 56f);
+
+            var input = UIFactory.CreateInputField(
+                "Nickname",
+                card,
+                "3–20 karakter",
+                _theme,
+                LocalProfile.MaximumNicknameLength);
+            var error = UIFactory.CreateText(
+                "Error",
+                card,
+                string.Empty,
+                _theme.BodyFont,
+                _theme.LabelSize,
+                _theme.DangerText);
+            UIFactory.AddLayoutElement(error.gameObject, preferredHeight: 18f);
+
+            UIFactory.CreateButton(
+                "Cancel",
+                card,
+                "Batal",
+                _theme,
+                CloseModal,
+                primary: false);
+            UIFactory.CreateButton(
+                "Save",
+                card,
+                "Simpan",
+                _theme,
+                () =>
+                {
+                    if (_profile.TrySetNickname(input.text, out var message))
+                    {
+                        CloseModal();
+                        ShowTab(Tab.Home);
+                    }
+                    else
+                    {
+                        error.text = message;
+                    }
+                });
+        }
+
+        private RectTransform CreateModalCard(string name, bool dismissible)
+        {
             CloseModal();
 
-            _modalRoot = UIFactory.CreateRect("Modal", _canvas.transform);
+            _modalRoot = UIFactory.CreateRect(name, _canvas.transform);
             UIFactory.Stretch(_modalRoot);
 
             var scrim = UIFactory.CreatePanel("Scrim", _modalRoot, _theme.Scrim, 0, true);
@@ -491,143 +604,19 @@ namespace UabMeto.App.UI
             cardRect.pivot = new Vector2(0.5f, 0.5f);
             cardRect.sizeDelta = new Vector2(320f, 0f);
 
-            var fitter = card.gameObject.AddComponent<ContentSizeFitter>();
-            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
-                _theme.Space12,
-                new RectOffset(20, 20, 20, 20),
-                false);
-            UIFactory.Stretch(group);
-
-            var heading = UIFactory.CreateText(
-                "Title",
-                group,
-                title,
-                _theme.HeadingBoldFont,
-                _theme.Heading2Size,
-                _theme.TextPrimary);
-            UIFactory.AddLayoutElement(heading.gameObject, preferredHeight: 30f);
-
-            var bodyText = UIFactory.CreateText(
-                "Body",
-                group,
-                body,
-                _theme.BodyFont,
-                _theme.BodySmallSize,
-                _theme.TextMuted);
-            UIFactory.AddLayoutElement(bodyText.gameObject, preferredHeight: 60f);
-
-            if (!string.IsNullOrWhiteSpace(secondaryLabel))
-            {
-                UIFactory.CreateButton(
-                    "Secondary",
-                    group,
-                    secondaryLabel,
-                    _theme,
-                    () =>
-                    {
-                        CloseModal();
-                        secondary?.Invoke();
-                    },
-                    primary: false);
-            }
-
-            UIFactory.CreateButton(
-                "Primary",
-                group,
-                primaryLabel,
-                _theme,
-                () =>
-                {
-                    CloseModal();
-                    primary?.Invoke();
-                });
-        }
-
-        public void ShowNicknameDialog()
-        {
-            CloseModal();
-
-            _modalRoot = UIFactory.CreateRect("NicknameModal", _canvas.transform);
-            UIFactory.Stretch(_modalRoot);
-
-            var scrim = UIFactory.CreatePanel("Scrim", _modalRoot, _theme.Scrim, 0, true);
-            UIFactory.Stretch(scrim.rectTransform);
-
-            var card = UIFactory.CreatePanel("Card", _modalRoot, _theme.SurfaceCard, (int)_theme.CornerRadius);
-            var cardRect = card.rectTransform;
-            cardRect.anchorMin = new Vector2(0.5f, 0.5f);
-            cardRect.anchorMax = new Vector2(0.5f, 0.5f);
-            cardRect.pivot = new Vector2(0.5f, 0.5f);
-            cardRect.sizeDelta = new Vector2(320f, 0f);
+            var cardLayout = card.gameObject.AddComponent<VerticalLayoutGroup>();
+            cardLayout.spacing = _theme.Space12;
+            cardLayout.padding = new RectOffset(20, 20, 20, 20);
+            cardLayout.childControlWidth = true;
+            cardLayout.childControlHeight = true;
+            cardLayout.childForceExpandWidth = true;
+            cardLayout.childForceExpandHeight = false;
 
             var fitter = card.gameObject.AddComponent<ContentSizeFitter>();
             fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
-                _theme.Space12,
-                new RectOffset(20, 20, 20, 20),
-                false);
-            UIFactory.Stretch(group);
-
-            var heading = UIFactory.CreateText(
-                "Title",
-                group,
-                "Siapa nama panggilanmu?",
-                _theme.HeadingBoldFont,
-                _theme.Heading2Size,
-                _theme.TextPrimary);
-            UIFactory.AddLayoutElement(heading.gameObject, preferredHeight: 30f);
-
-            var body = UIFactory.CreateText(
-                "Body",
-                group,
-                "Nama ini disimpan di perangkat dan dipakai untuk menyapa. " +
-                "Belum ada akun server pada F1.",
-                _theme.BodyFont,
-                _theme.BodySmallSize,
-                _theme.TextMuted);
-            UIFactory.AddLayoutElement(body.gameObject, preferredHeight: 56f);
-
-            var input = UIFactory.CreateInputField(
-                "Nickname",
-                group,
-                "3–20 karakter",
-                _theme,
-                LocalProfile.MaximumNicknameLength);
-            var error = UIFactory.CreateText(
-                "Error",
-                group,
-                string.Empty,
-                _theme.BodyFont,
-                _theme.LabelSize,
-                _theme.DangerText);
-            UIFactory.AddLayoutElement(error.gameObject, preferredHeight: 18f);
-
-            UIFactory.CreateButton(
-                "Save",
-                group,
-                "Simpan",
-                _theme,
-                () =>
-                {
-                    if (_profile.TrySetNickname(input.text, out var message))
-                    {
-                        CloseModal();
-                        ShowTab(Tab.Home);
-                    }
-                    else
-                    {
-                        error.text = message;
-                    }
-                });
+            return cardRect;
         }
 
         public void CloseModal()
