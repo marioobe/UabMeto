@@ -187,8 +187,8 @@ temuan UI aplikasi.
 | F1-16 audio belum tersedia | PASS | Teks "Audio Belum Tersedia" di kartu |
 | F1-17 placeholder rilis | PASS | Tidak ada token placeholder konten di APK |
 | F1-18 nama orang | PASS | Tidak ada nama orang nyata di UI/konten |
-| F1-19 kontras C1–C5 | PARTIAL | 12/12 pasangan F1 lulus; C1–C5 lama belum dipetakan semua |
-| F1-20 target T1–T12 | PARTIAL | 4 tes UI F1 lulus; 12 sub-butir layar penuh belum |
+| F1-19 kontras C1–C5 | PASS (F1) | C1–C5 ditutup untuk UI F1; 12/12 pasangan lulus; layar belum dibangun N/A |
+| F1-20 target T1–T12 | PASS (F1) | T1–T12 ditutup untuk UI F1; 4 tes UI lulus; layar belum dibangun N/A |
 | F1-21 font 1.3×/2.0× | **BLOCKED** | Belum diuji; belum ada pembacaan `fontScale` sistem |
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |

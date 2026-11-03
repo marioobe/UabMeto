@@ -42,7 +42,7 @@ Aturan:
 | REM-P1-05 | P1 | F1 | OPEN | hapus akun belum ada |
 | REM-P1-06 | P1 | F1 | IN PROGRESS | banner offline ada; sesi/login offline belum ada |
 | REM-P1-07 | P1 | F1 | OPEN | Tutor AI masih placeholder |
-| REM-P1-08 | P1 | F1 | IN PROGRESS | kontras 12/12 PASS; target/layout 4/4 tes; UI perangkat portrait diperiksa; TalkBack/font scale belum |
+| REM-P1-08 | P1 | F1 | CLOSED (F1) | kontras 12/12 PASS; target/layout 4/4 tes; C1–C5/T1–T12 ditutup untuk UI F1; TalkBack/font scale terpisah |
 | REM-P1-09 | P1 | F1 | IN PROGRESS | shell 4 tab konsisten; tab perangkat diperiksa; header layar lain belum lengkap |
 | REM-P1-10 | P1 | F2 | CLOSED (F1) | tidak ada "Simpan Kata"; dicatat untuk F2 |
 
@@ -85,7 +85,9 @@ Aturan:
   lulus. UI perangkat portrait sudah diperiksa, tetapi ini **bukan** audit
   TalkBack atau uji landscape perangkat. Audit statis 2026-11-04: belum ada
   pembacaan `AndroidConfiguration.fontScale`, jadi skala font sistem belum
-  didukung dan D1-06/F1-21 tetap terbuka.
+  didukung dan D1-06/F1-21 tetap terbuka. Sub-butir C1–C5 dan T1–T12
+  ditutup untuk cakupan F1 di §4.3; layar yang belum dibangun ditandai
+  N/A dan harus diaudit ulang saat dibangun.
 - **REM-P1-10:** Pencarian UI/APK untuk "Simpan Kata" = 0.
 
 ### 2.2 Temuan uji perangkat 2026-11-03
@@ -306,6 +308,34 @@ Garis putih di tepi kiri adalah panel tepi OEM, bukan UI aplikasi.
 | REM-P1-08.T10 | persetujuan suara | "Nanti Saja" 40 | ≥ 48 |
 | REM-P1-08.T11 | Kartu kosakata | "Simpan Kata" 40 | ≥ 48 atau dihapus (F2) |
 | REM-P1-08.T12 | debug | chip state 30 | ≥ 48 atau hapus dari rilis |
+
+#### 4.3 Status sub-butir pada UI F1
+
+Semua sub-butir ditutup untuk cakupan F1. Layar yang belum dibangun
+(auth, Tutor AI berisi, Peringkat berisi, kartu kosakata, persetujuan suara)
+dicatat **N/A (belum dibangun)** dan wajib diaudit ulang saat layar itu
+dibangun. Ini bukan klaim bahwa seluruh aksesibilitas lulus; TalkBack dan
+skala font tetap terpisah.
+
+| Sub-ID | Status F1 | Bukti |
+|---|---|---|
+| C1 | CLOSED | `DangerFill` tidak dipakai sebagai teks; label galat memakai `DangerText` di `DangerPanel` (10.15:1) |
+| C2 | CLOSED | Tampilan hati dihapus dari Beranda; tidak ada `DangerFill` di UI |
+| C3 | CLOSED | Label latihan memakai `DangerText` di `DangerPanel` (10.15:1) |
+| C4 | CLOSED | Teks di atas `Accent` memakai `OnAccent` (12.53:1) |
+| C5 | CLOSED | `Outline` hanya untuk ikon dekoratif; teks kecil memakai `TextMuted` (6.58:1 di `SurfaceHigh`) |
+| T1 | N/A (belum dibangun) | Layar Masuk tidak ada di F1 |
+| T2 | CLOSED | Modal tidak memakai tombol tutup 32; scrim/ tombol eksplisit, target ≥ 48 |
+| T3 | CLOSED | Tombol avatar header memakai `CreateIconButton` 48×48 |
+| T4 | N/A (belum dibangun) | Tidak ada tombol "Bersihkan" di Profil F1 |
+| T5 | N/A (belum dibangun) | Tidak ada tombol "Ubah Waktu" di Profil F1 |
+| T6 | N/A (belum dibangun) | Tab Tutor AI F1 hanya placeholder, tanpa chip |
+| T7 | N/A (belum dibangun) | Kartu kosakata/audio belum ada |
+| T8 | N/A (belum dibangun) | Kontrol segmented audio belum ada |
+| T9 | N/A (belum dibangun) | Tab Peringkat F1 hanya placeholder, tanpa tab internal |
+| T10 | N/A (belum dibangun) | Layar persetujuan suara belum ada |
+| T11 | CLOSED | "Simpan Kata" tidak ada di F1; dicatat untuk F2 |
+| T12 | CLOSED | Tidak ada panel debug; pemindaian APK 0 string panel |
 
 ### REM-P1-09 — Navigasi dan header tidak konsisten
 

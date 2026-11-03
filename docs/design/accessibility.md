@@ -194,6 +194,8 @@ Jangan pernah menyampaikan status hanya dengan warna.
 - [x] Tidak ada `danger-fill` sebagai teks di UI F1.
 - [ ] Tidak ada teks di bawah 14 sp kecuali metadata — belum diaudit penuh.
 - [x] Semua target sentuh di layar F1 yang diuji ≥ 48 dp (4/4 tes).
+- [x] Sub-butir C1–C5/T1–T12 ditutup untuk UI F1; layar yang belum
+  dibangun ditandai N/A di `remediation.md` §4.3.
 - [ ] Uji 1.3× dan 2.0× pada 360 × 640 — belum dijalankan; belum ada
   pembacaan `fontScale` sistem.
 - [x] Uji portrait dan landscape di Editor (360×640, 412×915, 915×412).
