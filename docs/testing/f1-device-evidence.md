@@ -34,7 +34,7 @@ targetSdk, dan waktu instalasi di atas.
 | D1-03 Alur pelajaran | **BLOCKED** | APK rilis tidak memuat pelajaran `validated`; fixture Editor tidak boleh masuk rilis |
 | D1-04 Mode offline | **NOT RUN** | Belum diuji dengan mode pesawat/mock reachability |
 | D1-05 Rotasi portrait ↔ landscape | **BLOCKED (perangkat)** | Perangkat/launcher memaksa portrait; rotasi paksa menghasilkan letterbox ±885×1080 |
-| D1-06 Font sistem 1.3×/2.0× | **NOT RUN** | Belum diuji |
+| D1-06 Font sistem 1.3×/2.0× | **NOT RUN / BLOCKED (fitur)** | Belum diuji; audit statis: tidak ada pembacaan `AndroidConfiguration.fontScale` |
 | D1-07 Tombol back | **PASS** | Profil → Beranda; dialog nama → Profil |
 
 ## 3. UI yang diperiksa
@@ -100,7 +100,9 @@ bagian UI aplikasi. Tidak dihitung sebagai temuan aplikasi.
 - Tidak ada pelajaran `validated`, jadi alur pelajaran rilis dan audio tidak
   dapat diuji.
 - Perangkat/launcher portrait-only; uji landscape perangkat tidak sah.
-- TalkBack, keyboard Android, dan skala font sistem belum diuji.
+- TalkBack, keyboard Android, dan skala font sistem belum diuji. Aplikasi
+  juga belum membaca `AndroidConfiguration.fontScale`, jadi D1-06 tidak
+  dapat lulus tanpa perubahan kode.
 - Banner offline belum diuji dengan mode pesawat.
 - Tidak ada profiling performa atau pengukuran startup.
 - Build masih memiliki 3 warning TMP/IL2CPP.

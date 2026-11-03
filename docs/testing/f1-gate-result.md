@@ -139,7 +139,10 @@ densitas 450 dpi, terhubung lewat ADB.
   portrait. `wm set-ignore-orientation-request true` + rotasi paksa membuat
   aplikasi di-letterbox menjadi ±885×1080, bukan landscape penuh. Uji
   landscape perangkat tidak sah; bukti landscape hanya dari Editor 915×412.
-- **D1-06 NOT RUN** — skala font sistem 1.3×/2.0× belum diuji.
+- **D1-06 NOT RUN / BLOCKED (fitur)** — skala font sistem 1.3×/2.0× belum
+  diuji. Audit statis 2026-11-04 menemukan tidak ada kode yang membaca
+  `AndroidConfiguration.fontScale`; uGUI/TMP tidak menerapkannya otomatis,
+  jadi UI kemungkinan tidak berubah saat skala font sistem dinaikkan.
 
 UI perangkat yang diperiksa: Beranda empty state, 12 topik, scroll,
 tab Tutor AI/Peringkat/Profil, kartu identitas, dialog nama, modal topik,
@@ -182,7 +185,7 @@ temuan UI aplikasi.
 | F1-18 nama orang | PASS | Tidak ada nama orang nyata di UI/konten |
 | F1-19 kontras C1–C5 | PARTIAL | 12/12 pasangan F1 lulus; C1–C5 lama belum dipetakan semua |
 | F1-20 target T1–T12 | PARTIAL | 4 tes UI F1 lulus; 12 sub-butir layar penuh belum |
-| F1-21 font 1.3×/2.0× | NOT RUN | Belum diuji; jangan klaim lulus |
+| F1-21 font 1.3×/2.0× | **BLOCKED** | Belum diuji; belum ada pembacaan `fontScale` sistem |
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
@@ -217,8 +220,8 @@ temuan UI aplikasi.
 2. **Gate perangkat:** selesaikan D1-03..D1-06. D1-03 memerlukan pelajaran
    rilis; D1-05 memerlukan perangkat/launcher yang mendukung landscape atau
    keputusan produk bahwa F1 portrait-only.
-3. **Aksesibilitas:** uji TalkBack, skala font 1.3×/2.0×, dan petakan
-   C1–C5/T1–T12 yang tersisa.
+3. **Aksesibilitas:** implementasikan pembacaan `AndroidConfiguration.fontScale`
+   lalu uji 1.3×/2.0×, audit TalkBack, dan petakan C1–C5/T1–T12 yang tersisa.
 4. **Build:** putuskan apakah 3 warning TMP/IL2CPP dapat diterima atau harus
    dihilangkan sebelum F1-25 ditutup.
 5. **Offline:** tambahkan mock reachability atau uji mode pesawat untuk

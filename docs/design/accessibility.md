@@ -141,6 +141,14 @@ Aturan implementasi:
 5. Label tombol tidak boleh turun menjadi dua baris; bila perlu, perpendek
    teks chrome.
 
+**Audit statis 2026-11-04:** tidak ada kode proyek yang membaca
+`UnityEngine.Android.AndroidConfiguration.fontScale` atau mengalikan ukuran
+TMP dengan skala font sistem. uGUI/TMP tidak menerapkan skala font Android
+secara otomatis. Karena itu, sampai fitur ini diimplementasikan dan diuji,
+D1-06/F1-21 tidak boleh diklaim lulus; mengubah font sistem kemungkinan
+besar tidak mengubah UI aplikasi. Perangkat juga sedang tidak terhubung,
+jadi uji perangkat D1-06 tetap **NOT RUN**.
+
 ## 5. Ketergantungan warna
 
 | Status | Ikon | Teks |
@@ -186,7 +194,8 @@ Jangan pernah menyampaikan status hanya dengan warna.
 - [x] Tidak ada `danger-fill` sebagai teks di UI F1.
 - [ ] Tidak ada teks di bawah 14 sp kecuali metadata — belum diaudit penuh.
 - [x] Semua target sentuh di layar F1 yang diuji ≥ 48 dp (4/4 tes).
-- [ ] Uji 1.3× dan 2.0× pada 360 × 640 — belum dijalankan.
+- [ ] Uji 1.3× dan 2.0× pada 360 × 640 — belum dijalankan; belum ada
+  pembacaan `fontScale` sistem.
 - [x] Uji portrait dan landscape di Editor (360×640, 412×915, 915×412).
 - [x] APK dipasang dan UI dasar portrait diperiksa di perangkat fisik.
 - [ ] Landscape perangkat — terhalang portrait lock OEM.

@@ -82,7 +82,9 @@ Aturan:
   pada Beranda, Profil, tiga langkah pelajaran, dan dialog nama, ditambah
   pemeriksaan layout kartu Profil/modal dan raycast scroll; kontras 12/12
   lulus. UI perangkat portrait sudah diperiksa, tetapi ini **bukan** audit
-  TalkBack, uji font scale, atau uji landscape perangkat.
+  TalkBack atau uji landscape perangkat. Audit statis 2026-11-04: belum ada
+  pembacaan `AndroidConfiguration.fontScale`, jadi skala font sistem belum
+  didukung dan D1-06/F1-21 tetap terbuka.
 - **REM-P1-10:** Pencarian UI/APK untuk "Simpan Kata" = 0.
 
 ### 2.2 Temuan uji perangkat 2026-11-03

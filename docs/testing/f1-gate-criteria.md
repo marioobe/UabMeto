@@ -90,11 +90,14 @@ terhubung.
 | D1-06 | Ukuran font sistem 1.3× dan 2.0× | screenshot |
 | D1-07 | Perilaku tombol back | catatan |
 
-Status saat ini: **PARTIAL** — perangkat fisik terhubung dan D1-01/D1-02/
-D1-07 lulus. D1-03 terhalang karena belum ada pelajaran `validated` di APK
-rilis; D1-04 (offline), D1-05 (landscape perangkat; OEM memaksa portrait),
-dan D1-06 (font scale) belum dijalankan. Bukti:
-`docs/testing/f1-device-evidence.md`.
+Status saat ini: **PARTIAL** — perangkat fisik terhubung pada 2026-11-03 dan
+D1-01/D1-02/D1-07 lulus. D1-03 terhalang karena belum ada pelajaran
+`validated` di APK rilis; D1-04 (offline) belum dijalankan; D1-05
+(landscape perangkat) terhalang portrait lock OEM; D1-06 (font scale)
+belum dijalankan dan audit statis menemukan aplikasi belum membaca
+`AndroidConfiguration.fontScale`. Bukti:
+`docs/testing/f1-device-evidence.md`. Pada 2026-11-04 perangkat tidak
+terhubung, jadi tidak ada uji perangkat baru.
 
 ## 5. Bukti yang tidak diterima
 
