@@ -12,7 +12,7 @@ penuh, dan sisa gate perangkat belum terpenuhi.
 |---|---|
 | Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
 | Tes EditMode | **PASS** — 56 lulus, 0 gagal, 0 dilewati |
-| Tes PlayMode | **PASS** — 11 lulus, 0 gagal, 0 dilewati |
+| Tes PlayMode | **PASS** — 12 lulus, 0 gagal, 0 dilewati |
 | Validator konten | **PASS** — 36/36 tes; CLI 0 error, 4 warning audio |
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
 | Target sentuh F1 | **PASS (UI F1)** — 4/4 tes aksesibilitas/layout |
@@ -71,10 +71,11 @@ Hasil: **56/56 lulus, 0 gagal, 0 dilewati.** Cakupan:
 
 ### 3.2 PlayMode
 
-Hasil: **11/11 lulus, 0 gagal, 0 dilewati.**
+Hasil: **12/12 lulus, 0 gagal, 0 dilewati.**
 
 - `Shell_HasFourTabsAndTwelveTopics`
 - `FixtureFlow_EnqueuesCompletion`
+- `PendingOutbox_ShowsSyncBanner` — banner antrean tampil dari outbox nyata
 - `AccessibilityTests.HomeAndProfile_TargetsAreAtLeast48Dp`
 - `AccessibilityTests.Profile_IdentityCardFitsContentAndScrollIsDraggable`
 - `AccessibilityTests.NicknameDialog_FitsCardAndHasCancel`
@@ -82,7 +83,10 @@ Hasil: **11/11 lulus, 0 gagal, 0 dilewati.**
 - 5 tes tangkapan layar (`ScreenshotTests`)
 
 PlayMode berjalan di Editor, bukan perangkat. Tes ini tidak membuktikan
-TalkBack, keyboard Android, lifecycle, atau rotasi perangkat.
+TalkBack, keyboard Android, lifecycle, atau rotasi perangkat. Percobaan
+pertama dengan D3D12 berhenti karena `d3d12: Unrecoverable GPU device
+error` sebelum hasil tes ditulis; percobaan ulang dengan `-force-d3d11`
+menghasilkan 12/12 lulus. Log: `Builds/logs/playmode-banner2.log`.
 
 ### 3.3 Validator dan kontras
 

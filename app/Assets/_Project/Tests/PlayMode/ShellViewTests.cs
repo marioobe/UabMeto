@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using NUnit.Framework;
+using TMPro;
 using UabMeto.App.Content;
 using UabMeto.App.Local;
 using UabMeto.App.UI;
@@ -144,6 +145,26 @@ namespace UabMeto.Tests.PlayMode
             Assert.AreEqual(1, _outbox.PendingCount);
             Assert.AreEqual(10, _progress.PendingXp);
             Assert.IsNotNull(GameObject.Find("EmptyState"));
+        }
+
+        [UnityTest]
+        public IEnumerator PendingOutbox_ShowsSyncBanner()
+        {
+            _outbox.Enqueue("lesson-uji", "1.1.0", 10);
+            yield return null;
+            _shell.RebuildLayout();
+
+            var banner = GameObject.Find("OfflineBanner");
+            Assert.IsNotNull(banner, "Banner antrean tidak ditemukan.");
+            Assert.IsTrue(
+                banner.activeSelf,
+                "Banner tidak tampil saat ada hasil menunggu sinkron.");
+
+            var text = banner.transform
+                .Find("BannerRow/Text")
+                .GetComponent<TextMeshProUGUI>();
+            Assert.IsNotNull(text, "Teks banner antrean tidak ditemukan.");
+            StringAssert.Contains("1 hasil menunggu sinkron", text.text);
         }
 
         private static void Click(string objectName)

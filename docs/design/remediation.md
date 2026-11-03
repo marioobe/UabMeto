@@ -76,7 +76,8 @@ Aturan:
   landscape penuh.
 - **REM-P1-04:** `LocalStoreTests` menguji 3–20 karakter, penolakan karakter
   kontrol, dan persistensi; alur pendaftaran akun belum ada.
-- **REM-P1-06:** Banner antrean sinkron diuji PlayMode; banner offline
+- **REM-P1-06:** Banner antrean sinkron diuji PlayMode
+  (`PendingOutbox_ShowsSyncBanner`); banner offline
   belum diuji dengan mock jaringan, dan sesi/auth belum ada.
 - **REM-P1-08:** `AccessibilityTests` 4/4 lulus untuk target sentuh ≥48 dp
   pada Beranda, Profil, tiga langkah pelajaran, dan dialog nama, ditambah

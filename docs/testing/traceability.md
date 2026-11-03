@@ -159,7 +159,7 @@ Perubahan F1:
 - Shell empat tab, Beranda, Profil, alur pelajaran lima langkah, empty state,
   nickname lokal, progress/outbox lokal, banner antrean, dan screenshot.
 - Build `uabmeto-f1.apk` 28.278.020 byte; 0 error, 3 warning TMP/IL2CPP.
-- EditMode 56/56; PlayMode 11/11; validator 36/36; CLI 0 error/4 warning.
+- EditMode 56/56; PlayMode 12/12; validator 36/36; CLI 0 error/4 warning.
 - Uji perangkat menemukan dan memperbaiki scroll mati, kartu Profil
   bertumpuk, dan kartu modal bertumpuk.
 - F1 **tetap tidak lulus** karena F1-11..F1-14 dan sisa gate perangkat
