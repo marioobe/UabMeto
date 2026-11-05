@@ -29,7 +29,7 @@ namespace UabMeto.App.UI
             BuildLessonSection(content);
             BuildTopics(content);
 
-            var note = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "ContentNote",
                 content,
                 "Materi tervalidasi muncul setelah lolos pemeriksaan penutur dan sumber. " +
@@ -38,14 +38,12 @@ namespace UabMeto.App.UI
                 theme.BodyFont,
                 theme.LabelSize,
                 theme.TextMuted);
-            UIFactory.AddLayoutElement(note.gameObject, preferredHeight: 72f);
         }
 
         private void BuildGreeting(RectTransform parent)
         {
             var theme = _shell.Theme;
             var group = UIFactory.CreateVerticalGroup("Greeting", parent, 2f, null, false);
-            UIFactory.AddLayoutElement(group.gameObject, preferredHeight: 58f);
 
             UIFactory.CreateText(
                 "Welcome",
@@ -105,7 +103,7 @@ namespace UabMeto.App.UI
                 theme.IconFont,
                 18f,
                 theme.Accent);
-            UIFactory.AddLayoutElement(icon.gameObject, minHeight: 20f, preferredHeight: 20f);
+            UIFactory.AddLayoutElement(icon.gameObject, minHeight: 24f, preferredHeight: 24f);
 
             var valueText = UIFactory.CreateText(
                 "Value",
@@ -168,22 +166,14 @@ namespace UabMeto.App.UI
             bool preview = false)
         {
             var theme = _shell.Theme;
-            var card = UIFactory.CreatePanel(
+            var group = UIFactory.CreateCard(
                 preview ? "PreviewCard" : "LessonCard",
                 parent,
                 theme.SurfaceCard,
-                (int)theme.CornerRadius);
-            var cardLayout = card.gameObject.AddComponent<LayoutElement>();
-            cardLayout.minHeight = preview ? 236f : 190f;
-            cardLayout.preferredHeight = preview ? 236f : 190f;
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
+                theme,
                 theme.Space8,
                 new RectOffset(16, 16, 16, 16),
-                false);
-            UIFactory.Stretch(group);
+                (int)theme.CornerRadius);
 
             var badgeText = fixture
                 ? "FIXTUR PENGEMBANGAN — BUKAN MATERI DAWAN"
@@ -191,37 +181,34 @@ namespace UabMeto.App.UI
                     ? "PRATINJAU — BELUM DIVALIDASI"
                     : "PELAJARAN TERVALIDASI";
             var badgeColor = fixture || preview ? theme.Warning : theme.Success;
-            var badge = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Badge",
                 group,
                 badgeText,
                 theme.BodyBoldFont,
                 10f,
                 badgeColor);
-            UIFactory.AddLayoutElement(badge.gameObject, preferredHeight: 16f);
 
-            var title = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Title",
                 group,
                 lesson.title,
                 theme.HeadingBoldFont,
                 theme.Heading2Size,
                 theme.TextPrimary);
-            UIFactory.AddLayoutElement(title.gameObject, preferredHeight: 30f);
 
             var topicTitle = TopicTitle(lesson.topicId);
-            var meta = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Meta",
                 group,
                 $"{topicTitle} · ±{lesson.estimatedMinutes} menit · {lesson.xp} XP",
                 theme.BodyFont,
                 theme.BodySmallSize,
                 theme.TextMuted);
-            UIFactory.AddLayoutElement(meta.gameObject, preferredHeight: 22f);
 
             if (fixture || preview)
             {
-                var warning = UIFactory.CreateText(
+                UIFactory.CreateText(
                     "FixtureWarning",
                     group,
                     fixture
@@ -231,7 +218,6 @@ namespace UabMeto.App.UI
                     theme.BodyFont,
                     theme.LabelSize,
                     theme.Warning);
-                UIFactory.AddLayoutElement(warning.gameObject, preferredHeight: 34f);
             }
 
             UIFactory.CreateButton(
@@ -278,18 +264,14 @@ namespace UabMeto.App.UI
         private void BuildEmptyState(RectTransform parent)
         {
             var theme = _shell.Theme;
-            var card = UIFactory.CreatePanel("EmptyState", parent, theme.SurfaceCard, (int)theme.CornerRadius);
-            var layout = card.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 210f;
-            layout.preferredHeight = 210f;
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
+            var group = UIFactory.CreateCard(
+                "EmptyState",
+                parent,
+                theme.SurfaceCard,
+                theme,
                 theme.Space8,
                 new RectOffset(20, 20, 20, 20),
-                false);
-            UIFactory.Stretch(group);
+                (int)theme.CornerRadius);
             group.GetComponent<VerticalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
 
             var icon = UIFactory.CreateIcon(
@@ -299,9 +281,14 @@ namespace UabMeto.App.UI
                 theme.IconFont,
                 36f,
                 theme.Outline);
-            UIFactory.AddLayoutElement(icon.gameObject, minHeight: 44f, preferredHeight: 44f);
+            UIFactory.AddLayoutElement(
+                icon.gameObject,
+                minHeight: 44f,
+                preferredHeight: 44f,
+                minWidth: 44f,
+                preferredWidth: 44f);
 
-            var title = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Title",
                 group,
                 "Belum ada pelajaran yang bisa dipelajari",
@@ -309,9 +296,8 @@ namespace UabMeto.App.UI
                 theme.Heading3Size,
                 theme.TextPrimary,
                 TextAlignmentOptions.Center);
-            UIFactory.AddLayoutElement(title.gameObject, preferredHeight: 46f);
 
-            var body = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Body",
                 group,
                 "Materi Bahasa Dawan sedang dalam proses validasi penutur dan pemeriksaan sumber. " +
@@ -320,14 +306,12 @@ namespace UabMeto.App.UI
                 theme.BodySmallSize,
                 theme.TextMuted,
                 TextAlignmentOptions.Center);
-            UIFactory.AddLayoutElement(body.gameObject, preferredHeight: 58f);
         }
 
         private void BuildTopics(RectTransform parent)
         {
             var theme = _shell.Theme;
             var header = UIFactory.CreateVerticalGroup("TopicsHeader", parent, 2f, null, false);
-            UIFactory.AddLayoutElement(header.gameObject, preferredHeight: 44f);
 
             UIFactory.CreateText(
                 "Title",
@@ -365,9 +349,17 @@ namespace UabMeto.App.UI
                 theme.SurfaceCard,
                 (int)theme.Space12,
                 true);
+            var panelLayout = panel.gameObject.AddComponent<VerticalLayoutGroup>();
+            panelLayout.spacing = 0f;
+            panelLayout.padding = new RectOffset();
+            panelLayout.childControlWidth = true;
+            panelLayout.childControlHeight = true;
+            panelLayout.childForceExpandWidth = true;
+            panelLayout.childForceExpandHeight = false;
+            panelLayout.childAlignment = TextAnchor.UpperLeft;
+
             var layout = panel.gameObject.AddComponent<LayoutElement>();
             layout.minHeight = 64f;
-            layout.preferredHeight = 64f;
 
             var button = panel.gameObject.AddComponent<Button>();
             button.targetGraphic = panel;
@@ -412,7 +404,7 @@ namespace UabMeto.App.UI
                 panel.transform,
                 theme.Space12,
                 new RectOffset(12, 12, 8, 8));
-            UIFactory.Stretch(row);
+            row.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
             var iconPanel = UIFactory.CreatePanel("IconPanel", row, theme.SurfaceHigh, (int)theme.Space12);
             var iconLayout = iconPanel.gameObject.AddComponent<LayoutElement>();

@@ -132,6 +132,7 @@ namespace UabMeto.App.UI
             }
 
             _shell.RebuildLayout();
+            _shell.ResetScrollToTop();
         }
 
         private void BuildBadge(RectTransform parent)
@@ -172,16 +173,15 @@ namespace UabMeto.App.UI
         private void BuildIntro(RectTransform parent)
         {
             var theme = _shell.Theme;
-            var title = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Title",
                 parent,
                 _lesson.title,
                 theme.HeadingBoldFont,
                 theme.Heading1Size,
                 theme.TextPrimary);
-            UIFactory.AddLayoutElement(title.gameObject, preferredHeight: 34f);
 
-            var summary = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Summary",
                 parent,
                 string.IsNullOrWhiteSpace(_lesson.summary)
@@ -190,11 +190,10 @@ namespace UabMeto.App.UI
                 theme.BodyFont,
                 theme.BodySmallSize,
                 theme.TextMuted);
-            UIFactory.AddLayoutElement(summary.gameObject, preferredHeight: 54f);
 
             if (_preview)
             {
-                var notice = UIFactory.CreateText(
+                UIFactory.CreateText(
                     "PreviewNotice",
                     parent,
                     "Materi ini masih berstatus in_review dan belum diperiksa reviewer independen. " +
@@ -202,23 +201,20 @@ namespace UabMeto.App.UI
                     theme.BodyFont,
                     theme.LabelSize,
                     theme.Warning);
-                UIFactory.AddLayoutElement(notice.gameObject, preferredHeight: 54f);
             }
 
             var meta = UIFactory.CreateVerticalGroup("Meta", parent, 4f, null, false);
-            UIFactory.AddLayoutElement(meta.gameObject, preferredHeight: 92f);
             CreateChip(meta, "schedule", $"±{_lesson.estimatedMinutes} menit");
             CreateChip(meta, "bolt", $"{_lesson.xp} XP (menunggu server)");
             CreateChip(meta, "volume_up", "Audio: belum tersedia");
 
-            var objectivesTitle = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "ObjectivesTitle",
                 parent,
                 "Tujuan pelajaran",
                 theme.HeadingBoldFont,
                 theme.Heading3Size,
                 theme.TextPrimary);
-            UIFactory.AddLayoutElement(objectivesTitle.gameObject, preferredHeight: 24f);
 
             if (_lesson.objectives != null)
             {
@@ -232,7 +228,12 @@ namespace UabMeto.App.UI
                         theme.IconFont,
                         18f,
                         theme.Success);
-                    UIFactory.AddLayoutElement(icon.gameObject, minWidth: 24f, preferredWidth: 24f);
+                    UIFactory.AddLayoutElement(
+                        icon.gameObject,
+                        minWidth: 24f,
+                        preferredWidth: 24f,
+                        minHeight: 24f,
+                        preferredHeight: 24f);
                     var text = UIFactory.CreateText(
                         "Text",
                         row,
@@ -242,7 +243,6 @@ namespace UabMeto.App.UI
                         theme.TextPrimary);
                     UIFactory.AddLayoutElement(
                         text.gameObject,
-                        preferredHeight: 40f,
                         preferredWidth: 0f,
                         flexibleWidth: 1f);
                 }
@@ -357,7 +357,7 @@ namespace UabMeto.App.UI
             }
             else
             {
-                var unsupported = UIFactory.CreateText(
+                UIFactory.CreateText(
                     "Unsupported",
                     parent,
                     "Jenis latihan pada pelajaran ini belum didukung di F1. " +
@@ -365,7 +365,6 @@ namespace UabMeto.App.UI
                     theme.BodyFont,
                     theme.BodySmallSize,
                     theme.Warning);
-                UIFactory.AddLayoutElement(unsupported.gameObject, preferredHeight: 54f);
             }
 
             UIFactory.CreateButton(
@@ -385,38 +384,25 @@ namespace UabMeto.App.UI
         private void SectionTitle(Transform parent, string title)
         {
             var theme = _shell.Theme;
-            var text = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Section_" + title,
                 parent,
                 title,
                 theme.HeadingBoldFont,
                 theme.Heading3Size,
                 theme.TextPrimary);
-            UIFactory.AddLayoutElement(text.gameObject, preferredHeight: 24f);
         }
 
         private void BuildVocabularyCard(Transform parent, VocabularyItem item)
         {
             var theme = _shell.Theme;
-            var card = UIFactory.CreatePanel("Vocab_" + item.id, parent, theme.SurfaceCard, (int)theme.Space12);
-            var layout = card.gameObject.AddComponent<LayoutElement>();
-
-            var noteHeight = 0f;
-            if (!string.IsNullOrWhiteSpace(item.notes))
-            {
-                noteHeight = Mathf.Clamp(18f + item.notes.Length / 42f * 12f, 30f, 104f);
-            }
-
-            layout.minHeight = 92f + noteHeight;
-            layout.preferredHeight = 92f + noteHeight;
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
-                theme.Space4,
-                new RectOffset(14, 14, 12, 12),
-                false);
-            UIFactory.Stretch(group);
+            var group = UIFactory.CreateCard(
+                "Vocab_" + item.id,
+                parent,
+                theme.SurfaceCard,
+                theme,
+                theme.Space8,
+                new RectOffset(16, 16, 14, 14));
 
             UIFactory.CreateText(
                 "Dawan",
@@ -434,16 +420,15 @@ namespace UabMeto.App.UI
                 theme.BodySmallSize,
                 theme.TextMuted);
 
-            if (noteHeight > 0f)
+            if (!string.IsNullOrWhiteSpace(item.notes))
             {
-                var notes = UIFactory.CreateText(
+                UIFactory.CreateText(
                     "Notes",
                     group,
                     item.notes,
                     theme.BodyFont,
                     theme.LabelSize,
                     theme.TextMuted);
-                UIFactory.AddLayoutElement(notes.gameObject, preferredHeight: noteHeight);
             }
 
             if (ContentRepository.HasAudioFile(item.audio))
@@ -466,38 +451,36 @@ namespace UabMeto.App.UI
                     theme.IconFont,
                     14f,
                     theme.Outline);
-                UIFactory.AddLayoutElement(icon.gameObject, minWidth: 18f, preferredWidth: 18f);
-                UIFactory.CreateText(
+                UIFactory.AddLayoutElement(
+                    icon.gameObject,
+                    minWidth: 18f,
+                    preferredWidth: 18f,
+                    minHeight: 18f,
+                    preferredHeight: 18f);
+                var audioText = UIFactory.CreateText(
                     "Text",
                     audioRow,
                     "Audio Belum Tersedia",
                     theme.BodyFont,
                     theme.LabelSize,
                     theme.Outline);
+                UIFactory.AddLayoutElement(
+                    audioText.gameObject,
+                    preferredWidth: 0f,
+                    flexibleWidth: 1f);
             }
         }
 
         private void BuildExampleCard(Transform parent, ExampleItem example)
         {
             var theme = _shell.Theme;
-            var card = UIFactory.CreatePanel("Example_" + example.id, parent, theme.SurfaceCard, (int)theme.Space12);
-            var layout = card.gameObject.AddComponent<LayoutElement>();
-
-            var contextText = string.IsNullOrWhiteSpace(example.context)
-                ? "Konteks belum tersedia."
-                : example.context;
-            var contextHeight = Mathf.Clamp(18f + contextText.Length / 44f * 12f, 18f, 84f);
-
-            layout.minHeight = 106f + contextHeight;
-            layout.preferredHeight = 106f + contextHeight;
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
-                theme.Space4,
-                new RectOffset(14, 14, 12, 12),
-                false);
-            UIFactory.Stretch(group);
+            var group = UIFactory.CreateCard(
+                "Example_" + example.id,
+                parent,
+                theme.SurfaceCard,
+                theme,
+                theme.Space8,
+                new RectOffset(16, 16, 14, 14));
 
             UIFactory.CreateText(
                 "Dawan",
@@ -515,14 +498,15 @@ namespace UabMeto.App.UI
                 theme.BodySmallSize,
                 theme.TextMuted);
 
-            var context = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Context",
                 group,
-                contextText,
+                string.IsNullOrWhiteSpace(example.context)
+                    ? "Konteks belum tersedia."
+                    : example.context,
                 theme.BodyFont,
                 theme.LabelSize,
                 theme.Outline);
-            UIFactory.AddLayoutElement(context.gameObject, preferredHeight: contextHeight);
 
             var isPublished = example.status == "validated" || example.status == "published";
             var status = isPublished
@@ -545,14 +529,13 @@ namespace UabMeto.App.UI
         private void BuildDialogueCard(Transform parent, Dialogue dialogue)
         {
             var theme = _shell.Theme;
-            var card = UIFactory.CreatePanel("Dialogue_" + dialogue.id, parent, theme.SurfaceCard, (int)theme.Space12);
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
+            var group = UIFactory.CreateCard(
+                "Dialogue_" + dialogue.id,
+                parent,
+                theme.SurfaceCard,
+                theme,
                 theme.Space8,
-                new RectOffset(14, 14, 12, 12),
-                true);
-            UIFactory.Stretch(group);
+                new RectOffset(16, 16, 14, 14));
 
             UIFactory.CreateText(
                 "Title",
@@ -607,14 +590,13 @@ namespace UabMeto.App.UI
                 return;
             }
 
-            var prompt = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Prompt",
                 parent,
                 _mcq.prompt,
                 theme.HeadingBoldFont,
                 theme.Heading3Size,
                 theme.TextPrimary);
-            UIFactory.AddLayoutElement(prompt.gameObject, preferredHeight: 54f);
 
             foreach (var option in _mcq.content.options)
             {
@@ -634,29 +616,36 @@ namespace UabMeto.App.UI
         {
             var theme = _shell.Theme;
             var selected = option.id == _selectedOptionId;
-            var panel = UIFactory.CreatePanel(
+            var body = UIFactory.CreateCard(
                 "Option_" + option.id,
                 parent,
                 selected ? theme.AccentDeepBg : theme.SurfaceHigh,
-                (int)theme.Space12,
-                true);
-            var layout = panel.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 56f;
-            layout.preferredHeight = 56f;
+                theme,
+                0f,
+                new RectOffset(16, 12, 16, 12));
+            var panel = body.parent.GetComponent<Image>();
+            panel.raycastTarget = true;
 
-            var button = panel.gameObject.AddComponent<Button>();
+            var card = (RectTransform)body.parent;
+            var layout = card.GetComponent<LayoutElement>();
+            layout.minHeight = 56f;
+
+            var button = card.gameObject.AddComponent<Button>();
             button.targetGraphic = panel;
             button.transition = Selectable.Transition.ColorTint;
 
             var label = UIFactory.CreateText(
                 "Label",
-                panel.transform,
+                body,
                 option.text,
                 theme.BodyFont,
                 theme.BodySize,
-                selected ? theme.TextPrimary : theme.TextPrimary,
+                theme.TextPrimary,
                 TextAlignmentOptions.MidlineLeft);
-            UIFactory.Stretch(label.rectTransform, 16f, 8f, 16f, 8f);
+            UIFactory.AddLayoutElement(
+                label.gameObject,
+                preferredWidth: 0f,
+                flexibleWidth: 1f);
 
             button.onClick.AddListener(() =>
             {
@@ -693,22 +682,14 @@ namespace UabMeto.App.UI
         private void BuildFeedback(RectTransform parent)
         {
             var theme = _shell.Theme;
-            var panel = UIFactory.CreatePanel(
+            var group = UIFactory.CreateCard(
                 "Feedback",
                 parent,
                 _answeredCorrectly ? theme.SuccessPanel : theme.DangerPanel,
-                (int)theme.CornerRadius);
-            var layout = panel.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 160f;
-            layout.preferredHeight = 160f;
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                panel.transform,
+                theme,
                 theme.Space8,
                 new RectOffset(16, 16, 16, 16),
-                false);
-            UIFactory.Stretch(group);
+                (int)theme.CornerRadius);
 
             var row = UIFactory.CreateHorizontalGroup("Status", group, theme.Space8);
             var icon = UIFactory.CreateIcon(
@@ -718,7 +699,12 @@ namespace UabMeto.App.UI
                 theme.IconFont,
                 28f,
                 _answeredCorrectly ? theme.Success : theme.DangerText);
-            UIFactory.AddLayoutElement(icon.gameObject, minWidth: 32f, preferredWidth: 32f);
+            UIFactory.AddLayoutElement(
+                icon.gameObject,
+                minWidth: 34f,
+                preferredWidth: 34f,
+                minHeight: 34f,
+                preferredHeight: 34f);
 
             UIFactory.CreateText(
                 "Title",
@@ -729,7 +715,7 @@ namespace UabMeto.App.UI
                 _answeredCorrectly ? theme.Success : theme.DangerText,
                 TextAlignmentOptions.MidlineLeft);
 
-            var explanation = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Explanation",
                 group,
                 string.IsNullOrWhiteSpace(_mcq.explanation)
@@ -738,7 +724,6 @@ namespace UabMeto.App.UI
                 theme.BodyFont,
                 theme.BodySmallSize,
                 theme.TextPrimary);
-            UIFactory.AddLayoutElement(explanation.gameObject, preferredHeight: 44f);
 
             if (!_answeredCorrectly)
             {
@@ -779,9 +764,14 @@ namespace UabMeto.App.UI
                 theme.IconFont,
                 48f,
                 theme.Accent);
-            UIFactory.AddLayoutElement(icon.gameObject, minHeight: 56f, preferredHeight: 56f);
+            UIFactory.AddLayoutElement(
+                icon.gameObject,
+                minHeight: 56f,
+                preferredHeight: 56f,
+                minWidth: 56f,
+                preferredWidth: 56f);
 
-            var title = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Title",
                 parent,
                 _preview ? "Pratinjau selesai" : "Pelajaran selesai",
@@ -789,9 +779,8 @@ namespace UabMeto.App.UI
                 theme.Heading1Size,
                 theme.TextPrimary,
                 TextAlignmentOptions.Center);
-            UIFactory.AddLayoutElement(title.gameObject, preferredHeight: 34f);
 
-            var accuracy = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Accuracy",
                 parent,
                 _answeredCorrectly ? "Latihan dijawab benar." : "Latihan belum dijawab benar.",
@@ -799,9 +788,8 @@ namespace UabMeto.App.UI
                 theme.BodySmallSize,
                 _answeredCorrectly ? theme.Success : theme.Warning,
                 TextAlignmentOptions.Center);
-            UIFactory.AddLayoutElement(accuracy.gameObject, preferredHeight: 22f);
 
-            var xp = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Xp",
                 parent,
                 _preview
@@ -811,9 +799,8 @@ namespace UabMeto.App.UI
                 theme.BodySize,
                 theme.TextPrimary,
                 TextAlignmentOptions.Center);
-            UIFactory.AddLayoutElement(xp.gameObject, preferredHeight: 24f);
 
-            var note = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Note",
                 parent,
                 _preview
@@ -825,7 +812,6 @@ namespace UabMeto.App.UI
                 theme.LabelSize,
                 theme.TextMuted,
                 TextAlignmentOptions.Center);
-            UIFactory.AddLayoutElement(note.gameObject, preferredHeight: 54f);
 
             if (_preview)
             {

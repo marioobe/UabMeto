@@ -142,18 +142,14 @@ namespace UabMeto.App.UI
         private void BuildOutbox(RectTransform parent)
         {
             var theme = _shell.Theme;
-            var card = UIFactory.CreatePanel("Outbox", parent, theme.SurfaceCard, (int)theme.CornerRadius);
-            var layout = card.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 150f;
-            layout.preferredHeight = 150f;
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
+            var group = UIFactory.CreateCard(
+                "Outbox",
+                parent,
+                theme.SurfaceCard,
+                theme,
                 theme.Space8,
                 new RectOffset(16, 16, 16, 16),
-                false);
-            UIFactory.Stretch(group);
+                (int)theme.CornerRadius);
 
             UIFactory.CreateText(
                 "Title",
@@ -186,18 +182,14 @@ namespace UabMeto.App.UI
         private void BuildAbout(RectTransform parent)
         {
             var theme = _shell.Theme;
-            var card = UIFactory.CreatePanel("About", parent, theme.SurfaceCard, (int)theme.CornerRadius);
-            var layout = card.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 190f;
-            layout.preferredHeight = 190f;
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
+            var group = UIFactory.CreateCard(
+                "About",
+                parent,
+                theme.SurfaceCard,
+                theme,
                 theme.Space8,
                 new RectOffset(16, 16, 16, 16),
-                false);
-            UIFactory.Stretch(group);
+                (int)theme.CornerRadius);
 
             UIFactory.CreateText(
                 "Title",

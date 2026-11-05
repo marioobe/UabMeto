@@ -24,7 +24,13 @@ namespace UabMeto.App.UI
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(360f, 640f);
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight = 0.5f;
+            // Aplikasi F1 dirancang portrait dengan lebar acuan 360. Mengunci
+            // ke lebar membuat jumlah unit horizontal selalu 360 di semua
+            // perangkat, sehingga teks tidak tiba-tiba membungkus lebih rapat
+            // pada layar 20:9. ResponsiveCanvasScaler menukar acuan saat
+            // perangkat landscape.
+            scaler.matchWidthOrHeight = 0f;
+            go.AddComponent<ResponsiveCanvasScaler>();
 
             return canvas;
         }
@@ -279,6 +285,47 @@ namespace UabMeto.App.UI
             return rect;
         }
 
+        /// <summary>
+        /// Kartu yang tingginya mengikuti isi, bukan angka tetap. Panel latar
+        /// menampung satu grup vertikal bernama <c>Body</c>; tinggi panel
+        /// dihitung dari preferred height isi Body oleh layout induk.
+        /// </summary>
+        public static RectTransform CreateCard(
+            string name,
+            Transform parent,
+            Color color,
+            ThemeTokens theme,
+            float spacing = -1f,
+            RectOffset padding = null,
+            int cornerRadius = -1)
+        {
+            var card = CreatePanel(
+                name,
+                parent,
+                color,
+                cornerRadius >= 0 ? cornerRadius : (int)theme.Space12);
+
+            var cardLayout = card.gameObject.AddComponent<VerticalLayoutGroup>();
+            cardLayout.spacing = 0f;
+            cardLayout.padding = new RectOffset();
+            cardLayout.childControlWidth = true;
+            cardLayout.childControlHeight = true;
+            cardLayout.childForceExpandWidth = true;
+            cardLayout.childForceExpandHeight = false;
+            cardLayout.childAlignment = TextAnchor.UpperLeft;
+
+            var element = card.gameObject.AddComponent<LayoutElement>();
+            element.flexibleWidth = 1f;
+            element.minHeight = 0f;
+
+            return CreateVerticalGroup(
+                "Body",
+                card.transform,
+                spacing >= 0f ? spacing : theme.Space8,
+                padding ?? new RectOffset(16, 16, 16, 16),
+                true);
+        }
+
         public static RectTransform CreateHorizontalGroup(
             string name,
             Transform parent,
@@ -479,6 +526,9 @@ namespace UabMeto.App.UI
             for (var index = parent.childCount - 1; index >= 0; index--)
             {
                 var child = parent.GetChild(index).gameObject;
+                // Nonaktifkan lebih dulu agar layout tidak menghitung konten
+                // lama pada frame yang sama ketika layar dibangun ulang.
+                child.SetActive(false);
                 if (Application.isPlaying)
                 {
                     Object.Destroy(child);

@@ -156,16 +156,24 @@ namespace UabMeto.App.UI
         private void BuildOfflineBanner()
         {
             _offlineBanner = UIFactory.CreatePanel("OfflineBanner", _safeRoot, _theme.Warning);
-            var layout = _offlineBanner.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 44f;
-            layout.preferredHeight = 44f;
+
+            // Tinggi banner mengikuti isi. Teks panjang akan membungkus ke
+            // baris berikutnya, bukan meluber menimpa konten di bawahnya.
+            var bannerLayout = _offlineBanner.gameObject.AddComponent<VerticalLayoutGroup>();
+            bannerLayout.spacing = 0f;
+            bannerLayout.padding = new RectOffset();
+            bannerLayout.childControlWidth = true;
+            bannerLayout.childControlHeight = true;
+            bannerLayout.childForceExpandWidth = true;
+            bannerLayout.childForceExpandHeight = false;
+            bannerLayout.childAlignment = TextAnchor.UpperLeft;
 
             var row = UIFactory.CreateHorizontalGroup(
                 "BannerRow",
                 _offlineBanner.transform,
                 8f,
-                new RectOffset(16, 16, 4, 4));
-            UIFactory.Stretch(row);
+                new RectOffset(16, 16, 8, 8));
+            row.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
             var icon = UIFactory.CreateIcon(
                 "Icon",
@@ -174,7 +182,12 @@ namespace UabMeto.App.UI
                 _theme.IconFont,
                 20f,
                 _theme.OnAccent);
-            UIFactory.AddLayoutElement(icon.gameObject, minWidth: 24f, preferredWidth: 24f);
+            UIFactory.AddLayoutElement(
+                icon.gameObject,
+                minWidth: 24f,
+                preferredWidth: 24f,
+                minHeight: 24f,
+                preferredHeight: 24f);
 
             _offlineText = UIFactory.CreateText(
                 "Text",
@@ -184,7 +197,10 @@ namespace UabMeto.App.UI
                 _theme.LabelSize,
                 _theme.OnAccent,
                 TextAlignmentOptions.MidlineLeft);
-            UIFactory.AddLayoutElement(_offlineText.gameObject, flexibleHeight: 0f);
+            UIFactory.AddLayoutElement(
+                _offlineText.gameObject,
+                preferredWidth: 0f,
+                flexibleWidth: 1f);
 
             _offlineBanner.gameObject.SetActive(false);
         }
@@ -256,7 +272,7 @@ namespace UabMeto.App.UI
                 _theme.IconFont,
                 22f,
                 _theme.TextMuted);
-            UIFactory.AddLayoutElement(icon.gameObject, minHeight: 24f, preferredHeight: 24f);
+            UIFactory.AddLayoutElement(icon.gameObject, minHeight: 28f, preferredHeight: 28f);
 
             var text = UIFactory.CreateText(
                 "Label",
@@ -318,6 +334,7 @@ namespace UabMeto.App.UI
 
             UpdateTabStyles();
             RebuildLayout();
+            ResetScrollToTop();
         }
 
         public void ShowLesson(LessonContent lesson, bool fixture)
@@ -354,6 +371,27 @@ namespace UabMeto.App.UI
                 OnLessonCompleted);
             _lessonView.Build(_contentHost);
             RebuildLayout();
+            ResetScrollToTop();
+        }
+
+        /// <summary>
+        /// Mengembalikan semua daftar gulir ke posisi teratas. Dipanggil
+        /// setelah layar dibangun ulang supaya pengguna tidak mendarat di
+        /// tengah materi.
+        /// </summary>
+        public void ResetScrollToTop()
+        {
+            if (_contentHost == null)
+            {
+                return;
+            }
+
+            Canvas.ForceUpdateCanvases();
+            foreach (var scroll in _contentHost.GetComponentsInChildren<ScrollRect>(true))
+            {
+                scroll.StopMovement();
+                scroll.verticalNormalizedPosition = 1f;
+            }
         }
 
         public void RebuildLayout()
@@ -366,9 +404,10 @@ namespace UabMeto.App.UI
                 var groups = _canvas.GetComponentsInChildren<LayoutGroup>(true)
                     .OrderBy(group => Depth(group.transform))
                     .ToArray();
-                // Dua lintasan: induk dapat mengubah ukuran anak setelah anak
-                // sempat dihitung pada lintasan pertama.
-                for (var pass = 0; pass < 2; pass++)
+                // Tiga lintasan: induk dapat mengubah ukuran anak setelah anak
+                // sempat dihitung pada lintasan sebelumnya, terutama karena
+                // kartu memakai ContentSizeFitter bersarang.
+                for (var pass = 0; pass < 3; pass++)
                 {
                     foreach (var group in groups)
                     {
@@ -376,6 +415,8 @@ namespace UabMeto.App.UI
                         LayoutRebuilder.MarkLayoutForRebuild(rect);
                         LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
                     }
+
+                    Canvas.ForceUpdateCanvases();
                 }
             }
         }
@@ -434,16 +475,15 @@ namespace UabMeto.App.UI
             UIFactory.Stretch(scroll.GetComponent<RectTransform>());
             var content = scroll.content;
 
-            var card = UIFactory.CreatePanel("PlaceholderCard", content, _theme.SurfaceCard, (int)_theme.CornerRadius);
-            UIFactory.AddLayoutElement(card.gameObject, preferredHeight: 260f);
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
+            var group = UIFactory.CreateCard(
+                "PlaceholderCard",
+                content,
+                _theme.SurfaceCard,
+                _theme,
                 _theme.Space12,
                 new RectOffset(20, 20, 24, 24),
-                false);
-            UIFactory.Stretch(group);
+                (int)_theme.CornerRadius);
+            group.GetComponent<VerticalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
 
             var icon = UIFactory.CreateIcon(
                 "Icon",
@@ -452,9 +492,14 @@ namespace UabMeto.App.UI
                 _theme.IconFont,
                 40f,
                 _theme.Outline);
-            UIFactory.AddLayoutElement(icon.gameObject, minHeight: 48f, preferredHeight: 48f);
+            UIFactory.AddLayoutElement(
+                icon.gameObject,
+                minHeight: 48f,
+                preferredHeight: 48f,
+                minWidth: 48f,
+                preferredWidth: 48f);
 
-            var heading = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Title",
                 group,
                 title,
@@ -462,9 +507,8 @@ namespace UabMeto.App.UI
                 _theme.Heading2Size,
                 _theme.TextPrimary,
                 TextAlignmentOptions.Center);
-            UIFactory.AddLayoutElement(heading.gameObject, preferredHeight: 30f);
 
-            var bodyText = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Body",
                 group,
                 body,
@@ -472,7 +516,6 @@ namespace UabMeto.App.UI
                 _theme.BodySmallSize,
                 _theme.TextMuted,
                 TextAlignmentOptions.Center);
-            UIFactory.AddLayoutElement(bodyText.gameObject, preferredHeight: 80f);
         }
 
         public void ShowModal(
@@ -486,23 +529,21 @@ namespace UabMeto.App.UI
         {
             var card = CreateModalCard("Modal", dismissible);
 
-            var heading = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Title",
                 card,
                 title,
                 _theme.HeadingBoldFont,
                 _theme.Heading2Size,
                 _theme.TextPrimary);
-            UIFactory.AddLayoutElement(heading.gameObject, preferredHeight: 30f);
 
-            var bodyText = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Body",
                 card,
                 body,
                 _theme.BodyFont,
                 _theme.BodySmallSize,
                 _theme.TextMuted);
-            UIFactory.AddLayoutElement(bodyText.gameObject, preferredHeight: 60f);
 
             if (!string.IsNullOrWhiteSpace(secondaryLabel))
             {
@@ -535,16 +576,15 @@ namespace UabMeto.App.UI
         {
             var card = CreateModalCard("NicknameModal", false);
 
-            var heading = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Title",
                 card,
                 "Siapa nama panggilanmu?",
                 _theme.HeadingBoldFont,
                 _theme.Heading2Size,
                 _theme.TextPrimary);
-            UIFactory.AddLayoutElement(heading.gameObject, preferredHeight: 30f);
 
-            var body = UIFactory.CreateText(
+            UIFactory.CreateText(
                 "Body",
                 card,
                 "Nama ini disimpan di perangkat dan dipakai untuk menyapa. " +
@@ -552,7 +592,6 @@ namespace UabMeto.App.UI
                 _theme.BodyFont,
                 _theme.BodySmallSize,
                 _theme.TextMuted);
-            UIFactory.AddLayoutElement(body.gameObject, preferredHeight: 56f);
 
             var input = UIFactory.CreateInputField(
                 "Nickname",
@@ -617,7 +656,8 @@ namespace UabMeto.App.UI
             cardRect.anchorMin = new Vector2(0.5f, 0.5f);
             cardRect.anchorMax = new Vector2(0.5f, 0.5f);
             cardRect.pivot = new Vector2(0.5f, 0.5f);
-            cardRect.sizeDelta = new Vector2(320f, 0f);
+            var canvasWidth = ((RectTransform)_canvas.transform).rect.width;
+            cardRect.sizeDelta = new Vector2(Mathf.Min(320f, canvasWidth - 32f), 0f);
 
             var cardLayout = card.gameObject.AddComponent<VerticalLayoutGroup>();
             cardLayout.spacing = _theme.Space12;
