@@ -1,25 +1,47 @@
-# Backend — Cloudflare Worker
+# Backend — Cloudflare Worker (mode lokal)
 
-Status: **belum diimplementasikan.** Folder ini baru berisi konfigurasi contoh.
+Status: **mode online lokal untuk pengembangan.** Bukan backend produksi.
+Tidak ada Firebase, Firestore, deployment, atau kredensial nyata.
 
-Rencana tanggung jawab (F3–F4):
+Dokumen kontrak dan batasan: `docs/architecture/local-online-mode.md`.
 
-- Verifikasi Firebase ID token.
-- Kuota harian per akun (D1, reset 00.00 WITA).
-- Validasi & sinkronisasi operasi progres ke Firestore.
-- Idempotency dan rekonsiliasi (`docs/architecture/sync-idempotency.md`).
-- Manifest konten dan URL audio.
-- Proxy AI (Workers AI) dengan pembatasan rujukan.
+## Isi
 
-Berkas contoh:
+- `src/index.js` — Worker: `/health`, `/v1/sync`, `/v1/quota`, `/v1/leaderboard`.
+- `schema.sql` — skema D1 lokal.
+- `scripts/generate-content-seed.mjs` — menyalin ID/versi/XP/status dari
+  `content/lessons/*.json` ke `src/content-seed.js` (tanpa teks Dawan).
+- `test/` — tes `node:test` dengan adapter `node:sqlite`.
 
-- `.dev.vars.example` — struktur konfigurasi lokal, bukan kredensial.
+## Menjalankan
 
-Belum ada:
+```powershell
+cd backend
+npm install
+npm run seed
+npm run db:init
+npm run dev
+```
+
+Uji:
+
+```powershell
+curl http://127.0.0.1:8787/health
+npm test
+```
+
+## Batasan
+
+- Identitas memakai header `X-Dev-User`, bukan Firebase ID token.
+- D1 lokal menggantikan efek Firestore.
+- XP hanya untuk konten `validated`; flag `DEV_ALLOW_XP_FOR_IN_REVIEW`
+  hanya untuk pengujian lokal.
+- `workers_dev = false`; jangan deploy.
+- Papan peringkat dihitung dari `applied_effects`, bukan proyeksi global.
+
+## Belum ada
 
 - `wrangler.toml` produksi.
-- Skema D1.
-- Endpoint apa pun.
+- Firebase Auth / Firestore.
+- Endpoint AI.
 - Deployment.
-
-Lihat `docs/setup/cloudflare.md` dan `docs/architecture/worker-firestore-auth.md`.

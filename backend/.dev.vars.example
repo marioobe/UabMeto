@@ -16,3 +16,9 @@ SUPABASE_SERVICE_ROLE_KEY="replace-me"
 
 # Lingkungan: development | staging | production
 APP_ENV="development"
+
+# --- Mode online lokal (Phase 1) ---
+# HANYA untuk mesin pengembangan. Jangan pernah dipakai di deployment.
+# Nilai "true" mengizinkan XP untuk konten in_review agar alur sync bisa
+# diuji sebelum ada pelajaran validated.
+DEV_ALLOW_XP_FOR_IN_REVIEW="true"

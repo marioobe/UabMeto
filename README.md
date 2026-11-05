@@ -96,6 +96,22 @@ rilis; materi di dalamnya masih `in_review`.
   -logFile "C:\Users\ACER\AppData\Local\Temp\opencode\unity-tests.log"
 ```
 
+## Mode online lokal (pengembangan)
+
+Backend Worker + D1 lokal untuk menguji alur sinkronisasi tanpa cloud:
+
+```powershell
+cd backend
+npm install
+npm run seed
+npm run db:init
+npm run dev
+```
+
+Kontrak dan batasan: `docs/architecture/local-online-mode.md`.
+Ini **bukan** backend produksi: tidak ada Firebase, Firestore, deployment,
+atau kredensial nyata. `workers_dev = false` dan jangan di-deploy.
+
 ## Aturan keamanan
 
 - Tidak ada API key, service account, token, atau kata sandi di repository,

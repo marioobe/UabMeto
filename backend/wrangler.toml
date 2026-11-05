@@ -1,0 +1,16 @@
+name = "uabmeto-local"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Mode lokal. Jangan deploy.
+# workers_dev = false mencegah rute workers.dev dibuat bila `wrangler deploy`
+# tidak sengaja dijalankan.
+workers_dev = false
+
+[vars]
+APP_ENV = "local"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "uabmeto-local"
+database_id = "00000000-0000-0000-0000-000000000000"

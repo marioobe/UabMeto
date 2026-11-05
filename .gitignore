@@ -49,6 +49,10 @@ node_modules/
 npm-debug.log*
 coverage/
 
+# --- Local Worker state ---
+.wrangler/
+**/.dev.vars
+
 # --- Secrets & local configuration (WAJIB) ---
 .env
 .env.*
