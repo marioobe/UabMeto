@@ -1,6 +1,6 @@
 # Laporan Gate F1
 
-Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-05 (WITA)
+Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-06 (WITA)
 Lingkungan: Windows, Unity `6000.6.0f1`, Android build-tools `36.1.0`.
 Status gate: **TIDAK LULUS.** Build, tes UI, dan verifikasi dasar perangkat
 fisik lulus; syarat konten tervalidasi, alur pelajaran rilis, aksesibilitas
@@ -12,6 +12,13 @@ mode pratinjau berlabel "Pratinjau — belum divalidasi" yang tidak mencatat
 progres atau XP. Mode ini tidak mengubah status gate: belum ada reviewer
 independen, audio, atau consent.
 
+Pembaruan 2026-11-06: stabilisasi layout F1. Tinggi kartu sekarang dihitung
+dari isi (bukan angka tetap), semua daftar gulir kembali ke atas saat layar
+dibangun ulang, dan kanvas memakai acuan responsif portrait 360×640 /
+landscape 640×360. Lima tes PlayMode baru mengunci perilaku ini. Build rilis
+dan pratinjau dibangun ulang; status gate tetap **TIDAK LULUS** karena
+blocker konten, audio, aksesibilitas, dan perangkat tidak berubah.
+
 ## 1. Ringkasan keputusan
 
 | Area | Hasil |
@@ -19,7 +26,7 @@ independen, audio, atau consent.
 | Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
 | Build pratinjau | **PASS** — `Builds/Android/uabmeto-f1-preview.apk` (demo, memuat `in_review`) |
 | Tes EditMode | **PASS** — 62 lulus, 0 gagal, 0 dilewati |
-| Tes PlayMode | **PASS** — 14 lulus, 0 gagal, 0 dilewati |
+| Tes PlayMode | **PASS** — 19 lulus, 0 gagal, 0 dilewati |
 | Validator konten | **PASS** — 36/36 tes; CLI 0 error, 4 warning audio |
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
 | Target sentuh F1 | **PASS (UI F1)** — 4/4 tes aksesibilitas/layout |
@@ -33,11 +40,14 @@ independen, audio, atau consent.
 ### 2.1 Build rilis
 
 - Path: `D:\01_Uab_Meto\Builds\Android\uabmeto-f1.apk`
-- Ukuran: **28.293.448 byte**
-- SHA-256: `789CF94076309DCBFD4C1DC90D504653CED81B87BC7022F709484289DD3D9E09`
-- Hasil: `Succeeded`, 0 error, 0 warning pada log build inkremental
-  terakhir (`Builds/logs/unity-build-release5.log`)
-- Durasi build: 51,7 detik (inkremental)
+- Ukuran: **28.294.252 byte**
+- SHA-256: `B4D1CA595929535C71FD6F8922DFBFA254A4C3DFE4C848B5D3CE9B38ED9098F7`
+- Hasil: `Succeeded`, 0 error, 1 warning
+  (`Builds/logs/unity-build-release-layout.log`)
+- Warning tunggal: `TextMeshPro/Mobile/Distance Field` memakai
+  `#pragma enable_d3d11_debug_symbols` yang sudah deprecated. Ini warning
+  shader TMP, bukan error dan bukan konten.
+- Durasi build: 61,4 detik (inkremental)
 - Paket: `id.uabmeto.app`
 - Versi: `0.1.0` (`versionCode 1`)
 - `minSdkVersion`: 26
@@ -47,15 +57,15 @@ independen, audio, atau consent.
 - Ringkasan mesin: `Builds/Android/build-summary.json`
 
 Catatan warning: build penuh sebelumnya mencatat 3 warning TMP/IL2CPP.
-Build inkremental terakhir mencatat 0 warning karena berkas TMP yang sama
+Build inkremental 2026-11-06 mencatat 1 warning shader TMP karena berkas lain
 tidak dikompilasi ulang. Karena itu F1-25 tetap **PARTIAL** sampai build
 bersih dari nol diulang tanpa cache.
 
 ### 2.2 Build pratinjau (demo, bukan rilis)
 
 - Path: `D:\01_Uab_Meto\Builds\Android\uabmeto-f1-preview.apk`
-- Ukuran: **28.300.054 byte**
-- SHA-256: `8BAB7F4AE63AC5CC191CDEAB7DD831BE1AFAAE5CDD438CF0122B6F8DFD8F19C2`
+- Ukuran: **28.300.114 byte**
+- SHA-256: `491B5FB619F82521024B794B4A452BB2D6CF440B0855C8ECD0C5E7996E1971FE`
 - Hasil: `Succeeded`, 0 error, 4 warning
 - Build ini memuat tiga pelajaran `in_review` di `Resources/Content/preview`.
 - **Jangan** disebut build rilis dan jangan dipakai untuk gate F1.
@@ -118,7 +128,7 @@ Hasil: **62/62 lulus, 0 gagal, 0 dilewati.** Cakupan:
 
 ### 3.2 PlayMode
 
-Hasil: **14/14 lulus, 0 gagal, 0 dilewati.**
+Hasil: **19/19 lulus, 0 gagal, 0 dilewati.**
 
 - `Shell_HasFourTabsAndTwelveTopics`
 - `FixtureFlow_EnqueuesCompletion`
@@ -132,12 +142,23 @@ Hasil: **14/14 lulus, 0 gagal, 0 dilewati.**
 - `AccessibilityTests.NicknameDialog_FitsCardAndHasCancel`
 - `AccessibilityTests.LessonAndModals_TargetsAreAtLeast48Dp`
 - 5 tes tangkapan layar (`ScreenshotTests`)
+- `LayoutTests.Home_ScrollStartsAtTop` — Beranda kembali ke posisi atas
+  setelah dibangun ulang
+- `LayoutTests.Lesson_ScrollStartsAtTopOnEveryStep` — pembuka dan materi
+  selalu dibuka dari atas
+- `LayoutTests.HomeAndLesson_TextFitsInsideItsRect` — tidak ada teks
+  multi-baris yang terpotong di Beranda atau materi
+- `LayoutTests.VocabularyCards_GrowWithTheirContent` — tinggi kartu kosakata
+  mengikuti preferred height isinya
+- `LayoutTests.NicknameModal_FitsReferenceViewport` — dialog nama muat di
+  acuan 360×640 dan mendapat tinggi dari isinya
 
 PlayMode berjalan di Editor, bukan perangkat. Tes ini tidak membuktikan
 TalkBack, keyboard Android, lifecycle, atau rotasi perangkat. Percobaan
 pertama dengan D3D12 berhenti karena `d3d12: Unrecoverable GPU device
 error` sebelum hasil tes ditulis; percobaan ulang dengan `-force-d3d11`
-menghasilkan 14/14 lulus. Log: `Builds/logs/unity-playmode-final.log`.
+menghasilkan 19/19 lulus. Log: `Builds/logs/unity-playmode-layout4.log`
+(hasil: `Builds/logs/playmode-layout4-results.xml`).
 
 ### 3.3 Validator dan kontras
 
@@ -228,9 +249,16 @@ bukan dari mockup Stitch. Salinan bukti ada di
 | `f1-after-completion-360x640.png` | Banner antrean setelah simpan |
 | `f1-lesson-intro-915x412.png` | Pembuka pelajaran landscape |
 
+Seluruh tangkapan Editor di atas diambil ulang pada 2026-11-06 setelah
+stabilisasi layout. Tangkapan landscape 915×412 memakai acuan 640×360 dan
+masih berupa satu kolom yang dapat digulir, **bukan** tata letak dua kolom
+40/60 di `docs/design/screens.md` §12. Kekurangan itu dicatat pada F1-10.
+
 Tangkapan layar perangkat fisik ada di
 `docs/testing/evidence/f1-device/` dan dirinci di
-`docs/testing/f1-device-evidence.md`.
+`docs/testing/f1-device-evidence.md`. Sepuluh berkas `f1-layout-*-oppo.png`
+berasal dari verifikasi layout pratinjau di OPPO `CPH1803`; bukti ini
+menunjukkan tampilan demo, **bukan** bukti gate alur pelajaran rilis.
 
 ## 5. Uji perangkat fisik
 
@@ -269,6 +297,34 @@ dan tombol back. Tiga bug layout/input ditemukan dan diperbaiki:
    sehingga isi bertumpuk. Kartu modal sekarang memakai `VerticalLayoutGroup`
    + fitter; tombol `Batal` ditambahkan dan diuji.
 
+### 5.1 Verifikasi layout pratinjau di OPPO (demo)
+
+Perangkat: OPPO `CPH1803`, Android 8.1 (API 27), `arm64-v8a`, layar
+720×1520, densitas 320 dpi. APK yang dipasang adalah
+`uabmeto-f1-preview.apk` (SHA-256 `491B5F...71FE`), sehingga verifikasi ini
+memakai materi `in_review` dan **bukan** bukti gate pelajaran rilis.
+
+Stabilisasi layout 2026-11-06 menambahkan empat perbaikan yang diperiksa di
+perangkat ini:
+
+1. Tinggi kartu kosakata, contoh, dialog, opsi, umpan balik, ringkasan,
+   banner offline, kartu Beranda/Profil, dan modal dihitung dari isi;
+   tidak ada lagi tinggi tetap yang memotong teks.
+2. Semua daftar gulir kembali ke posisi atas setelah pindah tab, membuka
+   pelajaran, atau berpindah langkah.
+3. `DestroyChildren` menonaktifkan objek lama sebelum `Destroy`, dan
+   `RebuildLayout` memakai tiga lintasan agar tidak ada layout basi satu
+   frame.
+4. Acuan kanvas responsif: portrait 360×640, landscape 640×360, keduanya
+   dikunci ke lebar.
+
+Layar yang diperiksa dengan tangkapan layar: Beranda (banner, statistik,
+kartu pratinjau), modal pratinjau, pembuka pelajaran, materi bagian atas,
+dialog bagian bawah, latihan, umpan balik, dan ringkasan. Gulir Beranda ke
+bawah lalu pindah ke Profil dan kembali ke Beranda juga diperiksa; daftar
+kembali ke atas. Bukti: `docs/testing/evidence/f1-device/f1-layout-*-oppo.png`
+(10 berkas).
+
 Garis putih melengkung di tepi kiri bukan bagian aplikasi: garis yang sama
 terlihat di home screen sistem (panel tepi OEM). Ini tidak dihitung sebagai
 temuan UI aplikasi.
@@ -286,7 +342,7 @@ temuan UI aplikasi.
 | F1-07 outbox | PASS | `OutboxStore` + PlayMode; belum sinkron server |
 | F1-08 banner | PARTIAL | Antrean nyata; banner offline belum diuji mock |
 | F1-09 panel debug | PASS | Tidak ada panel; pemindaian APK 0 |
-| F1-10 portrait/landscape | PASS (Editor) | 360×640, 412×915, 915×412; landscape perangkat BLOCKED |
+| F1-10 portrait/landscape | PASS (Editor) | Acuan responsif 360×640 / 640×360; 360×640, 412×915, 915×412 diuji. Landscape masih satu kolom, belum tata letak dua kolom 40/60 §12; landscape perangkat BLOCKED |
 | F1-11 pelajaran validated | **BLOCKED** | 3 pelajaran `in_review`; belum ada berkas `validated` |
 | F1-12 sumber | **PARTIAL** | `SRC-SPK-001` tercatat, tetapi berasal dari self-review |
 | F1-13 reviewer | **BLOCKED** | Hanya `SPK-001 (self-review)`; belum ada reviewer independen |
@@ -301,8 +357,8 @@ temuan UI aplikasi.
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
-| F1-25 tanpa warning | PARTIAL | Build inkremental 0 warning; build penuh terakhir masih 3 warning TMP/IL2CPP |
-| F1-26 ukuran APK | PASS | 28.293.448 byte |
+| F1-25 tanpa warning | PARTIAL | Build inkremental 2026-11-06 mencatat 1 warning shader TMP; build penuh terakhir masih 3 warning TMP/IL2CPP |
+| F1-26 ukuran APK | PASS | 28.294.252 byte |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
 ## 7. Keputusan yang dikunci
@@ -326,6 +382,8 @@ temuan UI aplikasi.
 - Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.
 - Tutor AI, lima jenis latihan lain, ujian akhir, auth, dan hapus akun.
 - Audit TalkBack, uji font sistem 1.3×/2.0×, dan uji landscape perangkat.
+- Tata letak landscape dua kolom 40/60 sesuai `docs/design/screens.md` §12;
+  F1 masih memakai satu kolom yang dapat digulir.
 - Build rilis tanpa warning dan signing key rilis.
 
 ## 9. Risiko dan tindakan berikutnya

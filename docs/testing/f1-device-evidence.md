@@ -1,6 +1,6 @@
 # Bukti Uji Perangkat F1
 
-Tanggal: 2026-11-03 (WITA)
+Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-06 (WITA)
 Status: **PARTIAL** — instalasi, peluncuran, UI dasar, dan tombol back lulus;
 alur pelajaran rilis, offline, landscape, dan skala font belum.
 
@@ -57,6 +57,32 @@ Semua tangkapan layar berasal dari perangkat, bukan mockup:
 
 Catatan: salinan ini di-commit sebagai bukti; berkas asli dari perangkat ada
 di `Builds/device/` yang diabaikan Git. Tangkapan layar bukan aset rilis.
+
+### 3.1 Verifikasi layout pratinjau di OPPO (demo)
+
+Tanggal: 2026-11-06. Perangkat: OPPO `CPH1803`, Android 8.1 (API 27),
+`arm64-v8a`, layar 720×1520, densitas 320 dpi. APK: `uabmeto-f1-preview.apk`
+(SHA-256 `491B5FB619F82521024B794B4A452BB2D6CF440B0855C8ECD0C5E7996E1971FE`).
+
+Verifikasi ini memakai materi `in_review` di mode pratinjau berlabel. Hasilnya
+menunjukkan tampilan demo, **bukan** bukti gate alur pelajaran rilis.
+
+| Berkas | Isi |
+|---|---|
+| `f1-layout-home-oppo.png` | Beranda: banner, statistik, kartu pratinjau |
+| `f1-layout-preview-modal-oppo.png` | Modal konfirmasi pratinjau |
+| `f1-layout-lesson-intro-oppo.png` | Pembuka pelajaran pratinjau |
+| `f1-layout-lesson-material-oppo.png` | Materi bagian atas |
+| `f1-layout-material-bottom-oppo.png` | Dialog bagian bawah |
+| `f1-layout-exercise-oppo.png` | Latihan pilihan ganda |
+| `f1-layout-feedback-oppo.png` | Umpan balik |
+| `f1-layout-summary-oppo.png` | Ringkasan pratinjau |
+| `f1-layout-home-scrolled-oppo.png` | Beranda setelah digulir ke bawah |
+| `f1-layout-home-reset-oppo.png` | Beranda kembali ke atas setelah pindah tab |
+
+Yang diperiksa: kartu tumbuh mengikuti isi, teks tidak terpotong, semua
+daftar gulir mulai dari atas, dan posisi gulir Beranda kembali ke atas
+setelah Beranda → Profil → Beranda.
 
 ## 4. Temuan dan perbaikan
 
