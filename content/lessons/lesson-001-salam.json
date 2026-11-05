@@ -1,0 +1,225 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "lesson-001-salam",
+  "topicId": "topic-01-salam",
+  "order": 1,
+  "xp": 10,
+  "estimatedMinutes": 5,
+  "title": "Sapaan waktu",
+  "summary": "Mengenali sapaan waktu pagi, siang, dan malam, lalu menjawab sapaan dengan baik.",
+  "status": "in_review",
+  "validation": {
+    "reviewedBy": "SPK-001 (self-review)",
+    "reviewedAt": "2026-11-05",
+    "sources": [
+      {
+        "id": "SRC-SPK-001",
+        "citation": "Elisitasi penutur SPK-001 (Iyo), 2026-11-05; pengetahuan dan pemakaian Bahasa Dawan sehari-hari, varian TTU/Kefamenanu."
+      }
+    ],
+    "audioLicense": null,
+    "consentRef": null
+  },
+  "objectives": [
+    "Mengenali sapaan waktu pagi, siang, dan malam.",
+    "Menjawab sapaan dengan \"baik\".",
+    "Membedakan sapaan kepada orang lebih tua dan teman sebaya."
+  ],
+  "vocabulary": [
+    {
+      "id": "vocab-001",
+      "dawan": "Noka",
+      "indonesian": "pagi",
+      "notes": "ELC-101. Noka = pagi; noka-noka = pagi-pagi (pengulangan). Dalam ucapan sering disingkat nok-noka.",
+      "audio": null
+    },
+    {
+      "id": "vocab-002",
+      "dawan": "Man se na'heon",
+      "indonesian": "siang",
+      "notes": "ELC-102. Ejaan penutur dipertahankan; ortografi dirapikan setelah review.",
+      "audio": null
+    },
+    {
+      "id": "vocab-003",
+      "dawan": "fai'jen",
+      "indonesian": "malam",
+      "notes": "ELC-103. Ejaan penutur dipertahankan; ortografi dirapikan setelah review.",
+      "audio": null
+    },
+    {
+      "id": "vocab-004",
+      "dawan": "selamat pagi Am",
+      "indonesian": "selamat pagi (kepada bapak atau orang tua laki-laki)",
+      "notes": "ELC-104, dipecah menjadi dua bentuk. Am untuk bapak (laki-laki). Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    },
+    {
+      "id": "vocab-005",
+      "dawan": "selamat pagi bae",
+      "indonesian": "selamat pagi (kepada teman sebaya)",
+      "notes": "ELC-105. bae = saudara/sepupu; bisa juga untuk kakak dan adik. Kakak: tataf, adik: ole. Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    },
+    {
+      "id": "vocab-006",
+      "dawan": "selamat siang",
+      "indonesian": "selamat siang",
+      "notes": "ELC-106. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    },
+    {
+      "id": "vocab-007",
+      "dawan": "selamat malam",
+      "indonesian": "selamat malam",
+      "notes": "ELC-107. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    },
+    {
+      "id": "vocab-008",
+      "dawan": "mail kabar on'me?",
+      "indonesian": "apa kabar?",
+      "notes": "ELC-108. Perlu klarifikasi reviewer: bentuk ini belum dikonfirmasi ulang. Ejaan penutur dipertahankan.",
+      "audio": null
+    },
+    {
+      "id": "vocab-009",
+      "dawan": "naleok",
+      "indonesian": "baik",
+      "notes": "ELC-109. Jawaban sapaan.",
+      "audio": null
+    },
+    {
+      "id": "vocab-010",
+      "dawan": "au",
+      "indonesian": "saya",
+      "notes": "ELC-110. Kata ganti orang pertama.",
+      "audio": null
+    },
+    {
+      "id": "vocab-011",
+      "dawan": "naleok",
+      "indonesian": "bagus",
+      "notes": "ELC-111. Bentuk yang sama dengan \"baik\" pada lembar elisitasi.",
+      "audio": null
+    },
+    {
+      "id": "vocab-012",
+      "dawan": "selamat pagi Aina",
+      "indonesian": "selamat pagi (kepada mama atau orang tua perempuan)",
+      "notes": "ELC-104, dipecah menjadi dua bentuk. Aina untuk mama (perempuan). Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    }
+  ],
+  "dialogues": [
+    {
+      "id": "dlg-001",
+      "title": "Bertemu pada pagi hari",
+      "lines": [
+        {
+          "speaker": "A",
+          "dawan": "selamat pagi.",
+          "indonesian": "Selamat pagi.",
+          "audio": null
+        },
+        {
+          "speaker": "B",
+          "dawan": "selamat pagi. Mail kabar on'me?",
+          "indonesian": "Selamat pagi. Apa kabar?",
+          "audio": null
+        },
+        {
+          "speaker": "A",
+          "dawan": "au naleok",
+          "indonesian": "Saya baik.",
+          "audio": null
+        },
+        {
+          "speaker": "B",
+          "dawan": "neo naleok jo",
+          "indonesian": "Bagus.",
+          "audio": null
+        }
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "id": "ex-001",
+      "type": "multiple_choice",
+      "skill": "reading",
+      "prompt": "Apa arti kata \"Noka\"?",
+      "explanation": "Noka berarti pagi. Bentuk noka-noka berarti pagi-pagi.",
+      "content": {
+        "options": [
+          {
+            "id": "opt-a",
+            "text": "pagi"
+          },
+          {
+            "id": "opt-b",
+            "text": "siang"
+          },
+          {
+            "id": "opt-c",
+            "text": "malam"
+          },
+          {
+            "id": "opt-d",
+            "text": "sekarang"
+          }
+        ],
+        "correctOptionId": "opt-a"
+      }
+    },
+    {
+      "id": "ex-002",
+      "type": "multiple_choice",
+      "skill": "reading",
+      "prompt": "Sapaan mana yang dipakai pada malam hari?",
+      "explanation": "Selamat malam dipakai pada malam hari. Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia.",
+      "content": {
+        "options": [
+          {
+            "id": "opt-a",
+            "text": "selamat malam"
+          },
+          {
+            "id": "opt-b",
+            "text": "selamat siang"
+          },
+          {
+            "id": "opt-c",
+            "text": "selamat pagi bae"
+          },
+          {
+            "id": "opt-d",
+            "text": "Noka"
+          }
+        ],
+        "correctOptionId": "opt-a"
+      }
+    }
+  ],
+  "examples": [
+    {
+      "id": "exm-101",
+      "dawan": "selamat siang, mail kabar on'me?",
+      "indonesian": "Selamat siang, apa kabar?",
+      "context": "Menyapa pada siang hari.",
+      "status": "in_review",
+      "sourceRef": "SRC-SPK-001",
+      "audio": null
+    },
+    {
+      "id": "exm-102",
+      "dawan": "selamat malam, au kabar naleok",
+      "indonesian": "Selamat malam, saya baik.",
+      "context": "Menjawab sapaan pada malam hari. Perlu klarifikasi reviewer: bentuk ini belum dikonfirmasi ulang (ELC-117).",
+      "status": "in_review",
+      "sourceRef": "SRC-SPK-001",
+      "audio": null
+    }
+  ],
+  "notes": "Status in_review. Self-review SPK-001 (Iyo); belum ada reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001, bukan salinan kamus atau web. Audio dan izin belum ada. Ejaan penutur dipertahankan; ortografi ’/ʔ menunggu reviewer. Item perlu klarifikasi: ELC-108, ELC-115, ELC-117."
+}

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.1.0",
-  "id": "lesson-001-salam",
+  "id": "lesson-fixture-salam",
   "topicId": "topic-01-salam",
-  "order": 1,
+  "order": 99,
   "xp": 10,
   "estimatedMinutes": 5,
   "title": "Salam dan sapaan",

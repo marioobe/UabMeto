@@ -1,0 +1,218 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "lesson-002-salam-bertemu",
+  "topicId": "topic-01-salam",
+  "order": 2,
+  "xp": 10,
+  "estimatedMinutes": 5,
+  "title": "Bertemu dan berpisah",
+  "summary": "Mengenali ungkapan kedatangan dan perpisahan, lalu memakainya pada dialog singkat.",
+  "status": "in_review",
+  "validation": {
+    "reviewedBy": "SPK-001 (self-review)",
+    "reviewedAt": "2026-11-05",
+    "sources": [
+      {
+        "id": "SRC-SPK-001",
+        "citation": "Elisitasi penutur SPK-001 (Iyo), 2026-11-05; pengetahuan dan pemakaian Bahasa Dawan sehari-hari, varian TTU/Kefamenanu."
+      }
+    ],
+    "audioLicense": null,
+    "consentRef": null
+  },
+  "objectives": [
+    "Mengenali ungkapan kedatangan dan perpisahan.",
+    "Menggunakan \"sampai jumpa\" pada konteks yang tepat.",
+    "Membaca dialog singkat tentang bertemu dan berpisah."
+  ],
+  "vocabulary": [
+    {
+      "id": "vocab-001",
+      "dawan": "um",
+      "indonesian": "datang",
+      "notes": "ELC-201.",
+      "audio": null
+    },
+    {
+      "id": "vocab-002",
+      "dawan": "faen",
+      "indonesian": "pulang",
+      "notes": "ELC-202.",
+      "audio": null
+    },
+    {
+      "id": "vocab-003",
+      "dawan": "nao",
+      "indonesian": "pergi",
+      "notes": "ELC-203. nao = pergi/berangkat (mulai jalan); fin = terus/melanjutkan perjalanan. \"Saya pergi sekarang\" = au nao es le i (harfiah); yang biasa dipakai: au nao ben/fe.",
+      "audio": null
+    },
+    {
+      "id": "vocab-004",
+      "dawan": "taeok",
+      "indonesian": "bertemu",
+      "notes": "ELC-204.",
+      "audio": null
+    },
+    {
+      "id": "vocab-005",
+      "dawan": "na ta'eko ten",
+      "indonesian": "sampai jumpa",
+      "notes": "ELC-205. Ungkapan perpisahan. Ejaan penutur dipertahankan.",
+      "audio": null
+    },
+    {
+      "id": "vocab-006",
+      "dawan": "selamat datang",
+      "indonesian": "selamat datang",
+      "notes": "ELC-206. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    },
+    {
+      "id": "vocab-007",
+      "dawan": "selamat jalan",
+      "indonesian": "selamat jalan",
+      "notes": "ELC-207. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    },
+    {
+      "id": "vocab-008",
+      "dawan": "selamat tinggal",
+      "indonesian": "selamat tinggal",
+      "notes": "ELC-208. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    },
+    {
+      "id": "vocab-009",
+      "dawan": "m'sa",
+      "indonesian": "juga",
+      "notes": "ELC-209. Ejaan penutur dipertahankan.",
+      "audio": null
+    },
+    {
+      "id": "vocab-010",
+      "dawan": "neon'ba",
+      "indonesian": "sekarang",
+      "notes": "ELC-210. neon'ba = harfiah \"hari ini\"; maknanya sama dengan \"sekarang\" dalam konteks ini. Variasi: es le ije, juga berarti sekarang.",
+      "audio": null
+    },
+    {
+      "id": "vocab-011",
+      "dawan": "okan",
+      "indonesian": "dia",
+      "notes": "ELC-211. okan = orang ketiga (dia), dipakai di belakang kalimat, misalnya au nao okan = saya pergi dengan dia. na/bi = penanda sebelum nama: na = laki-laki (na rio), bi = perempuan (bi selfi). Perlu klarifikasi reviewer: bentuk ini belum dikonfirmasi ulang.",
+      "audio": null
+    }
+  ],
+  "dialogues": [
+    {
+      "id": "dlg-001",
+      "title": "Bertemu dan berpamitan",
+      "lines": [
+        {
+          "speaker": "A",
+          "dawan": "selamat datang",
+          "indonesian": "Selamat datang.",
+          "audio": null
+        },
+        {
+          "speaker": "B",
+          "dawan": "selamat datang-m'sa",
+          "indonesian": "Selamat datang juga.",
+          "audio": null
+        },
+        {
+          "speaker": "A",
+          "dawan": "au fin jen",
+          "indonesian": "Saya terus dulu.",
+          "audio": null
+        },
+        {
+          "speaker": "B",
+          "dawan": "na ta'eko ten",
+          "indonesian": "Sampai jumpa.",
+          "audio": null
+        }
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "id": "ex-001",
+      "type": "multiple_choice",
+      "skill": "reading",
+      "prompt": "Apa arti ungkapan \"na ta'eko ten\"?",
+      "explanation": "na ta'eko ten berarti sampai jumpa, dipakai saat berpisah.",
+      "content": {
+        "options": [
+          {
+            "id": "opt-a",
+            "text": "sampai jumpa"
+          },
+          {
+            "id": "opt-b",
+            "text": "selamat datang"
+          },
+          {
+            "id": "opt-c",
+            "text": "saya pulang dulu"
+          },
+          {
+            "id": "opt-d",
+            "text": "bertemu"
+          }
+        ],
+        "correctOptionId": "opt-a"
+      }
+    },
+    {
+      "id": "ex-002",
+      "type": "multiple_choice",
+      "skill": "reading",
+      "prompt": "Ungkapan mana yang dipakai saat berpamitan pulang?",
+      "explanation": "au faen jen berarti saya pulang dulu, dipakai sebagai sapaan pamit sehari-hari.",
+      "content": {
+        "options": [
+          {
+            "id": "opt-a",
+            "text": "au faen jen"
+          },
+          {
+            "id": "opt-b",
+            "text": "selamat datang"
+          },
+          {
+            "id": "opt-c",
+            "text": "um"
+          },
+          {
+            "id": "opt-d",
+            "text": "taeok"
+          }
+        ],
+        "correctOptionId": "opt-a"
+      }
+    }
+  ],
+  "examples": [
+    {
+      "id": "exm-101",
+      "dawan": "au faen jen.",
+      "indonesian": "Saya pulang dulu.",
+      "context": "Berpamitan pulang. \"Dulu\" lebih sering dipakai dalam sapaan sehari-hari; \"sekarang\" (es le ije) dipakai untuk memberi tahu bahwa seseorang mau pulang sekarang.",
+      "status": "in_review",
+      "sourceRef": "SRC-SPK-001",
+      "audio": null
+    },
+    {
+      "id": "exm-102",
+      "dawan": "au u'eok okan",
+      "indonesian": "Saya bertemu dia.",
+      "context": "Bertemu seseorang. Perlu klarifikasi reviewer: bentuk ini belum dikonfirmasi ulang (ELC-217).",
+      "status": "in_review",
+      "sourceRef": "SRC-SPK-001",
+      "audio": null
+    }
+  ],
+  "notes": "Status in_review. Self-review SPK-001 (Iyo); belum ada reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001, bukan salinan kamus atau web. Audio dan izin belum ada. Ejaan penutur dipertahankan; ortografi ’/ʔ menunggu reviewer. Item perlu klarifikasi: ELC-211, ELC-217. Variasi au fin fe dicatat di lembar elisitasi."
+}

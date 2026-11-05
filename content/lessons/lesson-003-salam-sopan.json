@@ -1,0 +1,211 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "lesson-003-salam-sopan",
+  "topicId": "topic-01-salam",
+  "order": 3,
+  "xp": 10,
+  "estimatedMinutes": 5,
+  "title": "Terima kasih, maaf, permisi",
+  "summary": "Menggunakan terima kasih, maaf, dan permisi pada situasi sehari-hari.",
+  "status": "in_review",
+  "validation": {
+    "reviewedBy": "SPK-001 (self-review)",
+    "reviewedAt": "2026-11-05",
+    "sources": [
+      {
+        "id": "SRC-SPK-001",
+        "citation": "Elisitasi penutur SPK-001 (Iyo), 2026-11-05; pengetahuan dan pemakaian Bahasa Dawan sehari-hari, varian TTU/Kefamenanu."
+      }
+    ],
+    "audioLicense": null,
+    "consentRef": null
+  },
+  "objectives": [
+    "Menggunakan terima kasih dan jawabannya.",
+    "Meminta maaf dan permisi pada situasi sehari-hari.",
+    "Membaca dialog singkat tentang kesantunan."
+  ],
+  "vocabulary": [
+    {
+      "id": "vocab-001",
+      "dawan": "sium hit manekan",
+      "indonesian": "terima kasih",
+      "notes": "ELC-301.",
+      "audio": null
+    },
+    {
+      "id": "vocab-002",
+      "dawan": "naleok",
+      "indonesian": "sama-sama",
+      "notes": "ELC-302. Jawaban terima kasih. Perlu klarifikasi reviewer: bentuk ini belum dikonfirmasi ulang.",
+      "audio": null
+    },
+    {
+      "id": "vocab-003",
+      "dawan": "maaf",
+      "indonesian": "maaf",
+      "notes": "ELC-303. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    },
+    {
+      "id": "vocab-004",
+      "dawan": "ana ije",
+      "indonesian": "permisi",
+      "notes": "ELC-304. Ungkapan permisi yang merendah; arti harfiah: \"ikut sini\".",
+      "audio": null
+    },
+    {
+      "id": "vocab-005",
+      "dawan": "kasa-sa'nes",
+      "indonesian": "tidak apa-apa",
+      "notes": "ELC-305. Ejaan penutur dipertahankan.",
+      "audio": null
+    },
+    {
+      "id": "vocab-006",
+      "dawan": "tolong",
+      "indonesian": "tolong",
+      "notes": "ELC-306. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "audio": null
+    },
+    {
+      "id": "vocab-007",
+      "dawan": "tem",
+      "indonesian": "silakan",
+      "notes": "ELC-307. Contoh: tam tem = silakan masuk.",
+      "audio": null
+    },
+    {
+      "id": "vocab-008",
+      "dawan": "ha'a",
+      "indonesian": "ya",
+      "notes": "ELC-308. Jawaban afirmatif. Ejaan penutur dipertahankan.",
+      "audio": null
+    },
+    {
+      "id": "vocab-009",
+      "dawan": "kafa",
+      "indonesian": "tidak",
+      "notes": "ELC-309. Jawaban negatif.",
+      "audio": null
+    },
+    {
+      "id": "vocab-010",
+      "dawan": "tam",
+      "indonesian": "masuk",
+      "notes": "ELC-310.",
+      "audio": null
+    }
+  ],
+  "dialogues": [
+    {
+      "id": "dlg-001",
+      "title": "Permisi dan terima kasih",
+      "lines": [
+        {
+          "speaker": "A",
+          "dawan": "tabe",
+          "indonesian": "Permisi.",
+          "audio": null
+        },
+        {
+          "speaker": "B",
+          "dawan": "tem",
+          "indonesian": "Silakan.",
+          "audio": null
+        },
+        {
+          "speaker": "A",
+          "dawan": "sium hit manekan",
+          "indonesian": "Terima kasih.",
+          "audio": null
+        },
+        {
+          "speaker": "B",
+          "dawan": "naleok",
+          "indonesian": "Sama-sama.",
+          "audio": null
+        }
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "id": "ex-001",
+      "type": "multiple_choice",
+      "skill": "reading",
+      "prompt": "Apa arti \"sium hit manekan\"?",
+      "explanation": "sium hit manekan berarti terima kasih.",
+      "content": {
+        "options": [
+          {
+            "id": "opt-a",
+            "text": "terima kasih"
+          },
+          {
+            "id": "opt-b",
+            "text": "sama-sama"
+          },
+          {
+            "id": "opt-c",
+            "text": "maaf"
+          },
+          {
+            "id": "opt-d",
+            "text": "permisi"
+          }
+        ],
+        "correctOptionId": "opt-a"
+      }
+    },
+    {
+      "id": "ex-002",
+      "type": "multiple_choice",
+      "skill": "reading",
+      "prompt": "Jawaban apa yang dipakai setelah seseorang mengucapkan terima kasih?",
+      "explanation": "Pada lembar elisitasi, naleok dicatat sebagai jawaban \"sama-sama\" (ELC-302). Perlu klarifikasi reviewer.",
+      "content": {
+        "options": [
+          {
+            "id": "opt-a",
+            "text": "naleok"
+          },
+          {
+            "id": "opt-b",
+            "text": "sium hit manekan"
+          },
+          {
+            "id": "opt-c",
+            "text": "kafa"
+          },
+          {
+            "id": "opt-d",
+            "text": "tam"
+          }
+        ],
+        "correctOptionId": "opt-a"
+      }
+    }
+  ],
+  "examples": [
+    {
+      "id": "exm-101",
+      "dawan": "maaf, au ana ije",
+      "indonesian": "Maaf, saya permisi.",
+      "context": "Ingin keluar atau lewat. Ungkapan permisi yang merendah; arti harfiah \"ikut sini\". Bagian \"maaf\" adalah kata serapan dari Bahasa Indonesia.",
+      "status": "in_review",
+      "sourceRef": "SRC-SPK-001",
+      "audio": null
+    },
+    {
+      "id": "exm-102",
+      "dawan": "tem he tam",
+      "indonesian": "Silakan masuk.",
+      "context": "Mempersilakan masuk. Variasi: tam tem. Keduanya untuk mempersilakan orang masuk.",
+      "status": "in_review",
+      "sourceRef": "SRC-SPK-001",
+      "audio": null
+    }
+  ],
+  "notes": "Status in_review. Self-review SPK-001 (Iyo); belum ada reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001, bukan salinan kamus atau web. Audio dan izin belum ada. Ejaan penutur dipertahankan; ortografi ’/ʔ menunggu reviewer. Item perlu klarifikasi: ELC-302. Catatan dialog: tabe dipakai di acara formal (ELC-311)."
+}

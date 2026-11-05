@@ -15,6 +15,17 @@ sebelum diperiksa penutur lokal yang memahami varian TTU.
 Satu orang boleh merangkap, tetapi **tidak boleh** meninjau pekerjaannya
 sendiri tanpa pemeriksaan kedua.
 
+## 1.1 Elisitasi penutur
+
+Bila sumber tertulis belum memadai, teks Dawan dikumpulkan lewat lembar
+elisitasi di `content/elicitation/`. Lembar ini tidak mengarang teks; ia
+mencatat bentuk yang diberikan penutur, lalu diperiksa reviewer.
+
+- Panduan: `content/elicitation/README.md`
+- Contoh paket: `content/elicitation/topic-01-salam/`
+- Hasil elisitasi tetap `in_review` sampai reviewer menandatangani
+  `reviewer-sheet.md`.
+
 ## 2. Status
 
 ```

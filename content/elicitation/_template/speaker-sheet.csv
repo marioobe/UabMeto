@@ -1,0 +1,2 @@
+item_id,lesson_id,topic_id,item_type,item_ref,indonesian_prompt,context_register,dawan_response,dawan_variant,usage_note,pronunciation_note,speaker_status,speaker_ref,audio_recorded,consent_ref,review_status,reviewer_ref,reviewed_at,notes
+"ELC-000","lesson-000-contoh","topic-00-contoh","vocabulary","vocab-000","[contoh: kata atau frasa]","[konteks pemakaian]","","","","","","","","","PENDING","","","HAPUS BARIS CONTOH INI"
