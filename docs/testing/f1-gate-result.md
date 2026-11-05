@@ -1,32 +1,43 @@
 # Laporan Gate F1
 
-Tanggal: 2026-11-03 (WITA)
+Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-05 (WITA)
 Lingkungan: Windows, Unity `6000.6.0f1`, Android build-tools `36.1.0`.
 Status gate: **TIDAK LULUS.** Build, tes UI, dan verifikasi dasar perangkat
 fisik lulus; syarat konten tervalidasi, alur pelajaran rilis, aksesibilitas
 penuh, dan sisa gate perangkat belum terpenuhi.
+
+Pembaruan 2026-11-05: tiga pelajaran Topik 1 sudah diisi dari elisitasi
+`SPK-001` dan berstatus **`in_review`** (bukan `validated`). Aplikasi punya
+mode pratinjau berlabel "Pratinjau — belum divalidasi" yang tidak mencatat
+progres atau XP. Mode ini tidak mengubah status gate: belum ada reviewer
+independen, audio, atau consent.
 
 ## 1. Ringkasan keputusan
 
 | Area | Hasil |
 |---|---|
 | Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
-| Tes EditMode | **PASS** — 56 lulus, 0 gagal, 0 dilewati |
-| Tes PlayMode | **PASS** — 12 lulus, 0 gagal, 0 dilewati |
+| Build pratinjau | **PASS** — `Builds/Android/uabmeto-f1-preview.apk` (demo, memuat `in_review`) |
+| Tes EditMode | **PASS** — 62 lulus, 0 gagal, 0 dilewati |
+| Tes PlayMode | **PASS** — 14 lulus, 0 gagal, 0 dilewati |
 | Validator konten | **PASS** — 36/36 tes; CLI 0 error, 4 warning audio |
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
 | Target sentuh F1 | **PASS (UI F1)** — 4/4 tes aksesibilitas/layout |
+| Materi Topik 1 | **IN_REVIEW** — 3 pelajaran, 50 item elisitasi `SPK-001`, self-review |
 | Konten tervalidasi | **BLOCKED** — belum ada pelajaran `validated` |
 | Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-07 lulus; D1-03..D1-06 belum |
 | Gate F1 | **TIDAK LULUS** |
 
 ## 2. Build
 
+### 2.1 Build rilis
+
 - Path: `D:\01_Uab_Meto\Builds\Android\uabmeto-f1.apk`
-- Ukuran: **28.278.020 byte**
-- SHA-256: `D4416E0250AD0F188A45B142BE6A1764850D4C4BD0D6BF18A0FE3AF97BA3C465`
-- Hasil: `Succeeded`, 0 error, 3 warning
-- Durasi build: 200,9 detik
+- Ukuran: **28.293.448 byte**
+- SHA-256: `789CF94076309DCBFD4C1DC90D504653CED81B87BC7022F709484289DD3D9E09`
+- Hasil: `Succeeded`, 0 error, 0 warning pada log build inkremental
+  terakhir (`Builds/logs/unity-build-release5.log`)
+- Durasi build: 51,7 detik (inkremental)
 - Paket: `id.uabmeto.app`
 - Versi: `0.1.0` (`versionCode 1`)
 - `minSdkVersion`: 26
@@ -34,22 +45,56 @@ penuh, dan sisa gate perangkat belum terpenuhi.
 - ABI: `arm64-v8a` saja
 - Backend: IL2CPP Release
 - Ringkasan mesin: `Builds/Android/build-summary.json`
-- Log: `Builds/logs/f1-build-modal-fix.log`
 
-Tiga warning build semuanya berasal dari IL2CPP/TMP: `TMP_TextParsingUtilities`
-cctor dan dua metode `GenerateTextMesh` diberi berkas C++ sendiri karena besar.
-Tidak ada error kompilasi dan tidak ada warning kode proyek. Karena kriteria
-F1-25 menyebut "tanpa warning", butir itu **belum** boleh ditutup.
+Catatan warning: build penuh sebelumnya mencatat 3 warning TMP/IL2CPP.
+Build inkremental terakhir mencatat 0 warning karena berkas TMP yang sama
+tidak dikompilasi ulang. Karena itu F1-25 tetap **PARTIAL** sampai build
+bersih dari nol diulang tanpa cache.
 
-Pemeriksaan APK:
+### 2.2 Build pratinjau (demo, bukan rilis)
+
+- Path: `D:\01_Uab_Meto\Builds\Android\uabmeto-f1-preview.apk`
+- Ukuran: **28.300.054 byte**
+- SHA-256: `8BAB7F4AE63AC5CC191CDEAB7DD831BE1AFAAE5CDD438CF0122B6F8DFD8F19C2`
+- Hasil: `Succeeded`, 0 error, 4 warning
+- Build ini memuat tiga pelajaran `in_review` di `Resources/Content/preview`.
+- **Jangan** disebut build rilis dan jangan dipakai untuk gate F1.
+
+### 2.3 Pemeriksaan isi APK
+
+Pemeriksaan dilakukan dengan membuka zip APK dan memindai isi tiap entry
+(termasuk `global-metadata.dat` dan aset Unity), bukan hanya nama berkas.
+
+| String | `uabmeto-f1.apk` | `uabmeto-f1-preview.apk` |
+|---|---|---|
+| `lesson-001-salam` | tidak ada | ada |
+| `lesson-002-salam-bertemu` | tidak ada | ada |
+| `lesson-003-salam-sopan` | tidak ada | ada |
+| `mail kabar on'me` | tidak ada | ada |
+| `sium hit manekan` | tidak ada | ada |
+| `SRC-SPK-001` | tidak ada | ada |
+| `na ta'eko ten` | tidak ada | ada |
+| `PRATINJAU` | hanya di `global-metadata.dat` (literal kode UI) | hanya di `global-metadata.dat` |
+
+Kesimpulan: build rilis **tidak** memuat materi `in_review`, teks Dawan,
+ID pelajaran, atau ID sumber. String label `PRATINJAU` tetap ada karena
+merupakan literal kode UI, bukan konten; saat tidak ada pelajaran
+pratinjau, kartu pratinjau tidak pernah dirender.
+
+String `UNVALIDATED`, `PLACEHOLDER`, dan `FIXTUR PENGEMBANGAN` juga hanya
+muncul di `global-metadata.dat` sebagai literal kode (pemeriksaan status dan
+label UI fixture). Tidak ada token placeholder atau teks fixture di aset
+konten, dan tidak ada pelajaran fixture di APK (`lesson-fixture-salam`
+absen).
+
+Pemeriksaan lain:
 
 - `aapt dump badging` mengonfirmasi paket, versi, minSdk 26, targetSdk 36,
   dan label `Uab Meto`.
 - `aapt list` hanya memuat `lib/arm64-v8a/` (tidak ada ABI lain).
-- Tidak ada `lesson-001-salam`, `PLACEHOLDER-DWN`, `UNVALIDATED`, atau teks
-  fixture `FIXTUR PENGEMBANGAN` di isi APK.
-- `topics.json` ada di aset build; `Resources/Content/lessons` kosong, jadi
-  build rilis menampilkan empty state.
+- `topics.json` ada di aset build; `Resources/Content/lessons` dan
+  `Resources/Content/preview` hanya berisi `.gitkeep` setelah
+  `F1Setup.SyncContent(false)`, jadi build rilis menampilkan empty state.
 - Pemindaian APK untuk pola kredensial (`AIza...`, private key,
   `service_account`, `client_secret`, `SUPABASE_SERVICE_ROLE`, `sk-...`)
   menghasilkan 0 temuan. Ini bukan jaminan keamanan menyeluruh.
@@ -58,12 +103,14 @@ Pemeriksaan APK:
 
 ### 3.1 EditMode
 
-Hasil: **56/56 lulus, 0 gagal, 0 dilewati.** Cakupan:
+Hasil: **62/62 lulus, 0 gagal, 0 dilewati.** Cakupan:
 
 - `TopicPathTests` — 12 ID topik persis PRD, tanpa topik ujian, tanpa label
   dialek luar TTU di UI/registry.
 - `ContentRepositoryTests` — empty state, validated/published, penolakan
-  UNVALIDATED, placeholder, dan contoh kosong.
+  UNVALIDATED, placeholder, contoh kosong, serta gate pratinjau:
+  `in_review` hanya masuk `PreviewLessons`, `draft`/placeholder/tanpa sumber
+  ditolak, dan pratinjau bisa dimatikan lewat satu parameter.
 - `LocalStoreTests` — nickname 3–20, persistensi, XP tertunda idempoten,
   outbox dan rekonsiliasi.
 - `PublishGateTests`, `SyncReconcilerTests`, `XpAwardPolicyTests`,
@@ -71,11 +118,15 @@ Hasil: **56/56 lulus, 0 gagal, 0 dilewati.** Cakupan:
 
 ### 3.2 PlayMode
 
-Hasil: **12/12 lulus, 0 gagal, 0 dilewati.**
+Hasil: **14/14 lulus, 0 gagal, 0 dilewati.**
 
 - `Shell_HasFourTabsAndTwelveTopics`
 - `FixtureFlow_EnqueuesCompletion`
 - `PendingOutbox_ShowsSyncBanner` — banner antrean tampil dari outbox nyata
+- `PreviewShellViewTests.Home_ShowsPreviewBadgeAndTopicStatus` — kartu
+  pratinjau dan status topik berlabel "Pratinjau"
+- `PreviewShellViewTests.PreviewFlow_DoesNotRecordProgressOrXp` — alur
+  pratinjau selesai tanpa outbox, XP, atau penanda selesai
 - `AccessibilityTests.HomeAndProfile_TargetsAreAtLeast48Dp`
 - `AccessibilityTests.Profile_IdentityCardFitsContentAndScrollIsDraggable`
 - `AccessibilityTests.NicknameDialog_FitsCardAndHasCancel`
@@ -86,7 +137,7 @@ PlayMode berjalan di Editor, bukan perangkat. Tes ini tidak membuktikan
 TalkBack, keyboard Android, lifecycle, atau rotasi perangkat. Percobaan
 pertama dengan D3D12 berhenti karena `d3d12: Unrecoverable GPU device
 error` sebelum hasil tes ditulis; percobaan ulang dengan `-force-d3d11`
-menghasilkan 12/12 lulus. Log: `Builds/logs/playmode-banner2.log`.
+menghasilkan 14/14 lulus. Log: `Builds/logs/unity-playmode-final.log`.
 
 ### 3.3 Validator dan kontras
 
@@ -98,6 +149,63 @@ node tools/design/contrast.mjs  12/12 pasangan PASS
 
 4 warning validator adalah audio contoh yang belum ada; bukan error dan
 bukan konten terbit.
+
+### 3.4 Materi Topik 1 dan mode pratinjau
+
+Sumber: `content/elicitation/topic-01-salam/speaker-sheet-v2.csv`
+(50 item, `SPK-001`, 2026-11-05, semua `ADA`, semua `REVIEWED`).
+`SPK-001` adalah Iyo, pengembang aplikasi, yang mengisi lembar dari
+pengetahuan dan pemakaian Bahasa Dawan sehari-hari — bukan salinan kamus
+atau web. Pencocokan dengan kamus Tafenpah hanya pengecekan silang, bukan
+sumber, dan tidak dicatat sebagai sumber.
+
+Tiga berkas pelajaran sudah dibuat dan lolos validator:
+
+| Berkas | Status | Kosakata | Dialog | Latihan | Contoh |
+|---|---|---|---|---|---|
+| `content/lessons/lesson-001-salam.json` | `in_review` | 12 | 4 baris | 2 MCQ | 2 |
+| `content/lessons/lesson-002-salam-bertemu.json` | `in_review` | 11 | 4 baris | 2 MCQ | 2 |
+| `content/lessons/lesson-003-salam-sopan.json` | `in_review` | 10 | 4 baris | 2 MCQ | 2 |
+
+Catatan penting:
+
+- Semua status tetap **`in_review`**. `reviewedBy` berisi
+  `"SPK-001 (self-review)"`; ini **bukan** reviewer independen, sehingga
+  tidak boleh naik ke `validated`.
+- Sumber terdaftar sebagai `SRC-SPK-001` di `content/references/sources.csv`.
+- 9 entri lembar elisitasi identik dengan kata serapan Bahasa Indonesia
+  (`ELC-106`, `107`, `112`, `206`, `207`, `208`, `212`, `303`, `306`);
+  catatan di konten menyatakan bentuk Dawan aslinya belum dipastikan.
+- `ELC-104` dipecah menjadi `selamat pagi Am` dan `selamat pagi Aina`.
+- 13 entri memakai apostrof ASCII `'`; normalisasi ortografi `’`/`ʔ`
+  menunggu reviewer.
+- Item yang perlu klarifikasi reviewer: `ELC-108`, `ELC-115`, `ELC-117`,
+  `ELC-211`, `ELC-217`, `ELC-302`.
+- Tidak ada audio dan tidak ada `consentRef`; kartu kosakata menampilkan
+  "Audio Belum Tersedia".
+
+Mode pratinjau:
+
+- `ContentRepository.AllowInReviewPreview` adalah satu saklar. Bila
+  `false`, pelajaran `in_review` tidak dimuat sama sekali.
+- `LoadDefault()` membaca materi terbit dari `Resources/Content/lessons`
+  dan materi pratinjau dari `Resources/Content/preview`.
+- `F1Setup.Prepare()` (menu "Uab Meto/F1 Setup") menyalin **hanya**
+  `validated`/`published` dan menghapus JSON pratinjau lama.
+- `F1Setup.PreparePreview()` (menu "Uab Meto/F1 Preview Setup") menyalin
+  `in_review` ke folder pratinjau untuk demo.
+- `BuildScript.BuildAndroid()` selalu memanggil `SyncContent(false)`
+  sebelum build, sehingga build rilis tidak bisa membawa materi
+  `in_review`.
+- `BuildScript.BuildAndroidPreview()` menghasilkan
+  `uabmeto-f1-preview.apk` dan tidak boleh disebut build rilis.
+- UI memberi label **"PRATINJAU — BELUM DIVALIDASI"** pada kartu, badge
+  pelajaran, status topik, dan contoh kalimat. Ringkasan pratinjau tidak
+  menampilkan XP dan tidak punya tombol simpan; keluar dari pratinjau tidak
+  menulis progres, outbox, atau XP.
+
+Gate pratinjau menolak `draft`, `UNVALIDATED`, placeholder, metadata review
+kosong, sumber kosong, dan contoh yang bukan `in_review` tanpa `sourceRef`.
 
 ## 4. Tangkapan layar
 
@@ -174,18 +282,18 @@ temuan UI aplikasi.
 | F1-03 empat tab | PASS | PlayMode + screenshot + perangkat |
 | F1-04 12 topik | PASS | `TopicPathTests` + 12 baris PlayMode + perangkat |
 | F1-05 empty state | PASS | Screenshot Editor + perangkat |
-| F1-06 alur pelajaran | PASS (Editor fixture) | PlayMode fixture; tidak ada di APK rilis |
+| F1-06 alur pelajaran | PASS (Editor fixture + pratinjau) | PlayMode fixture dan pratinjau; tidak ada di APK rilis |
 | F1-07 outbox | PASS | `OutboxStore` + PlayMode; belum sinkron server |
 | F1-08 banner | PARTIAL | Antrean nyata; banner offline belum diuji mock |
 | F1-09 panel debug | PASS | Tidak ada panel; pemindaian APK 0 |
 | F1-10 portrait/landscape | PASS (Editor) | 360×640, 412×915, 915×412; landscape perangkat BLOCKED |
-| F1-11 pelajaran validated | **BLOCKED** | Belum ada berkas `validated` |
-| F1-12 sumber | **BLOCKED** | Belum ada sumber yang dapat diperiksa |
-| F1-13 reviewer | **BLOCKED** | Belum ada `reviewedBy`/`reviewedAt` manusia |
+| F1-11 pelajaran validated | **BLOCKED** | 3 pelajaran `in_review`; belum ada berkas `validated` |
+| F1-12 sumber | **PARTIAL** | `SRC-SPK-001` tercatat, tetapi berasal dari self-review |
+| F1-13 reviewer | **BLOCKED** | Hanya `SPK-001 (self-review)`; belum ada reviewer independen |
 | F1-14 consent audio | **BLOCKED** | Belum ada audio/consent nyata |
 | F1-15 audio sintetis | PASS (tidak ada audio) | Tidak ada audio sintetis |
 | F1-16 audio belum tersedia | PASS | Teks "Audio Belum Tersedia" di kartu |
-| F1-17 placeholder rilis | PASS | Tidak ada token placeholder konten di APK |
+| F1-17 placeholder rilis | PASS | Tidak ada token placeholder di aset konten APK; literal `[PLACEHOLDER` hanya ada di kode pemeriksaan |
 | F1-18 nama orang | PASS | Tidak ada nama orang nyata di UI/konten |
 | F1-19 kontras C1–C5 | PASS (F1) | C1–C5 ditutup untuk UI F1; 12/12 pasangan lulus; layar belum dibangun N/A |
 | F1-20 target T1–T12 | PASS (F1) | T1–T12 ditutup untuk UI F1; 4 tes UI lulus; layar belum dibangun N/A |
@@ -193,8 +301,8 @@ temuan UI aplikasi.
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
-| F1-25 tanpa warning | PARTIAL | 0 error; 3 warning build TMP/IL2CPP |
-| F1-26 ukuran APK | PASS | 28.278.020 byte |
+| F1-25 tanpa warning | PARTIAL | Build inkremental 0 warning; build penuh terakhir masih 3 warning TMP/IL2CPP |
+| F1-26 ukuran APK | PASS | 28.293.448 byte |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
 ## 7. Keputusan yang dikunci
@@ -205,12 +313,15 @@ temuan UI aplikasi.
 - Dark theme; token tunggal; tanpa shadow/blur/gradien.
 - XP klien hanya tampilan tertunda; server tetap otoritatif.
 - Fixture hanya di Editor; build rilis menampilkan empty state.
+- Materi `in_review` hanya untuk pratinjau berlabel; tidak mencatat progres
+  atau XP dan tidak masuk build rilis.
 - Hati dari PRD §3.8 **belum** diimplementasikan di F1; kartu "Selesai"
   menggantikan tampilan hati agar tidak menampilkan state palsu.
 
 ## 8. Keputusan yang tertunda
 
-- Sumber, reviewer manusia, dan izin audio untuk pelajaran pertama.
+- Reviewer independen untuk 3 pelajaran Topik 1 yang masih `in_review`.
+- Izin audio dan rekaman penutur untuk pelajaran pertama.
 - Regenerasi/pengurangan hati dan kuota Worker.
 - Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.
 - Tutor AI, lima jenis latihan lain, ujian akhir, auth, dan hapus akun.
@@ -219,8 +330,11 @@ temuan UI aplikasi.
 
 ## 9. Risiko dan tindakan berikutnya
 
-1. **Blocker konten:** siapkan satu pelajaran `validated` dengan sumber,
-   reviewer, dan (bila ada audio) consent. Jangan mengarang teks Dawan.
+1. **Blocker konten:** mintalah reviewer independen memeriksa
+   `speaker-sheet-v2.csv` dan tiga berkas `content/lessons/*.json`. Setelah
+   tanda tangan, ubah status ke `validated` dengan `reviewedBy`/`reviewedAt`
+   yang benar, lalu jalankan `Uab Meto/F1 Setup` dan build rilis. Jangan
+   mengarang teks Dawan atau menaikkan status tanpa bukti.
 2. **Gate perangkat:** selesaikan D1-03..D1-06. D1-03 memerlukan pelajaran
    rilis; D1-05 memerlukan perangkat/launcher yang mendukung landscape atau
    keputusan produk bahwa F1 portrait-only.
@@ -230,3 +344,5 @@ temuan UI aplikasi.
    dihilangkan sebelum F1-25 ditutup.
 5. **Offline:** tambahkan mock reachability atau uji mode pesawat untuk
    membuktikan banner offline.
+6. **Audio:** rekam penutur dengan izin tertulis, simpan `consentRef`, dan
+   isi `audioLicense` sebelum mengaktifkan latihan listening.
