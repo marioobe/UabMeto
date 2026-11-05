@@ -5,10 +5,12 @@ Platform: Android, Unity 6 (`6000.6.0f1`).
 
 > **Status: F1 — UI inti dan build APK sudah ada; gate F1 belum lulus.**
 > Belum ada integrasi layanan produksi dan belum ada materi Bahasa Dawan
-> tervalidasi. APK sudah dipasang dan diuji dasar pada satu perangkat Android
-> fisik portrait; alur pelajaran rilis, landscape perangkat, offline, TalkBack,
-> dan skala font belum diuji. Lihat `docs/testing/f1-gate-result.md` dan
-> `docs/testing/f1-device-evidence.md`.
+> tervalidasi. Tiga pelajaran Topik 1 sudah berisi materi hasil elisitasi
+> `SPK-001` dan berstatus `in_review`; aplikasi hanya menampilkannya sebagai
+> pratinjau berlabel tanpa progres/XP. APK sudah dipasang dan diuji dasar pada
+> satu perangkat Android fisik portrait; alur pelajaran rilis, landscape
+> perangkat, offline, TalkBack, dan skala font belum diuji. Lihat
+> `docs/testing/f1-gate-result.md` dan `docs/testing/f1-device-evidence.md`.
 
 ## Desain
 
@@ -66,7 +68,22 @@ Validator menolak penerbitan konten yang belum tervalidasi. Lihat
   -logFile "C:\Users\ACER\AppData\Local\Temp\opencode\unity-build.log"
 ```
 
-Output: `Builds/Android/uabmeto-f0.apk` (diabaikan Git).
+Output rilis: `Builds/Android/uabmeto-f1.apk` (diabaikan Git). Build ini
+menyalin **hanya** pelajaran `validated`/`published` dan menghapus materi
+`in_review` dari `Resources/Content/preview`.
+
+Untuk demo materi `in_review`, buat APK pratinjau terpisah:
+
+```powershell
+& "D:\Unity2022\6000.6.0f1\Editor\Unity.exe" `
+  -batchmode -nographics -quit `
+  -projectPath "D:\01_Uab_Meto\app" `
+  -executeMethod UabMeto.Editor.BuildScript.BuildAndroidPreview `
+  -logFile "C:\Users\ACER\AppData\Local\Temp\opencode\unity-build-preview.log"
+```
+
+Output: `Builds/Android/uabmeto-f1-preview.apk`. **Jangan** disebut build
+rilis; materi di dalamnya masih `in_review`.
 
 ## Menjalankan EditMode test
 

@@ -32,12 +32,13 @@ namespace UabMeto.App.UI
             var note = UIFactory.CreateText(
                 "ContentNote",
                 content,
-                "Materi Bahasa Dawan hanya muncul setelah lolos validasi penutur, sumber, dan izin audio. " +
-                "Tidak ada teks Dawan yang dikarang untuk mengisi layar ini.",
+                "Materi tervalidasi muncul setelah lolos pemeriksaan penutur dan sumber. " +
+                "Materi berstatus in_review hanya tampil sebagai pratinjau berlabel dan tidak " +
+                "dihitung sebagai progres. Tidak ada teks Dawan yang dikarang untuk mengisi layar ini.",
                 theme.BodyFont,
                 theme.LabelSize,
                 theme.TextMuted);
-            UIFactory.AddLayoutElement(note.gameObject, preferredHeight: 54f);
+            UIFactory.AddLayoutElement(note.gameObject, preferredHeight: 72f);
         }
 
         private void BuildGreeting(RectTransform parent)
@@ -146,6 +147,12 @@ namespace UabMeto.App.UI
                 return;
             }
 
+            if (catalog.HasPreviewLessons)
+            {
+                BuildLessonCard(parent, catalog.PreviewLessons[0], false, true);
+                return;
+            }
+
             if (catalog.DevelopmentFixture != null)
             {
                 BuildFixtureCard(parent, catalog.DevelopmentFixture);
@@ -154,13 +161,21 @@ namespace UabMeto.App.UI
             BuildEmptyState(parent);
         }
 
-        private void BuildLessonCard(RectTransform parent, LessonContent lesson, bool fixture)
+        private void BuildLessonCard(
+            RectTransform parent,
+            LessonContent lesson,
+            bool fixture,
+            bool preview = false)
         {
             var theme = _shell.Theme;
-            var card = UIFactory.CreatePanel("LessonCard", parent, theme.SurfaceCard, (int)theme.CornerRadius);
+            var card = UIFactory.CreatePanel(
+                preview ? "PreviewCard" : "LessonCard",
+                parent,
+                theme.SurfaceCard,
+                (int)theme.CornerRadius);
             var cardLayout = card.gameObject.AddComponent<LayoutElement>();
-            cardLayout.minHeight = 190f;
-            cardLayout.preferredHeight = 190f;
+            cardLayout.minHeight = preview ? 236f : 190f;
+            cardLayout.preferredHeight = preview ? 236f : 190f;
 
             var group = UIFactory.CreateVerticalGroup(
                 "Body",
@@ -172,8 +187,10 @@ namespace UabMeto.App.UI
 
             var badgeText = fixture
                 ? "FIXTUR PENGEMBANGAN — BUKAN MATERI DAWAN"
-                : "PELAJARAN TERVALIDASI";
-            var badgeColor = fixture ? theme.Warning : theme.Success;
+                : preview
+                    ? "PRATINJAU — BELUM DIVALIDASI"
+                    : "PELAJARAN TERVALIDASI";
+            var badgeColor = fixture || preview ? theme.Warning : theme.Success;
             var badge = UIFactory.CreateText(
                 "Badge",
                 group,
@@ -202,12 +219,15 @@ namespace UabMeto.App.UI
                 theme.TextMuted);
             UIFactory.AddLayoutElement(meta.gameObject, preferredHeight: 22f);
 
-            if (fixture)
+            if (fixture || preview)
             {
                 var warning = UIFactory.CreateText(
                     "FixtureWarning",
                     group,
-                    "Teks di dalamnya masih placeholder dan tidak boleh dipakai sebagai materi nyata.",
+                    fixture
+                        ? "Teks di dalamnya masih placeholder dan tidak boleh dipakai sebagai materi nyata."
+                        : "Materi ini masih berstatus in_review. Belum diperiksa reviewer independen; " +
+                          "hasil pratinjau tidak masuk progres atau XP.",
                     theme.BodyFont,
                     theme.LabelSize,
                     theme.Warning);
@@ -217,7 +237,7 @@ namespace UabMeto.App.UI
             UIFactory.CreateButton(
                 "Start",
                 group,
-                fixture ? "Buka fixture" : "Mulai",
+                fixture ? "Buka fixture" : preview ? "Buka pratinjau" : "Mulai",
                 theme,
                 () =>
                 {
@@ -229,6 +249,17 @@ namespace UabMeto.App.UI
                             "hanya dipakai untuk menguji alur UI. Jangan menganggapnya sebagai pelajaran.",
                             "Buka fixture",
                             () => _shell.ShowLesson(lesson, true),
+                            "Batal",
+                            null);
+                    }
+                    else if (preview)
+                    {
+                        _shell.ShowModal(
+                            "Pratinjau materi",
+                            "Materi ini masih berstatus in_review dan belum divalidasi reviewer " +
+                            "independen. Pratinjau tidak mencatat progres atau XP.",
+                            "Buka pratinjau",
+                            () => _shell.ShowPreviewLesson(lesson),
                             "Batal",
                             null);
                     }
@@ -324,7 +355,9 @@ namespace UabMeto.App.UI
         {
             var theme = _shell.Theme;
             var lesson = _shell.Catalog.FindLessonForTopic(topic.id);
+            var previewLesson = _shell.Catalog.FindPreviewLessonForTopic(topic.id);
             var available = lesson != null;
+            var preview = !available && previewLesson != null;
 
             var panel = UIFactory.CreatePanel(
                 "Topic_" + topic.id,
@@ -349,6 +382,19 @@ namespace UabMeto.App.UI
                 if (available)
                 {
                     _shell.ShowLesson(lesson, false);
+                    return;
+                }
+
+                if (preview)
+                {
+                    _shell.ShowModal(
+                        "Pratinjau " + topic.title,
+                        "Topik ini punya pelajaran berstatus in_review. Materi belum divalidasi " +
+                        "reviewer independen dan tidak mencatat progres atau XP.",
+                        "Buka pratinjau",
+                        () => _shell.ShowPreviewLesson(previewLesson),
+                        "Batal",
+                        null);
                     return;
                 }
 
@@ -381,7 +427,7 @@ namespace UabMeto.App.UI
                 topic.icon,
                 theme.IconFont,
                 22f,
-                available ? theme.Accent : theme.Outline);
+                available ? theme.Accent : preview ? theme.Warning : theme.Outline);
             UIFactory.Stretch(icon.rectTransform);
 
             var titles = UIFactory.CreateVerticalGroup("Titles", row, 1f, null, false);
@@ -399,10 +445,10 @@ namespace UabMeto.App.UI
             UIFactory.CreateText(
                 "Status",
                 titles,
-                available ? "Tersedia" : "Segera",
+                available ? "Tersedia" : preview ? "Pratinjau — belum divalidasi" : "Segera",
                 theme.BodyFont,
                 theme.LabelSize,
-                available ? theme.Success : theme.TextMuted);
+                available ? theme.Success : preview ? theme.Warning : theme.TextMuted);
 
             var chevron = UIFactory.CreateIcon(
                 "Chevron",
@@ -420,7 +466,7 @@ namespace UabMeto.App.UI
 
             UIFactory.AddAccessibilityLabel(
                 button.gameObject,
-                $"{topic.title}, {(available ? "tersedia" : "belum tersedia")}");
+                $"{topic.title}, {(available ? "tersedia" : preview ? "pratinjau belum divalidasi" : "belum tersedia")}");
         }
 
         private string TopicTitle(string topicId)

@@ -48,6 +48,40 @@ namespace UabMeto.Tests.EditMode
                 "}";
         }
 
+        private static string InReviewLessonJson(string status = "in_review")
+        {
+            return
+                "{" +
+                "\"schemaVersion\":\"1.1.0\"," +
+                "\"id\":\"lesson-review-001\"," +
+                "\"topicId\":\"topic-01-salam\"," +
+                "\"order\":1," +
+                "\"xp\":10," +
+                "\"estimatedMinutes\":5," +
+                "\"title\":\"Review lesson\"," +
+                "\"summary\":\"Test only\"," +
+                "\"status\":\"" + status + "\"," +
+                "\"validation\":{" +
+                "\"reviewedBy\":\"SPK-001 (self-review)\"," +
+                "\"reviewedAt\":\"2026-11-05\"," +
+                "\"sources\":[{\"id\":\"SRC-SPK-001\",\"citation\":\"Speaker sheet\"}]," +
+                "\"audioLicense\":null," +
+                "\"consentRef\":null}," +
+                "\"objectives\":[\"Test objective\"]," +
+                "\"vocabulary\":[]," +
+                "\"dialogues\":[]," +
+                "\"exercises\":[]," +
+                "\"examples\":[{" +
+                "\"id\":\"exm-review-1\"," +
+                "\"dawan\":\"x\"," +
+                "\"indonesian\":\"y\"," +
+                "\"context\":\"test\"," +
+                "\"status\":\"in_review\"," +
+                "\"sourceRef\":\"SRC-SPK-001\"}]," +
+                "\"notes\":\"Test only\"" +
+                "}";
+        }
+
         private static string FixtureJson()
         {
             var path = System.IO.Path.GetFullPath(
@@ -70,10 +104,97 @@ namespace UabMeto.Tests.EditMode
                 Array.Empty<string>());
 
             Assert.IsFalse(catalog.HasValidatedLessons);
+            Assert.IsFalse(catalog.HasPreviewLessons);
             Assert.AreEqual(12, catalog.Topics.Length);
             Assert.AreEqual(0, catalog.ValidatedLessons.Length);
             Assert.IsNull(catalog.DevelopmentFixture);
             Assert.That(catalog.Warnings, Has.Some.Contains("empty state"));
+        }
+
+        [Test]
+        public void InReviewLesson_EntersPreviewOnly()
+        {
+            var catalog = ContentRepository.LoadFromText(
+                TopicsJson(),
+                new[] { InReviewLessonJson() });
+
+            Assert.IsFalse(catalog.HasValidatedLessons);
+            Assert.IsTrue(catalog.HasPreviewLessons);
+            Assert.AreEqual(1, catalog.PreviewLessons.Length);
+            Assert.AreEqual("lesson-review-001", catalog.PreviewLessons[0].id);
+            Assert.AreEqual(1, catalog.PreviewLessonCountForTopic("topic-01-salam"));
+            Assert.IsNull(catalog.FindLessonForTopic("topic-01-salam"));
+            Assert.IsNotNull(catalog.FindPreviewLessonForTopic("topic-01-salam"));
+            Assert.That(catalog.Warnings, Has.Some.Contains("hanya masuk pratinjau"));
+        }
+
+        [Test]
+        public void InReviewLesson_IsIgnoredWhenPreviewDisabled()
+        {
+            var catalog = ContentRepository.LoadFromText(
+                TopicsJson(),
+                new[] { InReviewLessonJson() },
+                null,
+                false);
+
+            Assert.IsFalse(catalog.HasValidatedLessons);
+            Assert.IsFalse(catalog.HasPreviewLessons);
+            Assert.AreEqual(0, catalog.PreviewLessons.Length);
+            Assert.That(catalog.Warnings, Has.Some.Contains("tidak lolos gate"));
+        }
+
+        [Test]
+        public void PreviewList_IsLoadedSeparately()
+        {
+            var catalog = ContentRepository.LoadFromText(
+                TopicsJson(),
+                Array.Empty<string>(),
+                null,
+                true,
+                new[] { InReviewLessonJson() });
+
+            Assert.IsFalse(catalog.HasValidatedLessons);
+            Assert.IsTrue(catalog.HasPreviewLessons);
+            Assert.AreEqual(1, catalog.PreviewLessons.Length);
+        }
+
+        [Test]
+        public void DraftLesson_IsNeverPreviewable()
+        {
+            var catalog = ContentRepository.LoadFromText(
+                TopicsJson(),
+                new[] { InReviewLessonJson("draft") });
+
+            Assert.IsFalse(catalog.HasValidatedLessons);
+            Assert.IsFalse(catalog.HasPreviewLessons);
+        }
+
+        [Test]
+        public void InReviewLessonWithPlaceholder_IsNotPreviewable()
+        {
+            var json = InReviewLessonJson().Replace(
+                "\"dawan\":\"x\"",
+                "\"dawan\":\"[PLACEHOLDER-DWN-999]\"");
+
+            var catalog = ContentRepository.LoadFromText(
+                TopicsJson(),
+                new[] { json });
+
+            Assert.IsFalse(catalog.HasPreviewLessons);
+        }
+
+        [Test]
+        public void InReviewLessonWithoutSource_IsNotPreviewable()
+        {
+            var json = InReviewLessonJson().Replace(
+                "\"sources\":[{\"id\":\"SRC-SPK-001\",\"citation\":\"Speaker sheet\"}]",
+                "\"sources\":[]");
+
+            var catalog = ContentRepository.LoadFromText(
+                TopicsJson(),
+                new[] { json });
+
+            Assert.IsFalse(catalog.HasPreviewLessons);
         }
 
         [Test]

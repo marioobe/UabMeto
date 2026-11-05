@@ -28,6 +28,7 @@ namespace UabMeto.App.UI
         private readonly ShellView _shell;
         private readonly LessonContent _lesson;
         private readonly bool _fixture;
+        private readonly bool _preview;
         private readonly Action _onExit;
         private readonly Action<LessonContent> _onCompleted;
 
@@ -43,12 +44,14 @@ namespace UabMeto.App.UI
             ShellView shell,
             LessonContent lesson,
             bool fixture,
+            bool preview,
             Action onExit,
             Action<LessonContent> onCompleted)
         {
             _shell = shell;
             _lesson = lesson;
             _fixture = fixture;
+            _preview = preview;
             _onExit = onExit;
             _onCompleted = onCompleted;
         }
@@ -80,6 +83,12 @@ namespace UabMeto.App.UI
                     Render();
                     break;
                 case Step.Summary:
+                    if (_preview)
+                    {
+                        _onExit?.Invoke();
+                        break;
+                    }
+
                     _shell.ShowModal(
                         "Keluar dari pelajaran?",
                         "Hasil belum disimpan ke antrean. Keluar sekarang?",
@@ -130,8 +139,10 @@ namespace UabMeto.App.UI
             var theme = _shell.Theme;
             var text = _fixture
                 ? "FIXTUR PENGEMBANGAN — BUKAN MATERI DAWAN"
-                : "PELAJARAN TERVALIDASI";
-            var color = _fixture ? theme.Warning : theme.Success;
+                : _preview
+                    ? "PRATINJAU — BELUM DIVALIDASI"
+                    : "PELAJARAN TERVALIDASI";
+            var color = _fixture || _preview ? theme.Warning : theme.Success;
             var badge = UIFactory.CreateText(
                 "Badge",
                 parent,
@@ -180,6 +191,19 @@ namespace UabMeto.App.UI
                 theme.BodySmallSize,
                 theme.TextMuted);
             UIFactory.AddLayoutElement(summary.gameObject, preferredHeight: 54f);
+
+            if (_preview)
+            {
+                var notice = UIFactory.CreateText(
+                    "PreviewNotice",
+                    parent,
+                    "Materi ini masih berstatus in_review dan belum diperiksa reviewer independen. " +
+                    "Hasil pratinjau tidak disimpan sebagai progres atau XP.",
+                    theme.BodyFont,
+                    theme.LabelSize,
+                    theme.Warning);
+                UIFactory.AddLayoutElement(notice.gameObject, preferredHeight: 54f);
+            }
 
             var meta = UIFactory.CreateVerticalGroup("Meta", parent, 4f, null, false);
             UIFactory.AddLayoutElement(meta.gameObject, preferredHeight: 92f);
@@ -376,8 +400,15 @@ namespace UabMeto.App.UI
             var theme = _shell.Theme;
             var card = UIFactory.CreatePanel("Vocab_" + item.id, parent, theme.SurfaceCard, (int)theme.Space12);
             var layout = card.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 92f;
-            layout.preferredHeight = 92f;
+
+            var noteHeight = 0f;
+            if (!string.IsNullOrWhiteSpace(item.notes))
+            {
+                noteHeight = Mathf.Clamp(18f + item.notes.Length / 42f * 12f, 30f, 104f);
+            }
+
+            layout.minHeight = 92f + noteHeight;
+            layout.preferredHeight = 92f + noteHeight;
 
             var group = UIFactory.CreateVerticalGroup(
                 "Body",
@@ -402,6 +433,18 @@ namespace UabMeto.App.UI
                 theme.BodyFont,
                 theme.BodySmallSize,
                 theme.TextMuted);
+
+            if (noteHeight > 0f)
+            {
+                var notes = UIFactory.CreateText(
+                    "Notes",
+                    group,
+                    item.notes,
+                    theme.BodyFont,
+                    theme.LabelSize,
+                    theme.TextMuted);
+                UIFactory.AddLayoutElement(notes.gameObject, preferredHeight: noteHeight);
+            }
 
             if (ContentRepository.HasAudioFile(item.audio))
             {
@@ -439,8 +482,14 @@ namespace UabMeto.App.UI
             var theme = _shell.Theme;
             var card = UIFactory.CreatePanel("Example_" + example.id, parent, theme.SurfaceCard, (int)theme.Space12);
             var layout = card.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 124f;
-            layout.preferredHeight = 124f;
+
+            var contextText = string.IsNullOrWhiteSpace(example.context)
+                ? "Konteks belum tersedia."
+                : example.context;
+            var contextHeight = Mathf.Clamp(18f + contextText.Length / 44f * 12f, 18f, 84f);
+
+            layout.minHeight = 106f + contextHeight;
+            layout.preferredHeight = 106f + contextHeight;
 
             var group = UIFactory.CreateVerticalGroup(
                 "Body",
@@ -469,18 +518,19 @@ namespace UabMeto.App.UI
             var context = UIFactory.CreateText(
                 "Context",
                 group,
-                string.IsNullOrWhiteSpace(example.context) ? "Konteks belum tersedia." : example.context,
+                contextText,
                 theme.BodyFont,
                 theme.LabelSize,
                 theme.Outline);
-            UIFactory.AddLayoutElement(context.gameObject, preferredHeight: 18f);
+            UIFactory.AddLayoutElement(context.gameObject, preferredHeight: contextHeight);
 
-            var status = example.status == "validated" || example.status == "published"
+            var isPublished = example.status == "validated" || example.status == "published";
+            var status = isPublished
                 ? "Tervalidasi"
-                : "Belum tervalidasi";
-            var statusColor = example.status == "validated" || example.status == "published"
-                ? theme.Success
-                : theme.Warning;
+                : example.status == "in_review"
+                    ? "Pratinjau — belum divalidasi"
+                    : "Belum tervalidasi";
+            var statusColor = isPublished ? theme.Success : theme.Warning;
             UIFactory.CreateText(
                 "Status",
                 group,
@@ -734,7 +784,7 @@ namespace UabMeto.App.UI
             var title = UIFactory.CreateText(
                 "Title",
                 parent,
-                "Pelajaran selesai",
+                _preview ? "Pratinjau selesai" : "Pelajaran selesai",
                 theme.HeadingBoldFont,
                 theme.Heading1Size,
                 theme.TextPrimary,
@@ -754,7 +804,9 @@ namespace UabMeto.App.UI
             var xp = UIFactory.CreateText(
                 "Xp",
                 parent,
-                $"{_lesson.xp} XP menunggu verifikasi server.",
+                _preview
+                    ? "XP tidak dicatat pada pratinjau."
+                    : $"{_lesson.xp} XP menunggu verifikasi server.",
                 theme.BodyBoldFont,
                 theme.BodySize,
                 theme.TextPrimary,
@@ -764,29 +816,44 @@ namespace UabMeto.App.UI
             var note = UIFactory.CreateText(
                 "Note",
                 parent,
-                "Hasil akan disimpan di antrean lokal dan belum dianggap sebagai XP final. " +
-                "Server menentukan hadiah XP dari versi materi terbit.",
+                _preview
+                    ? "Hasil pratinjau tidak masuk progres lokal, antrean, atau XP. " +
+                      "Materi masih in_review dan belum divalidasi reviewer independen."
+                    : "Hasil akan disimpan di antrean lokal dan belum dianggap sebagai XP final. " +
+                      "Server menentukan hadiah XP dari versi materi terbit.",
                 theme.BodyFont,
                 theme.LabelSize,
                 theme.TextMuted,
                 TextAlignmentOptions.Center);
             UIFactory.AddLayoutElement(note.gameObject, preferredHeight: 54f);
 
-            UIFactory.CreateButton(
-                "Save",
-                parent,
-                "Simpan hasil",
-                theme,
-                () => _onCompleted?.Invoke(_lesson));
+            if (_preview)
+            {
+                UIFactory.CreateButton(
+                    "PreviewClose",
+                    parent,
+                    "Tutup pratinjau",
+                    theme,
+                    () => _onExit?.Invoke());
+            }
+            else
+            {
+                UIFactory.CreateButton(
+                    "Save",
+                    parent,
+                    "Simpan hasil",
+                    theme,
+                    () => _onCompleted?.Invoke(_lesson));
 
-            UIFactory.CreateButton(
-                "ExitWithoutSave",
-                parent,
-                "Keluar tanpa menyimpan",
-                theme,
-                () => _onExit?.Invoke(),
-                primary: false,
-                ghost: true);
+                UIFactory.CreateButton(
+                    "ExitWithoutSave",
+                    parent,
+                    "Keluar tanpa menyimpan",
+                    theme,
+                    () => _onExit?.Invoke(),
+                    primary: false,
+                    ghost: true);
+            }
         }
 
         private Exercise FindMultipleChoice()

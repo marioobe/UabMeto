@@ -10,11 +10,14 @@ namespace UabMeto.Editor
     /// <summary>
     /// Entry point build APK lokal (F1). Dijalankan via:
     /// Unity.exe -batchmode -quit -projectPath app -executeMethod UabMeto.Editor.BuildScript.BuildAndroid
+    /// BuildAndroid selalu menyalin hanya pelajaran validated/published.
+    /// BuildAndroidPreview dipakai khusus demo/UAS dan memuat in_review.
     /// </summary>
     public static class BuildScript
     {
         private const string OutputFolderName = "Builds/Android";
         private const string OutputFileName = "uabmeto-f1.apk";
+        private const string PreviewOutputFileName = "uabmeto-f1-preview.apk";
 
         private static string RepositoryRoot =>
             Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
@@ -24,15 +27,30 @@ namespace UabMeto.Editor
 
         public static void BuildAndroid()
         {
+            BuildAndroidInternal(includePreview: false, OutputFileName);
+        }
+
+        /// <summary>
+        /// Build demo/UAS dengan materi in_review. Jangan dipakai sebagai
+        /// build rilis.
+        /// </summary>
+        public static void BuildAndroidPreview()
+        {
+            BuildAndroidInternal(includePreview: true, PreviewOutputFileName);
+        }
+
+        private static void BuildAndroidInternal(bool includePreview, string fileName)
+        {
             try
             {
+                F1Setup.SyncContent(includePreview);
                 ProjectConfigurator.Apply();
 
                 var scenePath = BootstrapSceneBuilder.EnsureScene();
                 EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(scenePath, true) };
 
                 Directory.CreateDirectory(OutputDirectory);
-                var outputPath = Path.Combine(OutputDirectory, OutputFileName);
+                var outputPath = Path.Combine(OutputDirectory, fileName);
                 if (File.Exists(outputPath))
                 {
                     File.Delete(outputPath);

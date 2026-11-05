@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UabMeto.App.UI;
+using UabMeto.Core.Content;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,6 +17,7 @@ namespace UabMeto.Editor
         public const string ThemeAssetPath = "Assets/_Project/Resources/UI/ThemeTokens.asset";
         public const string ContentResourceFolder = "Assets/_Project/Resources/Content";
         public const string LessonResourceFolder = ContentResourceFolder + "/lessons";
+        public const string PreviewResourceFolder = ContentResourceFolder + "/preview";
 
         [MenuItem("Uab Meto/F1 Setup")]
         public static void Prepare()
@@ -25,7 +28,23 @@ namespace UabMeto.Editor
             BootstrapSceneBuilder.Rebuild();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[UabMeto] F1 setup selesai.");
+            Debug.Log("[UabMeto] F1 setup selesai. Hanya pelajaran validated/published disalin.");
+        }
+
+        /// <summary>
+        /// Menyalin pelajaran <c>in_review</c> ke Resources/Content/preview
+        /// untuk demo/UAS. Jangan dipakai untuk build rilis.
+        /// </summary>
+        [MenuItem("Uab Meto/F1 Preview Setup")]
+        public static void PreparePreview()
+        {
+            EnsureFontAssets();
+            SyncContent(includePreview: true);
+            CreateThemeAsset();
+            BootstrapSceneBuilder.Rebuild();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[UabMeto] F1 preview setup selesai. Build ini memuat materi in_review.");
         }
 
         public static void EnsureFontAssets()
@@ -38,7 +57,7 @@ namespace UabMeto.Editor
             }
         }
 
-        public static void SyncContent()
+        public static void SyncContent(bool includePreview = false)
         {
             var repositoryRoot = Path.GetFullPath(
                 Path.Combine(Application.dataPath, "..", ".."));
@@ -52,6 +71,7 @@ namespace UabMeto.Editor
 
             Directory.CreateDirectory(ContentResourceFolder);
             Directory.CreateDirectory(LessonResourceFolder);
+            Directory.CreateDirectory(PreviewResourceFolder);
 
             File.Copy(
                 sourceTopics,
@@ -59,29 +79,63 @@ namespace UabMeto.Editor
                 true);
             File.WriteAllText(
                 Path.Combine(LessonResourceFolder, ".gitkeep"),
-                "Folder ini menampung pelajaran validated yang disalin dari content/lessons.\n");
+                "Folder ini menampung pelajaran validated/published yang disalin dari content/lessons.\n");
+            File.WriteAllText(
+                Path.Combine(PreviewResourceFolder, ".gitkeep"),
+                "Folder ini menampung pelajaran in_review untuk pratinjau. Build rilis tidak memakainya.\n");
 
             var sourceFiles = Directory.Exists(sourceLessons)
                 ? Directory.GetFiles(sourceLessons, "*.json", SearchOption.TopDirectoryOnly)
                 : System.Array.Empty<string>();
 
-            var sourceNames = new System.Collections.Generic.HashSet<string>();
+            var validatedNames = new HashSet<string>();
+            var previewNames = new HashSet<string>();
             foreach (var sourceFile in sourceFiles)
             {
                 var fileName = Path.GetFileName(sourceFile);
-                sourceNames.Add(fileName);
-                File.Copy(sourceFile, Path.Combine(LessonResourceFolder, fileName), true);
+                LessonContent lesson = null;
+                try
+                {
+                    lesson = JsonUtility.FromJson<LessonContent>(File.ReadAllText(sourceFile));
+                }
+                catch (System.Exception exception)
+                {
+                    Debug.LogWarning(
+                        $"[UabMeto] Melewati '{fileName}' karena gagal di-parse: {exception.Message}");
+                }
+
+                if (lesson == null)
+                {
+                    continue;
+                }
+
+                if (lesson.status == "validated" || lesson.status == "published")
+                {
+                    validatedNames.Add(fileName);
+                    File.Copy(sourceFile, Path.Combine(LessonResourceFolder, fileName), true);
+                }
+                else if (includePreview && lesson.status == "in_review")
+                {
+                    previewNames.Add(fileName);
+                    File.Copy(sourceFile, Path.Combine(PreviewResourceFolder, fileName), true);
+                }
             }
 
-            foreach (var existing in Directory.GetFiles(LessonResourceFolder, "*.json"))
+            DeleteStaleJson(LessonResourceFolder, validatedNames);
+            DeleteStaleJson(PreviewResourceFolder, previewNames);
+
+            AssetDatabase.Refresh();
+        }
+
+        private static void DeleteStaleJson(string folder, HashSet<string> keep)
+        {
+            foreach (var existing in Directory.GetFiles(folder, "*.json"))
             {
-                if (!sourceNames.Contains(Path.GetFileName(existing)))
+                if (!keep.Contains(Path.GetFileName(existing)))
                 {
                     File.Delete(existing);
                 }
             }
-
-            AssetDatabase.Refresh();
         }
 
         public static void CreateThemeAsset()

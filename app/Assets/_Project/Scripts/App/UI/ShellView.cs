@@ -322,6 +322,20 @@ namespace UabMeto.App.UI
 
         public void ShowLesson(LessonContent lesson, bool fixture)
         {
+            ShowLessonInternal(lesson, fixture, false);
+        }
+
+        /// <summary>
+        /// Membuka pelajaran <c>in_review</c> dalam mode pratinjau. Tidak
+        /// pernah mencatat progres atau XP.
+        /// </summary>
+        public void ShowPreviewLesson(LessonContent lesson)
+        {
+            ShowLessonInternal(lesson, false, true);
+        }
+
+        private void ShowLessonInternal(LessonContent lesson, bool fixture, bool preview)
+        {
             if (lesson == null)
             {
                 return;
@@ -329,12 +343,13 @@ namespace UabMeto.App.UI
 
             UIFactory.DestroyChildren(_contentHost);
             _backButton.gameObject.SetActive(true);
-            SetHeader("Pelajaran", lesson.title);
+            SetHeader(preview ? "Pratinjau pelajaran" : "Pelajaran", lesson.title);
 
             _lessonView = new LessonView(
                 this,
                 lesson,
                 fixture,
+                preview,
                 () => ShowTab(Tab.Home),
                 OnLessonCompleted);
             _lessonView.Build(_contentHost);
