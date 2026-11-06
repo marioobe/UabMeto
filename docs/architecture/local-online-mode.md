@@ -103,7 +103,9 @@ Respons sukses:
 
 - Hanya konten berstatus `validated` yang boleh memberi XP.
 - Konten `in_review` ditolak `422 content_not_validated`.
-- Untuk menguji tiga pelajaran `in_review` yang ada, set
+- Tiga pelajaran Topik 1 kini `validated` (keputusan pemilik, 2026-11-06), jadi
+  XP dapat diuji tanpa flag dev.
+- Untuk menguji pelajaran `in_review` lain, set
   `DEV_ALLOW_XP_FOR_IN_REVIEW="true"` di `backend/.dev.vars` (diabaikan Git).
   Respons akan menandai `devMode: true`.
 - Flag ini tidak boleh dipakai di deployment.

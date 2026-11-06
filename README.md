@@ -4,12 +4,11 @@ Aplikasi pembelajaran Bahasa Dawan (Uab Meto) varian Timor Tengah Utara (TTU).
 Platform: Android, Unity 6 (`6000.6.0f1`).
 
 > **Status: F1 — UI inti dan build APK sudah ada; gate F1 belum lulus.**
-> Belum ada integrasi layanan produksi dan belum ada materi Bahasa Dawan
-> tervalidasi. Tiga pelajaran Topik 1 sudah berisi materi hasil elisitasi
-> `SPK-001` dan berstatus `in_review`; aplikasi hanya menampilkannya sebagai
-> pratinjau berlabel tanpa progres/XP. APK sudah dipasang dan diuji dasar pada
-> satu perangkat Android fisik portrait; alur pelajaran rilis, landscape
-> perangkat, offline, TalkBack, dan skala font belum diuji. Lihat
+> Belum ada integrasi layanan produksi. Tiga pelajaran Topik 1 dinyatakan
+> `validated` oleh pemilik proyek (override, bukan reviewer independen) dan
+> dapat memberi XP. Topik berikutnya wajib ditinjau reviewer independen.
+> APK sudah dipasang dan diuji dasar pada satu perangkat Android fisik
+> portrait; landscape perangkat, TalkBack, dan skala font belum diuji. Lihat
 > `docs/testing/f1-gate-result.md` dan `docs/testing/f1-device-evidence.md`.
 
 ## Desain

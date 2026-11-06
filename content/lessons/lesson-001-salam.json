@@ -7,17 +7,17 @@
   "estimatedMinutes": 5,
   "title": "Sapaan waktu",
   "summary": "Mengenali sapaan waktu pagi, siang, dan malam, lalu menjawab sapaan dengan baik.",
-  "status": "in_review",
+  "status": "validated",
   "validation": {
-    "reviewedBy": "SPK-001 (self-review)",
-    "reviewedAt": "2026-11-05",
+    "reviewedBy": "marioobe (pemilik proyek)",
+    "reviewedAt": "2026-11-06",
     "sources": [
       {
         "id": "SRC-SPK-001",
         "citation": "Elisitasi penutur SPK-001 (Iyo), 2026-11-05; pengetahuan dan pemakaian Bahasa Dawan sehari-hari, varian TTU/Kefamenanu."
       }
     ],
-    "audioLicense": null,
+    "audioLicense": "Tidak ada audio pada versi ini; tidak ada rekaman yang disertakan atau dilisensikan.",
     "consentRef": null
   },
   "objectives": [
@@ -207,7 +207,7 @@
       "dawan": "selamat siang, mail kabar on'me?",
       "indonesian": "Selamat siang, apa kabar?",
       "context": "Menyapa pada siang hari.",
-      "status": "in_review",
+      "status": "validated",
       "sourceRef": "SRC-SPK-001",
       "audio": null
     },
@@ -215,11 +215,11 @@
       "id": "exm-102",
       "dawan": "selamat malam, au kabar naleok",
       "indonesian": "Selamat malam, saya baik.",
-      "context": "Menjawab sapaan pada malam hari. Perlu klarifikasi reviewer: bentuk ini belum dikonfirmasi ulang (ELC-117).",
-      "status": "in_review",
+      "context": "Menjawab sapaan pada malam hari. Diterima pemilik proyek apa adanya (ELC-117); belum dikonfirmasi ulang oleh reviewer independen.",
+      "status": "validated",
       "sourceRef": "SRC-SPK-001",
       "audio": null
     }
   ],
-  "notes": "Status in_review. Self-review SPK-001 (Iyo); belum ada reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001, bukan salinan kamus atau web. Audio dan izin belum ada. Ejaan penutur dipertahankan; ortografi ’/ʔ menunggu reviewer. Item perlu klarifikasi: ELC-108, ELC-115, ELC-117."
+  "notes": "Status validated atas keputusan pemilik proyek (marioobe), 2026-11-06. Ini override pemilik, bukan peninjauan reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001 (Iyo), bukan salinan kamus atau web. Tidak ada audio atau izin rekaman pada versi ini. Ejaan penutur dipertahankan. Item ELC-108, ELC-115, ELC-117 diterima apa adanya oleh pemilik. Topik berikutnya wajib ditinjau reviewer independen."
 }

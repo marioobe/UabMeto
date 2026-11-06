@@ -53,6 +53,10 @@ coverage/
 .wrangler/
 **/.dev.vars
 
+# --- Generated content copies (dibuat oleh menu Uab Meto/F1 Setup) ---
+app/Assets/_Project/Resources/Content/lessons/*.json
+app/Assets/_Project/Resources/Content/lessons/*.json.meta
+
 # --- Secrets & local configuration (WAJIB) ---
 .env
 .env.*

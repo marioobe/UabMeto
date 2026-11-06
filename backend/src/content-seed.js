@@ -5,18 +5,18 @@ export const contentSeed = [
     "lessonId": "lesson-001-salam",
     "contentVersion": "1.1.0",
     "xp": 10,
-    "status": "in_review"
+    "status": "validated"
   },
   {
     "lessonId": "lesson-002-salam-bertemu",
     "contentVersion": "1.1.0",
     "xp": 10,
-    "status": "in_review"
+    "status": "validated"
   },
   {
     "lessonId": "lesson-003-salam-sopan",
     "contentVersion": "1.1.0",
     "xp": 10,
-    "status": "in_review"
+    "status": "validated"
   }
 ];

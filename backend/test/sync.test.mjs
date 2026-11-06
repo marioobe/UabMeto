@@ -4,6 +4,7 @@ import { handleRequest } from '../src/index.js';
 import {
   createTestEnv,
   request,
+  seedInReviewLesson,
   seedValidatedLesson,
   syncBody
 } from './helpers.mjs';
@@ -111,8 +112,9 @@ test('lesson yang tidak dikenal ditolak 422', async () => {
 
 test('konten in_review ditolak tanpa flag dev', async () => {
   const env = createTestEnv();
+  await seedInReviewLesson(env);
   const response = await sync(env, {
-    lessonId: 'lesson-001-salam',
+    lessonId: 'lesson-in-review-test',
     operationId: 'op-in-review'
   });
 
@@ -122,8 +124,9 @@ test('konten in_review ditolak tanpa flag dev', async () => {
 
 test('flag dev mengizinkan konten in_review dan menandai devMode', async () => {
   const env = createTestEnv({ DEV_ALLOW_XP_FOR_IN_REVIEW: 'true' });
+  await seedInReviewLesson(env);
   const response = await sync(env, {
-    lessonId: 'lesson-001-salam',
+    lessonId: 'lesson-in-review-test',
     operationId: 'op-in-review-dev'
   });
 

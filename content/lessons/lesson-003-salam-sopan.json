@@ -7,17 +7,17 @@
   "estimatedMinutes": 5,
   "title": "Terima kasih, maaf, permisi",
   "summary": "Menggunakan terima kasih, maaf, dan permisi pada situasi sehari-hari.",
-  "status": "in_review",
+  "status": "validated",
   "validation": {
-    "reviewedBy": "SPK-001 (self-review)",
-    "reviewedAt": "2026-11-05",
+    "reviewedBy": "marioobe (pemilik proyek)",
+    "reviewedAt": "2026-11-06",
     "sources": [
       {
         "id": "SRC-SPK-001",
         "citation": "Elisitasi penutur SPK-001 (Iyo), 2026-11-05; pengetahuan dan pemakaian Bahasa Dawan sehari-hari, varian TTU/Kefamenanu."
       }
     ],
-    "audioLicense": null,
+    "audioLicense": "Tidak ada audio pada versi ini; tidak ada rekaman yang disertakan atau dilisensikan.",
     "consentRef": null
   },
   "objectives": [
@@ -193,7 +193,7 @@
       "dawan": "maaf, au ana ije",
       "indonesian": "Maaf, saya permisi.",
       "context": "Ingin keluar atau lewat. Ungkapan permisi yang merendah; arti harfiah \"ikut sini\". Bagian \"maaf\" adalah kata serapan dari Bahasa Indonesia.",
-      "status": "in_review",
+      "status": "validated",
       "sourceRef": "SRC-SPK-001",
       "audio": null
     },
@@ -202,10 +202,10 @@
       "dawan": "tem he tam",
       "indonesian": "Silakan masuk.",
       "context": "Mempersilakan masuk. Variasi: tam tem. Keduanya untuk mempersilakan orang masuk.",
-      "status": "in_review",
+      "status": "validated",
       "sourceRef": "SRC-SPK-001",
       "audio": null
     }
   ],
-  "notes": "Status in_review. Self-review SPK-001 (Iyo); belum ada reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001, bukan salinan kamus atau web. Audio dan izin belum ada. Ejaan penutur dipertahankan; ortografi ’/ʔ menunggu reviewer. Item perlu klarifikasi: ELC-302. Catatan dialog: tabe dipakai di acara formal (ELC-311)."
+  "notes": "Status validated atas keputusan pemilik proyek (marioobe), 2026-11-06. Ini override pemilik, bukan peninjauan reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001 (Iyo), bukan salinan kamus atau web. Tidak ada audio atau izin rekaman pada versi ini. Ejaan penutur dipertahankan. Item ELC-302, ELC-311 diterima apa adanya oleh pemilik. Catatan dialog: tabe dipakai di acara formal (ELC-311). Topik berikutnya wajib ditinjau reviewer independen."
 }

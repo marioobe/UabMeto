@@ -34,19 +34,9 @@ namespace UabMeto.Tests.PlayMode
             var topics = Resources.Load<TextAsset>("Content/topics");
             Assert.IsNotNull(topics, "topics.json belum ada. Jalankan F1 Setup.");
 
-            var lessonPath = Path.GetFullPath(
-                Path.Combine(
-                    Application.dataPath,
-                    "..",
-                    "..",
-                    "content",
-                    "lessons",
-                    "lesson-001-salam.json"));
-            Assert.IsTrue(File.Exists(lessonPath), "Pelajaran pratinjau tidak ditemukan: " + lessonPath);
-
             var catalog = ContentRepository.LoadFromText(
                 topics.text,
-                new[] { File.ReadAllText(lessonPath) });
+                new[] { TestContent.LoadLessonAsInReview() });
 
             var profile = LocalProfile.Load(Path.Combine(_directory, "profile.json"));
             Assert.IsTrue(profile.TrySetNickname("Penguji", out var error), error);

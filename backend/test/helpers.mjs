@@ -64,6 +64,23 @@ export async function seedValidatedLesson(env, lessonId = 'lesson-test', xp = 10
     .run();
 }
 
+/**
+ * Menyisipkan pelajaran sintetis berstatus in_review. Jangan memakai id yang
+ * ada di contentSeed karena seedContent menimpa statusnya pada setiap sync.
+ */
+export async function seedInReviewLesson(
+  env,
+  lessonId = 'lesson-in-review-test',
+  xp = 10
+) {
+  await env.DB.prepare(
+    `INSERT INTO content_versions (lesson_id, content_version, xp, status)
+     VALUES (?, '1.1.0', ?, 'in_review')`
+  )
+    .bind(lessonId, xp)
+    .run();
+}
+
 export function syncBody(overrides = {}) {
   return {
     operationId: 'op-00001',
