@@ -34,7 +34,7 @@ consent, D1-04/D1-05/D1-06, serta aksesibilitas penuh belum terpenuhi.
 |---|---|
 | Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
 | Build pratinjau | **PASS** — `Builds/Android/uabmeto-f1-preview.apk` (demo, memuat `in_review`) |
-| Tes EditMode | **PASS** — 81 lulus, 0 gagal, 0 dilewati |
+| Tes EditMode | **PASS** - 82 lulus, 0 gagal, 0 dilewati |
 | Tes PlayMode | **PASS** — 27 lulus, 0 gagal, 0 dilewati |
 | Validator konten | **PASS** — 0 error, 4 warning audio di `content/samples/` |
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
@@ -125,10 +125,10 @@ Pemeriksaan lain:
 ### 2.4 Build rilis 0.2.0 (2026-11-06)
 
 - Path: `Builds/Android/uabmeto-f1.apk`
-- Ukuran: **28.896.302 byte**
-- SHA-256: `8C3634BF09571EB4A2CBB2CB91E50C135438096F93F00EFC995462BF157D3A9E`
+- Ukuran: **28.900.302 byte**
+- SHA-256: `957CECCD4A2814979EA362F327112659856141C5F374844C2CD3915BC4AC3FAB`
 - Hasil: `Succeeded`, 0 error, 4 warning
-- Durasi build: 834,1 detik (build penuh)
+- Durasi build: 257,1 detik (build inkremental)
 - Versi: `0.2.0` (`versionCode 2`)
 - Isi: tiga pelajaran Topik 1 berstatus `validated` (override pemilik)
 - Folder `Resources/Content/preview` kosong (hanya `.gitkeep`), jadi tidak
@@ -140,11 +140,17 @@ Perubahan isi dibanding `0.1.0` disengaja: pelajaran Topik 1 sekarang
 XP. Ini **bukan** bukti reviewer independen; lihat catatan override di
 `content/lessons/*.json`.
 
+Build ini juga memuat perbaikan rekonsiliasi XP tertunda: setelah server
+mengonfirmasi hasil, angka "XP tertunda" turun mengikuti sisa outbox, baik
+saat aplikasi dibuka maupun setelah sinkron. Di OPPO `CPH1803`, Beranda
+menampilkan **XP tertunda 0** dan **Selesai 1** setelah sinkron sukses.
+Sebelumnya angka tetap 10 karena `pendingXp` tidak pernah dikurangi.
+
 ## 3. Tes yang dijalankan
 
 ### 3.1 EditMode
 
-Hasil: **81/81 lulus, 0 gagal, 0 dilewati.**
+Hasil: **82/82 lulus, 0 gagal, 0 dilewati.**
 
 - 19 tes `ApiClient`/`SyncService`: parsing respons, XP resmi server,
   penolakan konten belum valid, konflik, transport gagal, dan batas percobaan.
@@ -378,7 +384,7 @@ temuan UI aplikasi.
 
 Tanggal: 2026-11-06. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
 (API 27), 720×1520. APK rilis `uabmeto-f1.apk` 0.2.0
-(SHA-256 `8C3634BF...157D3A9E`), dipasang dengan `adb install -r` tanpa
+(SHA-256 `957CECCD...AC3FAB`), dipasang dengan `adb install -r` tanpa
 uninstall.
 
 | Uji | Hasil |
@@ -433,7 +439,7 @@ Catatan:
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
 | F1-25 tanpa warning | PARTIAL | Build penuh 0.2.0 mencatat 4 warning TMP/IL2CPP |
-| F1-26 ukuran APK | PASS | 28.896.302 byte |
+| F1-26 ukuran APK | PASS | 28.900.302 byte |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
 ## 7. Keputusan yang dikunci

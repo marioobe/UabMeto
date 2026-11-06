@@ -177,6 +177,8 @@ namespace UabMeto.Tests.PlayMode
 
             Assert.AreEqual(OutboxStore.ConfirmedState, item.state);
             Assert.AreEqual(10, item.awardedXp);
+            Assert.AreEqual(0, _outbox.PendingXpTotal);
+            Assert.AreEqual(0, _progress.PendingXp);
             StringAssert.Contains(
                 "Sinkron selesai",
                 FindText("OnlineSyncMessage").text);

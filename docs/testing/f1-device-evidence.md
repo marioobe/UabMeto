@@ -94,8 +94,8 @@ Tanggal: 2026-11-06. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
 |---|---|
 | APK | `Builds/Android/uabmeto-f1.apk` |
 | Versi | `0.2.0` (`versionCode 2`) |
-| Ukuran | 28.896.302 byte |
-| SHA-256 | `8C3634BF09571EB4A2CBB2CB91E50C135438096F93F00EFC995462BF157D3A9E` |
+| Ukuran | 28.900.302 byte |
+| SHA-256 | `957CECCD4A2814979EA362F327112659856141C5F374844C2CD3915BC4AC3FAB` |
 | Pemasangan | `adb install -r` → `Success` (tanpa uninstall) |
 | Tanda tangan | `5a7f688` (sama dengan 0.1.0) |
 
@@ -126,6 +126,28 @@ Catatan jujur:
   diperbaiki.
 - `devMode: false` karena pelajaran sudah `validated`; flag
   `DEV_ALLOW_XP_FOR_IN_REVIEW` tidak dipakai untuk hasil ini.
+
+### 3.3 Perbaikan XP tertunda setelah sinkron
+
+Temuan pada verifikasi 0.2.0 pertama: setelah sinkron sukses, Beranda masih
+menampilkan "10 XP tertunda" karena `ProgressStore.pendingXp` hanya bertambah
+saat hasil disimpan dan tidak pernah dikurangi ketika server mengonfirmasi.
+
+Perbaikan:
+
+- `OutboxStore.PendingXpTotal` menjumlahkan `clientClaimedXp` untuk item
+  berstatus `pending`/`reserved`.
+- `ProgressStore.ReconcilePendingXp` menyelaraskan `pendingXp` dengan angka itu.
+- Rekonsiliasi dijalankan saat `AppRoot.Start` dan setelah
+  `ShellView.ApplySyncReport`.
+- Tes baru: `LocalStoreTests.Progress_ReconcilePendingXpFollowsOutbox`
+  (EditMode) dan penegasan `PendingXp == 0` di `OnlineUiTests` (PlayMode).
+
+APK diperbaiki: 28.900.302 byte, SHA-256
+`957CECCD4A2814979EA362F327112659856141C5F374844C2CD3915BC4AC3FAB`,
+dipasang dengan `adb install -r` → `Success`. Setelah dibuka, Beranda
+menampilkan **XP tertunda 0** dan **Selesai 1**. Tes: EditMode 82/82,
+PlayMode 27/27.
 
 ## 4. Temuan dan perbaikan
 

@@ -33,6 +33,10 @@ namespace UabMeto.App
             Progress = ProgressStore.LoadDefault();
             Outbox = OutboxStore.LoadDefault();
 
+            // Angka "XP tertunda" harus mengikuti isi outbox, bukan nilai lama
+            // yang mungkin sudah dikonfirmasi server saat aplikasi tertutup.
+            Progress.ReconcilePendingXp(Outbox.PendingXpTotal);
+
             ConfigureOnline();
 
             Shell = gameObject.AddComponent<ShellView>();

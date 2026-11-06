@@ -62,6 +62,15 @@ namespace UabMeto.App.Local
 
         public int PendingCount => Data.items.Count(item => item.state == PendingState);
 
+        /// <summary>
+        /// Total XP tampilan yang masih menunggu sinkron. Dipakai untuk
+        /// menyelaraskan angka "XP tertunda" setelah server mengonfirmasi.
+        /// </summary>
+        public int PendingXpTotal =>
+            Data.items
+                .Where(item => item.state == PendingState || item.state == ReservedState)
+                .Sum(item => item.clientClaimedXp);
+
         public static OutboxStore LoadDefault()
         {
             var directory = Path.Combine(Application.persistentDataPath, "uabmeto");

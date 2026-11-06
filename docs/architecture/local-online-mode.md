@@ -192,6 +192,7 @@ OPPO `CPH1803`, Android 8.1 (API 27), APK `0.2.0`, koneksi
 | `POST /v1/sync` dari aplikasi | `200`, `awardedXp: 10`, `devMode: false` |
 | `applied_effects` | `operation=2287b76e...`, user `dev-4febf867...`, `lesson-001-salam`, 10 XP |
 | Kartu Profil | "Sinkron selesai: 1 hasil terkirim." |
+| Beranda setelah sinkron | "XP tertunda 0", "Selesai 1" (rekonsiliasi) |
 | `GET /v1/leaderboard` dari aplikasi | 3 peserta; rio 10 XP ditandai aksen |
 
 Banner aplikasi masih menampilkan "Offline" karena `internetReachability`
@@ -265,7 +266,7 @@ Perilaku UI:
 - Baris peringkat pengguna saat ini ditandai warna aksen, bukan warna teks
   bahaya.
 
-Tes EditMode: **81/81 lulus** (19 tes untuk `ApiClient` dan `SyncService`),
+Tes EditMode: **82/82 lulus** (19 tes untuk `ApiClient` dan `SyncService`),
 PlayMode **27/27 lulus** (8 tes untuk kartu online, banner, dan Peringkat),
 2026-11-06.
 

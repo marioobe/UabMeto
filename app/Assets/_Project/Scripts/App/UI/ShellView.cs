@@ -518,6 +518,10 @@ namespace UabMeto.App.UI
 
         private void ApplySyncReport(SyncReport report)
         {
+            // Server sudah mengonfirmasi sebagian hasil; XP tertunda harus
+            // turun mengikuti sisa outbox, bukan tetap pada angka lama.
+            _progress?.ReconcilePendingXp(_outbox.PendingXpTotal);
+
             _lastSyncFailed =
                 report.Unauthorized ||
                 report.Offline ||

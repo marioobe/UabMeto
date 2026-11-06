@@ -73,6 +73,30 @@ namespace UabMeto.Tests.EditMode
         }
 
         [Test]
+        public void Progress_ReconcilePendingXpFollowsOutbox()
+        {
+            var progressPath = Path.Combine(_directory, "progress.json");
+            var progress = ProgressStore.Load(progressPath);
+            var outbox = OutboxStore.Load(Path.Combine(_directory, "outbox.json"));
+
+            outbox.Enqueue("lesson-001", "1.1.0", 10);
+            outbox.Enqueue("lesson-002", "1.1.0", 15);
+            progress.RecordCompletion("lesson-001", 10);
+            progress.RecordCompletion("lesson-002", 15);
+
+            Assert.AreEqual(25, outbox.PendingXpTotal);
+            progress.ReconcilePendingXp(outbox.PendingXpTotal);
+            Assert.AreEqual(25, progress.PendingXp);
+
+            outbox.MarkConfirmed(outbox.Data.items[0].operationId, 10);
+
+            Assert.AreEqual(15, outbox.PendingXpTotal);
+            progress.ReconcilePendingXp(outbox.PendingXpTotal);
+            Assert.AreEqual(15, progress.PendingXp);
+            Assert.AreEqual(15, ProgressStore.Load(progressPath).PendingXp);
+        }
+
+        [Test]
         public void Outbox_EnqueuesBeforeSync()
         {
             var path = Path.Combine(_directory, "outbox.json");

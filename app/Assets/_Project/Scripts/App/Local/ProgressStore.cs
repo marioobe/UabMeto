@@ -91,6 +91,23 @@ namespace UabMeto.App.Local
             return Data.completedLessonIds.Contains(lessonId);
         }
 
+        /// <summary>
+        /// Menyelaraskan XP tertunda dengan isi outbox. Dipanggil saat aplikasi
+        /// dibuka dan setelah sinkron agar angka tidak basi setelah server
+        /// mengonfirmasi hasil.
+        /// </summary>
+        public void ReconcilePendingXp(int pendingXp)
+        {
+            var value = Math.Max(0, pendingXp);
+            if (Data.pendingXp == value)
+            {
+                return;
+            }
+
+            Data.pendingXp = value;
+            Save();
+        }
+
         public void Save()
         {
             var directory = Path.GetDirectoryName(_path);
