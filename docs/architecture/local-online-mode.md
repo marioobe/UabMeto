@@ -162,8 +162,8 @@ Hasil: **11/11 lulus** pada 2026-11-06.
 
 ### 6.1 Bukti verifikasi manual
 
-Dijalankan terhadap `wrangler dev` lokal dengan
-`DEV_ALLOW_XP_FOR_IN_REVIEW="true"`, 2026-11-06.
+Dijalankan terhadap `wrangler dev` lokal pada 2026-11-06, sebelum Topik 1
+divalidasi, dengan `DEV_ALLOW_XP_FOR_IN_REVIEW="true"`.
 
 | Uji | Hasil |
 |---|---|
@@ -179,8 +179,24 @@ Setelah duplikat, `applied_effects` hanya berisi tiga baris (satu per operasi
 unik); tidak ada baris kedua untuk `operationId` yang sama. Ini bukti XP tidak
 dihitung ganda pada tingkat penyimpanan.
 
-Tanpa flag dev, sync `lesson-001-salam` mengembalikan
-`422 content_not_validated`, sesuai aturan XP.
+Setelah Topik 1 divalidasi, sync `lesson-001-salam` berhasil tanpa flag dev
+(`devMode: false`). Bukti perangkat ada di 6.2.
+
+### 6.2 Bukti perangkat (rilis 0.2.0)
+
+OPPO `CPH1803`, Android 8.1 (API 27), APK `0.2.0`, koneksi
+`adb reverse tcp:8787 tcp:8787` (bukan Wi-Fi/LAN), 2026-11-06.
+
+| Uji | Hasil |
+|---|---|
+| `POST /v1/sync` dari aplikasi | `200`, `awardedXp: 10`, `devMode: false` |
+| `applied_effects` | `operation=2287b76e...`, user `dev-4febf867...`, `lesson-001-salam`, 10 XP |
+| Kartu Profil | "Sinkron selesai: 1 hasil terkirim." |
+| `GET /v1/leaderboard` dari aplikasi | 3 peserta; rio 10 XP ditandai aksen |
+
+Banner aplikasi masih menampilkan "Offline" karena `internetReachability`
+melihat Wi-Fi seluler mati; ini tidak menghalangi sinkron lewat adb reverse.
+Rincian dan tangkapan layar: `docs/testing/f1-device-evidence.md` §3.2.
 
 ## 7. Batasan yang diakui
 

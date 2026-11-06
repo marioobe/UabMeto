@@ -3,8 +3,8 @@
 Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-06 (WITA)
 Lingkungan: Windows, Unity `6000.6.0f1`, Android build-tools `36.1.0`.
 Status gate: **TIDAK LULUS.** Build, tes UI, dan verifikasi dasar perangkat
-fisik lulus; syarat konten tervalidasi, alur pelajaran rilis, aksesibilitas
-penuh, dan sisa gate perangkat belum terpenuhi.
+fisik lulus; syarat reviewer independen, audio/consent, aksesibilitas penuh,
+dan sisa gate perangkat belum terpenuhi.
 
 Pembaruan 2026-11-05: tiga pelajaran Topik 1 sudah diisi dari elisitasi
 `SPK-001` dan berstatus **`in_review`** (bukan `validated`). Aplikasi punya
@@ -19,20 +19,29 @@ landscape 640×360. Lima tes PlayMode baru mengunci perilaku ini. Build rilis
 dan pratinjau dibangun ulang; status gate tetap **TIDAK LULUS** karena
 blocker konten, audio, aksesibilitas, dan perangkat tidak berubah.
 
+Pembaruan 2026-11-06 (versi 0.2.0): tiga pelajaran Topik 1 dinyatakan
+**`validated` atas keputusan pemilik proyek**. Ini **override pemilik, bukan
+peninjauan reviewer independen**, dan dicatat apa adanya di `notes` serta
+`validation.reviewedBy`. APK rilis `0.2.0` memuat ketiga pelajaran dan alur
+pelajaran rilis diuji di OPPO `CPH1803`. Sinkron XP ke Worker lokal berhasil
+di perangkat (10 XP, `devMode: false`), dan tab Peringkat menampilkan data
+server. Gate F1 tetap **TIDAK LULUS** karena reviewer independen, audio dan
+consent, D1-04/D1-05/D1-06, serta aksesibilitas penuh belum terpenuhi.
+
 ## 1. Ringkasan keputusan
 
 | Area | Hasil |
 |---|---|
 | Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
 | Build pratinjau | **PASS** — `Builds/Android/uabmeto-f1-preview.apk` (demo, memuat `in_review`) |
-| Tes EditMode | **PASS** — 62 lulus, 0 gagal, 0 dilewati |
-| Tes PlayMode | **PASS** — 19 lulus, 0 gagal, 0 dilewati |
-| Validator konten | **PASS** — 36/36 tes; CLI 0 error, 4 warning audio |
+| Tes EditMode | **PASS** — 81 lulus, 0 gagal, 0 dilewati |
+| Tes PlayMode | **PASS** — 27 lulus, 0 gagal, 0 dilewati |
+| Validator konten | **PASS** — 0 error, 4 warning audio di `content/samples/` |
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
 | Target sentuh F1 | **PASS (UI F1)** — 4/4 tes aksesibilitas/layout |
-| Materi Topik 1 | **IN_REVIEW** — 3 pelajaran, 50 item elisitasi `SPK-001`, self-review |
-| Konten tervalidasi | **BLOCKED** — belum ada pelajaran `validated` |
-| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-07 lulus; D1-03..D1-06 belum |
+| Materi Topik 1 | **VALIDATED (override pemilik)** — 3 pelajaran, 50 item elisitasi `SPK-001` |
+| Konten tervalidasi | **ADA** — 3 pelajaran Topik 1, tanpa reviewer independen |
+| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-03 (satu pelajaran), D1-07 lulus; D1-04..D1-06 belum |
 | Gate F1 | **TIDAK LULUS** |
 
 ## 2. Build
@@ -70,7 +79,11 @@ bersih dari nol diulang tanpa cache.
 - Build ini memuat tiga pelajaran `in_review` di `Resources/Content/preview`.
 - **Jangan** disebut build rilis dan jangan dipakai untuk gate F1.
 
-### 2.3 Pemeriksaan isi APK
+### 2.3 Pemeriksaan isi APK 0.1.0
+
+Bagian ini mendokumentasikan APK `0.1.0`, yang tidak memuat pelajaran
+`validated`. APK `0.2.0` sengaja memuat tiga pelajaran Topik 1 yang sudah
+`validated`; lihat 2.4.
 
 Pemeriksaan dilakukan dengan membuka zip APK dan memindai isi tiap entry
 (termasuk `global-metadata.dat` dan aset Unity), bukan hanya nama berkas.
@@ -86,7 +99,7 @@ Pemeriksaan dilakukan dengan membuka zip APK dan memindai isi tiap entry
 | `na ta'eko ten` | tidak ada | ada |
 | `PRATINJAU` | hanya di `global-metadata.dat` (literal kode UI) | hanya di `global-metadata.dat` |
 
-Kesimpulan: build rilis **tidak** memuat materi `in_review`, teks Dawan,
+Kesimpulan: build rilis **0.1.0** tidak memuat materi `in_review`, teks Dawan,
 ID pelajaran, atau ID sumber. String label `PRATINJAU` tetap ada karena
 merupakan literal kode UI, bukan konten; saat tidak ada pelajaran
 pratinjau, kartu pratinjau tidak pernah dirender.
@@ -109,12 +122,32 @@ Pemeriksaan lain:
   `service_account`, `client_secret`, `SUPABASE_SERVICE_ROLE`, `sk-...`)
   menghasilkan 0 temuan. Ini bukan jaminan keamanan menyeluruh.
 
+### 2.4 Build rilis 0.2.0 (2026-11-06)
+
+- Path: `Builds/Android/uabmeto-f1.apk`
+- Ukuran: **28.896.302 byte**
+- SHA-256: `8C3634BF09571EB4A2CBB2CB91E50C135438096F93F00EFC995462BF157D3A9E`
+- Hasil: `Succeeded`, 0 error, 4 warning
+- Durasi build: 834,1 detik (build penuh)
+- Versi: `0.2.0` (`versionCode 2`)
+- Isi: tiga pelajaran Topik 1 berstatus `validated` (override pemilik)
+- Folder `Resources/Content/preview` kosong (hanya `.gitkeep`), jadi tidak
+  ada materi pratinjau yang ikut ke APK rilis
+- Ringkasan mesin: `Builds/Android/build-summary.json`
+
+Perubahan isi dibanding `0.1.0` disengaja: pelajaran Topik 1 sekarang
+`validated`, sehingga teks Dawan-nya masuk ke build rilis dan dapat memberi
+XP. Ini **bukan** bukti reviewer independen; lihat catatan override di
+`content/lessons/*.json`.
+
 ## 3. Tes yang dijalankan
 
 ### 3.1 EditMode
 
-Hasil: **62/62 lulus, 0 gagal, 0 dilewati.** Cakupan:
+Hasil: **81/81 lulus, 0 gagal, 0 dilewati.**
 
+- 19 tes `ApiClient`/`SyncService`: parsing respons, XP resmi server,
+  penolakan konten belum valid, konflik, transport gagal, dan batas percobaan.
 - `TopicPathTests` — 12 ID topik persis PRD, tanpa topik ujian, tanpa label
   dialek luar TTU di UI/registry.
 - `ContentRepositoryTests` — empty state, validated/published, penolakan
@@ -128,8 +161,10 @@ Hasil: **62/62 lulus, 0 gagal, 0 dilewati.** Cakupan:
 
 ### 3.2 PlayMode
 
-Hasil: **19/19 lulus, 0 gagal, 0 dilewati.**
+Hasil: **27/27 lulus, 0 gagal, 0 dilewati.**
 
+- 8 tes `OnlineUiTests`: kartu online aktif/nonaktif, sinkron manual, banner,
+  tab Peringkat dari transport palsu, dan pesan galat koneksi.
 - `Shell_HasFourTabsAndTwelveTopics`
 - `FixtureFlow_EnqueuesCompletion`
 - `PendingOutbox_ShowsSyncBanner` — banner antrean tampil dari outbox nyata
@@ -160,6 +195,11 @@ error` sebelum hasil tes ditulis; percobaan ulang dengan `-force-d3d11`
 menghasilkan 19/19 lulus. Log: `Builds/logs/unity-playmode-layout4.log`
 (hasil: `Builds/logs/playmode-layout4-results.xml`).
 
+Pembaruan 0.2.0: seluruh 27 tes PlayMode lulus pada 2026-11-06
+(`Builds/logs/playmode-results.xml`). Tes pratinjau menurunkan status
+pelajaran nyata ke `in_review` hanya di memori, sehingga tidak bergantung
+pada status berkas yang kini `validated`.
+
 ### 3.3 Validator dan kontras
 
 ```text
@@ -184,15 +224,19 @@ Tiga berkas pelajaran sudah dibuat dan lolos validator:
 
 | Berkas | Status | Kosakata | Dialog | Latihan | Contoh |
 |---|---|---|---|---|---|
-| `content/lessons/lesson-001-salam.json` | `in_review` | 12 | 4 baris | 2 MCQ | 2 |
-| `content/lessons/lesson-002-salam-bertemu.json` | `in_review` | 11 | 4 baris | 2 MCQ | 2 |
-| `content/lessons/lesson-003-salam-sopan.json` | `in_review` | 10 | 4 baris | 2 MCQ | 2 |
+| `content/lessons/lesson-001-salam.json` | `validated` | 12 | 4 baris | 2 MCQ | 2 |
+| `content/lessons/lesson-002-salam-bertemu.json` | `validated` | 11 | 4 baris | 2 MCQ | 2 |
+| `content/lessons/lesson-003-salam-sopan.json` | `validated` | 10 | 4 baris | 2 MCQ | 2 |
 
 Catatan penting:
 
-- Semua status tetap **`in_review`**. `reviewedBy` berisi
-  `"SPK-001 (self-review)"`; ini **bukan** reviewer independen, sehingga
-  tidak boleh naik ke `validated`.
+- Status `validated` diberikan atas **keputusan pemilik proyek**
+  (`marioobe`) pada 2026-11-06. `reviewedBy` berisi
+  `"marioobe (pemilik proyek)"`, dan `notes` menyatakan ini override pemilik,
+  bukan peninjauan reviewer independen. Topik berikutnya wajib ditinjau
+  reviewer independen.
+- `audioLicense` berisi pernyataan benar bahwa tidak ada audio pada versi ini;
+  `consentRef` tetap `null` karena tidak ada rekaman.
 - Sumber terdaftar sebagai `SRC-SPK-001` di `content/references/sources.csv`.
 - 9 entri lembar elisitasi identik dengan kata serapan Bahasa Indonesia
   (`ELC-106`, `107`, `112`, `206`, `207`, `208`, `212`, `303`, `306`);
@@ -272,8 +316,9 @@ densitas 450 dpi, terhubung lewat ADB.
   exception di logcat.
 - **D1-07 PASS** — tombol back dari Profil kembali ke Beranda; back dari
   dialog nama menutup dialog dan kembali ke Profil.
-- **D1-03 BLOCKED** — alur pelajaran rilis tidak dapat dijalankan karena
-  tidak ada pelajaran `validated`; fixture sengaja tidak ada di APK rilis.
+- **D1-03 PASS (0.2.0, OPPO `CPH1803`)** — alur pelajaran rilis
+  `lesson-001-salam` dijalankan penuh di APK rilis: pembuka, materi, latihan,
+  umpan balik, ringkasan, simpan hasil. Satu pelajaran, portrait.
 - **D1-04 NOT RUN** — mode offline belum diuji dengan mock/mode pesawat.
 - **D1-05 BLOCKED (perangkat)** — perangkat/launcher memaksa orientasi
   portrait. `wm set-ignore-orientation-request true` + rotasi paksa membuat
@@ -329,6 +374,36 @@ Garis putih melengkung di tepi kiri bukan bagian aplikasi: garis yang sama
 terlihat di home screen sistem (panel tepi OEM). Ini tidak dihitung sebagai
 temuan UI aplikasi.
 
+### 5.2 Verifikasi rilis 0.2.0 dan sinkron lokal di OPPO
+
+Tanggal: 2026-11-06. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
+(API 27), 720×1520. APK rilis `uabmeto-f1.apk` 0.2.0
+(SHA-256 `8C3634BF...157D3A9E`), dipasang dengan `adb install -r` tanpa
+uninstall.
+
+| Uji | Hasil |
+|---|---|
+| `adb install -r` | `Success`; `versionName=0.2.0`, `versionCode=2` |
+| Peluncuran | `UnityPlayerGameActivity` foreground, tanpa crash |
+| Pelajaran rilis | Beranda menampilkan "PELAJARAN TERVALIDASI" dan "Sapaan waktu" |
+| Alur pelajaran | Pembuka → materi → latihan → umpan balik → ringkasan selesai |
+| Simpan hasil | Outbox berisi 1 hasil, 10 XP tertunda |
+| Mode online | Kartu Profil "Aktif · http://127.0.0.1:8787" (adb reverse) |
+| Sinkron manual | "Sinkron selesai: 1 hasil terkirim." |
+| Server | `POST /v1/sync 200`; `applied_effects` 10 XP untuk `lesson-001-salam` |
+| Peringkat | "Minggu 2026-11-02 · 3 peserta"; rio 10 XP ditandai aksen |
+
+Catatan:
+
+- Koneksi memakai `adb reverse tcp:8787 tcp:8787` karena Wi-Fi HP tidak
+  terhubung ke hotspot PC. Ini **bukan** bukti konektivitas Wi-Fi/LAN.
+- Banner masih menampilkan "Offline" karena `internetReachability` melihat
+  Wi-Fi seluler mati; sinkron tetap berhasil lewat adb reverse. Ini temuan
+  UX yang belum diperbaiki: banner offline tidak membedakan "tidak ada
+  internet" dari "server lokal tidak terjangkau".
+- Bukti: `docs/testing/evidence/f1-device/f1-release-0.2.0-*.png`
+  (Beranda, Profil online, sinkron selesai, ringkasan, Peringkat).
+
 ## 6. Status kriteria F1
 
 | Kriteria | Status | Catatan |
@@ -338,14 +413,14 @@ temuan UI aplikasi.
 | F1-03 empat tab | PASS | PlayMode + screenshot + perangkat |
 | F1-04 12 topik | PASS | `TopicPathTests` + 12 baris PlayMode + perangkat |
 | F1-05 empty state | PASS | Screenshot Editor + perangkat |
-| F1-06 alur pelajaran | PASS (Editor fixture + pratinjau) | PlayMode fixture dan pratinjau; tidak ada di APK rilis |
-| F1-07 outbox | PASS | `OutboxStore` + PlayMode; belum sinkron server |
-| F1-08 banner | PARTIAL | Antrean nyata; banner offline belum diuji mock |
+| F1-06 alur pelajaran | PASS (APK rilis 0.2.0) | Satu pelajaran Topik 1 di OPPO `CPH1803`, portrait; belum semua pelajaran/perangkat |
+| F1-07 outbox | PASS | Outbox + sinkron server lokal teruji di perangkat (10 XP) |
+| F1-08 banner | PARTIAL | Antrean nyata; banner offline belum diuji mock dan masih tampil saat server lokal terjangkau lewat adb reverse |
 | F1-09 panel debug | PASS | Tidak ada panel; pemindaian APK 0 |
 | F1-10 portrait/landscape | PASS (Editor) | Acuan responsif 360×640 / 640×360; 360×640, 412×915, 915×412 diuji. Landscape masih satu kolom, belum tata letak dua kolom 40/60 §12; landscape perangkat BLOCKED |
-| F1-11 pelajaran validated | **BLOCKED** | 3 pelajaran `in_review`; belum ada berkas `validated` |
-| F1-12 sumber | **PARTIAL** | `SRC-SPK-001` tercatat, tetapi berasal dari self-review |
-| F1-13 reviewer | **BLOCKED** | Hanya `SPK-001 (self-review)`; belum ada reviewer independen |
+| F1-11 pelajaran validated | **PASS (override pemilik)** | 3 berkas `validated`; bukan reviewer independen |
+| F1-12 sumber | **PARTIAL** | `SRC-SPK-001` tercatat, tetapi berasal dari elisitasi pengembang sendiri |
+| F1-13 reviewer | **BLOCKED** | Override pemilik, bukan reviewer independen |
 | F1-14 consent audio | **BLOCKED** | Belum ada audio/consent nyata |
 | F1-15 audio sintetis | PASS (tidak ada audio) | Tidak ada audio sintetis |
 | F1-16 audio belum tersedia | PASS | Teks "Audio Belum Tersedia" di kartu |
@@ -357,8 +432,8 @@ temuan UI aplikasi.
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
-| F1-25 tanpa warning | PARTIAL | Build inkremental 2026-11-06 mencatat 1 warning shader TMP; build penuh terakhir masih 3 warning TMP/IL2CPP |
-| F1-26 ukuran APK | PASS | 28.294.252 byte |
+| F1-25 tanpa warning | PARTIAL | Build penuh 0.2.0 mencatat 4 warning TMP/IL2CPP |
+| F1-26 ukuran APK | PASS | 28.896.302 byte |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
 ## 7. Keputusan yang dikunci
@@ -368,7 +443,9 @@ temuan UI aplikasi.
 - UI uGUI + TextMeshPro; Inter/Plus Jakarta Sans/Noto Sans/Material Symbols.
 - Dark theme; token tunggal; tanpa shadow/blur/gradien.
 - XP klien hanya tampilan tertunda; server tetap otoritatif.
-- Fixture hanya di Editor; build rilis menampilkan empty state.
+- Fixture hanya di Editor; build rilis hanya memuat pelajaran `validated`.
+  Versi 0.2.0 memuat tiga pelajaran Topik 1 yang `validated` atas override
+  pemilik.
 - Materi `in_review` hanya untuk pratinjau berlabel; tidak mencatat progres
   atau XP dan tidak masuk build rilis.
 - Hati dari PRD §3.8 **belum** diimplementasikan di F1; kartu "Selesai"
@@ -376,7 +453,8 @@ temuan UI aplikasi.
 
 ## 8. Keputusan yang tertunda
 
-- Reviewer independen untuk 3 pelajaran Topik 1 yang masih `in_review`.
+- Reviewer independen untuk Topik 1 (saat ini override pemilik) dan semua
+  topik berikutnya.
 - Izin audio dan rekaman penutur untuk pelajaran pertama.
 - Regenerasi/pengurangan hati dan kuota Worker.
 - Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.

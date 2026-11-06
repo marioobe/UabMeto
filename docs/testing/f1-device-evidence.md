@@ -1,8 +1,9 @@
 # Bukti Uji Perangkat F1
 
 Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-06 (WITA)
-Status: **PARTIAL** — instalasi, peluncuran, UI dasar, dan tombol back lulus;
-alur pelajaran rilis, offline, landscape, dan skala font belum.
+Status: **PARTIAL** — instalasi, peluncuran, UI dasar, tombol back, alur
+pelajaran rilis (satu pelajaran, portrait), dan sinkron lokal lulus di OPPO
+`CPH1803`; offline mock, landscape, dan skala font belum.
 
 ## 1. Perangkat dan APK
 
@@ -84,6 +85,48 @@ Yang diperiksa: kartu tumbuh mengikuti isi, teks tidak terpotong, semua
 daftar gulir mulai dari atas, dan posisi gulir Beranda kembali ke atas
 setelah Beranda → Profil → Beranda.
 
+### 3.2 Verifikasi rilis 0.2.0 dan sinkron lokal (OPPO)
+
+Tanggal: 2026-11-06. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
+(API 27), `arm64-v8a`, layar 720×1520, densitas 320 dpi.
+
+| Item | Nilai |
+|---|---|
+| APK | `Builds/Android/uabmeto-f1.apk` |
+| Versi | `0.2.0` (`versionCode 2`) |
+| Ukuran | 28.896.302 byte |
+| SHA-256 | `8C3634BF09571EB4A2CBB2CB91E50C135438096F93F00EFC995462BF157D3A9E` |
+| Pemasangan | `adb install -r` → `Success` (tanpa uninstall) |
+| Tanda tangan | `5a7f688` (sama dengan 0.1.0) |
+
+Alur yang dijalankan:
+
+1. Beranda menampilkan kartu **"PELAJARAN TERVALIDASI"** dan pelajaran
+   "Sapaan waktu" (10 XP).
+2. Alur pelajaran rilis: pembuka → materi → latihan → umpan balik →
+   ringkasan "Pelajaran selesai".
+3. "Simpan hasil" menaruh satu hasil di outbox (10 XP tertunda).
+4. Profil menampilkan kartu "Mode online lokal — Aktif ·
+   `http://127.0.0.1:8787`" dan satu hasil menunggu.
+5. "Sinkronkan sekarang" → **"Sinkron selesai: 1 hasil terkirim."**
+6. Server mencatat `POST /v1/sync 200` dan `applied_effects` 10 XP untuk
+   `lesson-001-salam`, pengguna `dev-4febf86729044b5fb65c` (rio).
+7. Tab Peringkat menampilkan "Minggu 2026-11-02 · 3 peserta": Aina 20 XP,
+   rio 10 XP (aksen), Penguji 10 XP.
+
+Bukti: `docs/testing/evidence/f1-device/f1-release-0.2.0-*.png`
+(Beranda, ringkasan, Profil online, sinkron selesai, Peringkat).
+
+Catatan jujur:
+
+- Koneksi memakai `adb reverse tcp:8787 tcp:8787`, **bukan** Wi-Fi/LAN.
+  Wi-Fi HP tidak terhubung ke hotspot PC.
+- Banner tetap menampilkan "Offline" karena `internetReachability` melihat
+  Wi-Fi seluler mati. Sinkron lokal tetap berhasil. Ini temuan UX yang belum
+  diperbaiki.
+- `devMode: false` karena pelajaran sudah `validated`; flag
+  `DEV_ALLOW_XP_FOR_IN_REVIEW` tidak dipakai untuk hasil ini.
+
 ## 4. Temuan dan perbaikan
 
 ### 4.1 Scroll tidak dapat digeser
@@ -123,8 +166,9 @@ bagian UI aplikasi. Tidak dihitung sebagai temuan aplikasi.
 
 ## 5. Batasan yang belum ditutup
 
-- Tidak ada pelajaran `validated`, jadi alur pelajaran rilis dan audio tidak
-  dapat diuji.
+- Tidak ada audio pada pelajaran `validated`, jadi alur audio dan consent
+  tidak dapat diuji. Tiga pelajaran Topik 1 `validated` atas override pemilik,
+  bukan reviewer independen.
 - Perangkat/launcher portrait-only; uji landscape perangkat tidak sah.
 - TalkBack, keyboard Android, dan skala font sistem belum diuji. Aplikasi
   juga belum membaca `AndroidConfiguration.fontScale`, jadi D1-06 tidak
