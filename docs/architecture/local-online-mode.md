@@ -189,10 +189,10 @@ Tanpa flag dev, sync `lesson-001-salam` mengembalikan
 - Leaderboard lokal bukan papan peringkat global.
 - XP untuk konten `in_review` hanya lewat flag lokal dan ditandai `devMode`.
 
-## 8. Klien Unity (Phase 2)
+## 8. Klien Unity
 
-Klien hanya menyiapkan transport, API, dan sinkronisasi. Belum ada UI atau
-permintaan jaringan otomatis.
+Klien menyiapkan transport, API, sinkronisasi, dan UI status. Tidak ada
+permintaan jaringan otomatis saat aplikasi dibuka.
 
 | Berkas | Fungsi |
 |---|---|
@@ -203,6 +203,9 @@ permintaan jaringan otomatis.
 | `App/Net/SyncService.cs` | Kirim outbox, simpan `awardedXp` server, atur status |
 | `App/Net/OnlineIdentity.cs` | `X-Dev-User` lokal, bukan autentikasi |
 | `App/Net/OnlineSettings.cs` | `online.json`, nonaktif secara bawaan |
+| `App/UI/LeaderboardView.cs` | Tab Peringkat; data hanya dimuat saat diminta |
+| `App/UI/ProfileView.cs` | Kartu "Mode online lokal" dan tombol sinkron |
+| `App/UI/ShellView.cs` | Banner status dan aksi sinkron manual |
 
 Aturan klien:
 
@@ -229,11 +232,31 @@ menjalankan `wrangler dev`. Ini tetap bukan mode produksi.
 `AppRoot` hanya membuat `ApiClient`/`SyncService` bila `enabled` bernilai
 `true`; tidak ada sinkronisasi otomatis saat aplikasi dibuka.
 
-Tes EditMode: **81/81 lulus** (19 tes baru untuk `ApiClient` dan
-`SyncService`), PlayMode **19/19 lulus**, 2026-11-06.
+Perilaku UI:
+
+- Kartu Profil menampilkan "Nonaktif" bila mode online belum diaktifkan.
+  Tidak ada tombol sinkron dan tidak ada klaim akun server.
+- Bila aktif, kartu menampilkan alamat server, identitas pengembangan,
+  jumlah hasil menunggu, dan tombol "Sinkronkan sekarang".
+- Banner menampilkan hasil menunggu, keadaan offline, dan kegagalan sinkron.
+  Banner tidak menampilkan pesan sukses permanen; hasil sukses tampil di
+  kartu Profil.
+- Tab Peringkat tidak menampilkan data rekaan. Tanpa mode online, tab hanya
+  menjelaskan bahwa data tidak tersedia. Dengan mode online, data dimuat
+  hanya setelah pengguna menekan "Muat peringkat".
+- Baris peringkat pengguna saat ini ditandai warna aksen, bukan warna teks
+  bahaya.
+
+Tes EditMode: **81/81 lulus** (19 tes untuk `ApiClient` dan `SyncService`),
+PlayMode **27/27 lulus** (8 tes untuk kartu online, banner, dan Peringkat),
+2026-11-06.
+
+APK rilis dan bukti gate F1 **belum** dibangun ulang setelah UI online
+ditambahkan. Gate F1 tetap **TIDAK LULUS**; jangan memakai dokumen ini sebagai
+bukti perangkat.
 
 ## 9. Langkah berikutnya
 
-1. UI: status sinkron di Profil, banner, dan tab Peringkat.
-2. Setelah ada pelajaran `validated`, uji XP tanpa flag dev.
+1. Setelah ada pelajaran `validated`, uji XP tanpa flag dev.
+2. Bangun ulang APK dan ulangi bukti perangkat bila UI ini akan dirilis.
 3. Untuk produksi: Firebase Auth + Firestore + Worker terverifikasi.

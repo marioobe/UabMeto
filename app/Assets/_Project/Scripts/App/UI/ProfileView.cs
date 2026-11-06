@@ -25,6 +25,7 @@ namespace UabMeto.App.UI
             BuildIdentity(content);
             BuildStats(content);
             BuildOutbox(content);
+            BuildOnline(content);
             BuildAbout(content);
         }
 
@@ -173,10 +174,102 @@ namespace UabMeto.App.UI
             UIFactory.CreateText(
                 "Explanation",
                 group,
-                "Hasil pelajaran disimpan dulu di perangkat. Sinkronisasi server belum aktif pada F1.",
+                "Hasil pelajaran disimpan dulu di perangkat. Sinkronisasi hanya " +
+                "berjalan saat kamu menekan tombol, tidak otomatis.",
                 theme.BodyFont,
                 theme.LabelSize,
                 theme.TextMuted);
+        }
+
+        /// <summary>
+        /// Kartu status mode online lokal. Tidak mengklaim akun server atau
+        /// koneksi produksi.
+        /// </summary>
+        private void BuildOnline(RectTransform parent)
+        {
+            var theme = _shell.Theme;
+            var group = UIFactory.CreateCard(
+                "OnlineStatus",
+                parent,
+                theme.SurfaceCard,
+                theme,
+                theme.Space8,
+                new RectOffset(16, 16, 16, 16),
+                (int)theme.CornerRadius);
+
+            UIFactory.CreateText(
+                "Title",
+                group,
+                "Mode online lokal",
+                theme.HeadingBoldFont,
+                theme.Heading3Size,
+                theme.TextPrimary);
+
+            if (!_shell.OnlineConfigured)
+            {
+                UIFactory.CreateText(
+                    "OnlineState",
+                    group,
+                    "Nonaktif — data hanya tersimpan di perangkat ini.",
+                    theme.BodyFont,
+                    theme.BodySmallSize,
+                    theme.TextMuted);
+
+                UIFactory.CreateText(
+                    "OnlineExplanation",
+                    group,
+                    "Untuk pengujian, aktifkan lewat online.json di folder data aplikasi. " +
+                    "Ini bukan akun server dan bukan backend produksi.",
+                    theme.BodyFont,
+                    theme.LabelSize,
+                    theme.TextMuted);
+                return;
+            }
+
+            UIFactory.CreateText(
+                "OnlineState",
+                group,
+                "Aktif · " + _shell.Api.BaseUrl,
+                theme.BodyFont,
+                theme.BodySmallSize,
+                theme.TextPrimary);
+
+            UIFactory.CreateText(
+                "OnlineIdentity",
+                group,
+                "Identitas pengembangan: " + _shell.Api.DevUser,
+                theme.BodyFont,
+                theme.LabelSize,
+                theme.TextMuted);
+
+            var pending = _shell.Outbox.PendingCount;
+            UIFactory.CreateText(
+                "OnlinePending",
+                group,
+                pending == 0
+                    ? "Tidak ada hasil menunggu sinkron."
+                    : $"{pending} hasil menunggu sinkron.",
+                theme.BodyFont,
+                theme.BodySmallSize,
+                pending == 0 ? theme.TextMuted : theme.Warning);
+
+            UIFactory.CreateButton(
+                "SyncNow",
+                group,
+                "Sinkronkan sekarang",
+                theme,
+                _shell.RequestSync,
+                primary: true);
+
+            UIFactory.CreateText(
+                "OnlineSyncMessage",
+                group,
+                string.IsNullOrEmpty(_shell.LastSyncMessage)
+                    ? "Belum ada sinkronisasi dijalankan."
+                    : _shell.LastSyncMessage,
+                theme.BodyFont,
+                theme.LabelSize,
+                _shell.LastSyncFailed ? theme.DangerText : theme.TextMuted);
         }
 
         private void BuildAbout(RectTransform parent)

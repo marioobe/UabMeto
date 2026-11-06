@@ -113,7 +113,8 @@ Ini **bukan** backend produksi: tidak ada Firebase, Firestore, deployment,
 atau kredensial nyata. `workers_dev = false` dan jangan di-deploy.
 
 Klien Unity sudah punya `ApiClient`, `SyncService`, dan transport yang dapat
-diuji tanpa jaringan. Mode ini nonaktif secara bawaan; aktifkan lewat
+diuji tanpa jaringan, plus kartu status di Profil, banner, dan tab Peringkat.
+Mode ini nonaktif secara bawaan; aktifkan lewat
 `<persistentDataPath>/uabmeto/online.json` hanya untuk pengujian. Tidak ada
 sinkronisasi otomatis saat aplikasi dibuka.
 

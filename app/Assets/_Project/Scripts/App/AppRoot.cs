@@ -36,7 +36,7 @@ namespace UabMeto.App
             ConfigureOnline();
 
             Shell = gameObject.AddComponent<ShellView>();
-            Shell.Initialize(Theme, Catalog, Profile, Progress, Outbox);
+            Shell.Initialize(Theme, Catalog, Profile, Progress, Outbox, Api, Sync);
 
             if (!Profile.IsValid)
             {

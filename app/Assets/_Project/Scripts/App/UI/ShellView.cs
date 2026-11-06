@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using TMPro;
 using UabMeto.App.Content;
 using UabMeto.App.Local;
+using UabMeto.App.Net;
 using UabMeto.Core.Content;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +32,8 @@ namespace UabMeto.App.UI
         private LocalProfile _profile;
         private ProgressStore _progress;
         private OutboxStore _outbox;
+        private ApiClient _api;
+        private SyncService _sync;
 
         private Canvas _canvas;
         private RectTransform _safeRoot;
@@ -43,6 +48,9 @@ namespace UabMeto.App.UI
         private readonly List<TabButton> _tabButtons = new List<TabButton>();
         private Tab _tab = Tab.Home;
         private bool _built;
+        private bool _syncing;
+        private string _lastSyncMessage = string.Empty;
+        private bool _lastSyncFailed;
 
         public ThemeTokens Theme => _theme;
         public ContentCatalog Catalog => _catalog;
@@ -51,18 +59,43 @@ namespace UabMeto.App.UI
         public OutboxStore Outbox => _outbox;
         public RectTransform ContentHost => _contentHost;
 
+        /// <summary>Null bila mode online lokal tidak diaktifkan.</summary>
+        public ApiClient Api => _api;
+
+        /// <summary>Null bila mode online lokal tidak diaktifkan.</summary>
+        public SyncService Sync => _sync;
+
+        public bool OnlineConfigured => _api != null && _sync != null;
+
+        public bool IsSyncing => _syncing;
+
+        public string LastSyncMessage => _lastSyncMessage;
+
+        public bool LastSyncFailed => _lastSyncFailed;
+
+        /// <summary>Teks banner status saat ini; kosong bila tidak tampil.</summary>
+        public string BannerText =>
+            _offlineText == null ? string.Empty : _offlineText.text;
+
+        public bool BannerVisible =>
+            _offlineBanner != null && _offlineBanner.gameObject.activeSelf;
+
         public void Initialize(
             ThemeTokens theme,
             ContentCatalog catalog,
             LocalProfile profile,
             ProgressStore progress,
-            OutboxStore outbox)
+            OutboxStore outbox,
+            ApiClient api = null,
+            SyncService sync = null)
         {
             _theme = theme;
             _catalog = catalog;
             _profile = profile;
             _progress = progress;
             _outbox = outbox;
+            _api = api;
+            _sync = sync;
             Build();
         }
 
@@ -320,11 +353,7 @@ namespace UabMeto.App.UI
                     break;
                 case Tab.Leaderboard:
                     SetHeader("Peringkat", "Mingguan · reset Senin 00.00 WITA");
-                    BuildPlaceholder(
-                        "Peringkat belum tersedia",
-                        "Papan peringkat memerlukan data server yang belum ada. F1 tidak menampilkan " +
-                        "angka atau nama peserta rekaan.",
-                        "leaderboard");
+                    new LeaderboardView(this).Build(_contentHost);
                     break;
                 case Tab.Profile:
                     SetHeader("Profil", "Data lokal perangkat");
@@ -441,6 +470,88 @@ namespace UabMeto.App.UI
                 $"[UabMeto] Hasil pelajaran masuk outbox: {lesson.id} " +
                 $"operation={item.operationId} xpPending={lesson.xp}");
             ShowTab(Tab.Home);
+        }
+
+        /// <summary>
+        /// Dipanggil tombol UI. Aman dipanggil saat mode online nonaktif.
+        /// </summary>
+        public void RequestSync()
+        {
+            _ = SyncNowAsync();
+        }
+
+        /// <summary>
+        /// Satu putaran sinkron. Tidak pernah berjalan otomatis saat aplikasi
+        /// dibuka; hanya dari aksi pengguna.
+        /// </summary>
+        public async Task SyncNowAsync(CancellationToken cancellationToken = default)
+        {
+            if (!OnlineConfigured || _syncing)
+            {
+                return;
+            }
+
+            _syncing = true;
+            _lastSyncMessage = "Menyinkronkan hasil…";
+            _lastSyncFailed = false;
+
+            try
+            {
+                var report = await _sync.SyncPendingAsync(cancellationToken);
+                ApplySyncReport(report);
+            }
+            catch (Exception exception)
+            {
+                _lastSyncMessage = "Sinkron gagal: " + exception.Message;
+                _lastSyncFailed = true;
+                Debug.LogWarning("[UabMeto] Sinkron gagal: " + exception);
+            }
+            finally
+            {
+                _syncing = false;
+                if (_tab == Tab.Profile)
+                {
+                    ShowTab(Tab.Profile);
+                }
+            }
+        }
+
+        private void ApplySyncReport(SyncReport report)
+        {
+            _lastSyncFailed =
+                report.Unauthorized ||
+                report.Offline ||
+                report.Rejected > 0 ||
+                report.Failed > 0;
+
+            if (report.Unauthorized)
+            {
+                _lastSyncMessage = "Sinkron ditolak server: identitas pengembangan tidak sah.";
+            }
+            else if (report.Offline)
+            {
+                _lastSyncMessage = "Server lokal tidak dapat dihubungi. Hasil tetap tersimpan.";
+            }
+            else if (report.Confirmed > 0)
+            {
+                _lastSyncMessage = $"Sinkron selesai: {report.Confirmed} hasil terkirim.";
+            }
+            else if (report.Rejected > 0)
+            {
+                _lastSyncMessage = $"{report.Rejected} hasil ditolak: konten belum tervalidasi.";
+            }
+            else if (report.Failed > 0)
+            {
+                _lastSyncMessage = $"{report.Failed} hasil butuh rekonsiliasi.";
+            }
+            else if (report.StillPending > 0)
+            {
+                _lastSyncMessage = $"{report.StillPending} hasil menunggu percobaan berikutnya.";
+            }
+            else
+            {
+                _lastSyncMessage = "Tidak ada hasil menunggu sinkron.";
+            }
         }
 
         private void SetHeader(string title, string subtitle)
@@ -714,29 +825,55 @@ namespace UabMeto.App.UI
 
             var offline = Application.internetReachability == NetworkReachability.NotReachable;
             var pending = _outbox == null ? 0 : _outbox.PendingCount;
-            var visible = offline || pending > 0;
-            if (_offlineBanner.gameObject.activeSelf != visible)
+
+            if (_syncing)
             {
-                _offlineBanner.gameObject.SetActive(visible);
+                SetBanner("Menyinkronkan hasil…");
+                return;
             }
 
-            if (!visible)
+            if (_lastSyncFailed && !string.IsNullOrEmpty(_lastSyncMessage))
             {
+                SetBanner(_lastSyncMessage);
                 return;
             }
 
             if (offline && pending > 0)
             {
-                _offlineText.text =
-                    $"Offline — {pending} hasil menunggu sinkron. Pembelajaran tetap bisa dilanjutkan.";
+                SetBanner(
+                    $"Offline — {pending} hasil menunggu sinkron. " +
+                    "Pembelajaran tetap bisa dilanjutkan.");
+                return;
             }
-            else if (offline)
+
+            if (offline)
             {
-                _offlineText.text = "Offline — pembelajaran tetap bisa dilanjutkan. Hasil akan disinkronkan saat online.";
+                SetBanner(
+                    "Offline — pembelajaran tetap bisa dilanjutkan. " +
+                    "Hasil akan disinkronkan saat online.");
+                return;
             }
-            else
+
+            if (pending > 0)
             {
-                _offlineText.text = $"{pending} hasil menunggu sinkron.";
+                SetBanner($"{pending} hasil menunggu sinkron.");
+                return;
+            }
+
+            SetBanner(null);
+        }
+
+        private void SetBanner(string message)
+        {
+            var visible = !string.IsNullOrEmpty(message);
+            if (_offlineBanner.gameObject.activeSelf != visible)
+            {
+                _offlineBanner.gameObject.SetActive(visible);
+            }
+
+            if (visible)
+            {
+                _offlineText.text = message;
             }
         }
 
