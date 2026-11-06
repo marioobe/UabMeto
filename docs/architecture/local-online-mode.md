@@ -189,9 +189,51 @@ Tanpa flag dev, sync `lesson-001-salam` mengembalikan
 - Leaderboard lokal bukan papan peringkat global.
 - XP untuk konten `in_review` hanya lewat flag lokal dan ditandai `devMode`.
 
-## 8. Langkah berikutnya
+## 8. Klien Unity (Phase 2)
 
-1. Klien: `IHttpTransport`, `ApiClient`, `SyncService`.
-2. UI: status sinkron di Profil, banner, tab Peringkat.
-3. Setelah ada pelajaran `validated`, uji XP tanpa flag dev.
-4. Untuk produksi: Firebase Auth + Firestore + Worker terverifikasi.
+Klien hanya menyiapkan transport, API, dan sinkronisasi. Belum ada UI atau
+permintaan jaringan otomatis.
+
+| Berkas | Fungsi |
+|---|---|
+| `Core/Sync/IHttpTransport.cs` | Kontrak transport; dapat diganti transport palsu |
+| `Core/Sync/HttpResult.cs` | Status, body, dan error transport |
+| `App/Net/UnityHttpTransport.cs` | Implementasi `UnityWebRequest`, batas waktu 10 detik |
+| `App/Net/ApiClient.cs` | `/v1/sync`, `/v1/sync/{id}`, `/v1/quota`, `/v1/leaderboard` |
+| `App/Net/SyncService.cs` | Kirim outbox, simpan `awardedXp` server, atur status |
+| `App/Net/OnlineIdentity.cs` | `X-Dev-User` lokal, bukan autentikasi |
+| `App/Net/OnlineSettings.cs` | `online.json`, nonaktif secara bawaan |
+
+Aturan klien:
+
+- `clientClaimedXp` hanya dikirim untuk audit; XP yang disimpan berasal dari
+  `awardedXp` respons server.
+- `content_not_validated` dan `unknown_content` menandai operasi `Rejected`
+  dan tidak dikirim ulang.
+- `operation_conflict` menandai `Failed` (butuh rekonsiliasi).
+- Kegagalan transport menghentikan putaran dan menambah `attemptCount`;
+  setelah `maxAttempts` operasi menjadi `Failed`.
+- `unauthorized` menghentikan putaran tanpa mengubah status.
+
+Mengaktifkan di perangkat/Editor (opsional, untuk pengujian):
+
+```json
+// <persistentDataPath>/uabmeto/online.json
+{ "enabled": true, "baseUrl": "http://127.0.0.1:8787" }
+```
+
+Di perangkat Android, `127.0.0.1` menunjuk ke perangkat itu sendiri. Untuk
+pengujian lintas perangkat, isi `baseUrl` dengan alamat LAN komputer yang
+menjalankan `wrangler dev`. Ini tetap bukan mode produksi.
+
+`AppRoot` hanya membuat `ApiClient`/`SyncService` bila `enabled` bernilai
+`true`; tidak ada sinkronisasi otomatis saat aplikasi dibuka.
+
+Tes EditMode: **81/81 lulus** (19 tes baru untuk `ApiClient` dan
+`SyncService`), PlayMode **19/19 lulus**, 2026-11-06.
+
+## 9. Langkah berikutnya
+
+1. UI: status sinkron di Profil, banner, dan tab Peringkat.
+2. Setelah ada pelajaran `validated`, uji XP tanpa flag dev.
+3. Untuk produksi: Firebase Auth + Firestore + Worker terverifikasi.

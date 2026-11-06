@@ -1,5 +1,6 @@
 using UabMeto.App.Content;
 using UabMeto.App.Local;
+using UabMeto.App.Net;
 using UabMeto.App.UI;
 using UnityEngine;
 
@@ -18,6 +19,12 @@ namespace UabMeto.App
         public OutboxStore Outbox { get; private set; }
         public ShellView Shell { get; private set; }
 
+        /// <summary>Null bila mode online lokal tidak diaktifkan.</summary>
+        public ApiClient Api { get; private set; }
+
+        /// <summary>Null bila mode online lokal tidak diaktifkan.</summary>
+        public SyncService Sync { get; private set; }
+
         private void Start()
         {
             Theme = ThemeTokens.Load();
@@ -26,6 +33,8 @@ namespace UabMeto.App
             Progress = ProgressStore.LoadDefault();
             Outbox = OutboxStore.LoadDefault();
 
+            ConfigureOnline();
+
             Shell = gameObject.AddComponent<ShellView>();
             Shell.Initialize(Theme, Catalog, Profile, Progress, Outbox);
 
@@ -33,6 +42,23 @@ namespace UabMeto.App
             {
                 Shell.ShowNicknameDialog();
             }
+        }
+
+        /// <summary>
+        /// Menyiapkan klien sinkron hanya bila penguji mengaktifkannya lewat
+        /// online.json. Tidak ada permintaan jaringan otomatis di sini.
+        /// </summary>
+        private void ConfigureOnline()
+        {
+            var settings = OnlineSettings.LoadDefault();
+            if (!settings.enabled || string.IsNullOrWhiteSpace(settings.baseUrl))
+            {
+                return;
+            }
+
+            var identity = OnlineIdentity.LoadOrCreateDefault();
+            Api = new ApiClient(new UnityHttpTransport(), settings.baseUrl, identity);
+            Sync = new SyncService(Api, Outbox, () => Profile.Nickname);
         }
 
         private void Update()

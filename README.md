@@ -112,6 +112,11 @@ Kontrak dan batasan: `docs/architecture/local-online-mode.md`.
 Ini **bukan** backend produksi: tidak ada Firebase, Firestore, deployment,
 atau kredensial nyata. `workers_dev = false` dan jangan di-deploy.
 
+Klien Unity sudah punya `ApiClient`, `SyncService`, dan transport yang dapat
+diuji tanpa jaringan. Mode ini nonaktif secara bawaan; aktifkan lewat
+`<persistentDataPath>/uabmeto/online.json` hanya untuk pengujian. Tidak ada
+sinkronisasi otomatis saat aplikasi dibuka.
+
 ## Aturan keamanan
 
 - Tidak ada API key, service account, token, atau kata sandi di repository,

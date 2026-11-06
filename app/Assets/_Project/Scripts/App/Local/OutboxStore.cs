@@ -18,6 +18,12 @@ namespace UabMeto.App.Local
         public string state;
         public int attemptCount;
         public int maxAttempts;
+
+        /// <summary>XP yang diberikan server; 0 selama belum terkonfirmasi.</summary>
+        public int awardedXp;
+
+        /// <summary>Pesan kegagalan terakhir untuk diagnosa lokal.</summary>
+        public string lastError;
     }
 
     [Serializable]
@@ -102,6 +108,85 @@ namespace UabMeto.App.Local
             return item;
         }
 
+        /// <summary>
+        /// Operasi yang masih boleh dikirim: Pending/Reserved dan belum
+        /// melewati batas percobaan.
+        /// </summary>
+        public IEnumerable<OutboxItem> GetSyncable()
+        {
+            return Data.items.Where(
+                item =>
+                    (item.state == PendingState || item.state == ReservedState) &&
+                    item.attemptCount < item.maxAttempts);
+        }
+
+        /// <summary>Server mengonfirmasi operasi dan memberi XP resmi.</summary>
+        public void MarkConfirmed(string operationId, int awardedXp)
+        {
+            var item = Find(operationId);
+            if (item == null)
+            {
+                return;
+            }
+
+            item.state = ConfirmedState;
+            item.awardedXp = Math.Max(0, awardedXp);
+            item.lastError = null;
+            Save();
+        }
+
+        /// <summary>Server menolak permanen; jangan kirim ulang otomatis.</summary>
+        public void MarkRejected(string operationId, string error)
+        {
+            var item = Find(operationId);
+            if (item == null)
+            {
+                return;
+            }
+
+            item.state = RejectedState;
+            item.lastError = error;
+            Save();
+        }
+
+        /// <summary>Operasi butuh rekonsiliasi manual.</summary>
+        public void MarkFailed(string operationId, string error)
+        {
+            var item = Find(operationId);
+            if (item == null)
+            {
+                return;
+            }
+
+            item.state = FailedState;
+            item.lastError = error;
+            Save();
+        }
+
+        /// <summary>
+        /// Catat satu percobaan gagal sementara. Bila batas tercapai, operasi
+        /// dipindah ke Failed agar tidak di-retry tanpa henti.
+        /// Mengembalikan true bila operasi masih boleh dicoba lagi.
+        /// </summary>
+        public bool RecordAttempt(string operationId, string error)
+        {
+            var item = Find(operationId);
+            if (item == null)
+            {
+                return false;
+            }
+
+            item.attemptCount += 1;
+            item.lastError = error;
+            if (item.attemptCount >= item.maxAttempts)
+            {
+                item.state = FailedState;
+            }
+
+            Save();
+            return item.state != FailedState;
+        }
+
         public SyncAction Reconcile(string operationId, SyncOperationRecord record)
         {
             var item = Data.items.FirstOrDefault(entry => entry.operationId == operationId);
@@ -155,6 +240,16 @@ namespace UabMeto.App.Local
             }
 
             File.WriteAllText(_path, JsonUtility.ToJson(Data, true));
+        }
+
+        private OutboxItem Find(string operationId)
+        {
+            if (string.IsNullOrWhiteSpace(operationId))
+            {
+                return null;
+            }
+
+            return Data.items.FirstOrDefault(item => item.operationId == operationId);
         }
     }
 }
