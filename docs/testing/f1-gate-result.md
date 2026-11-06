@@ -419,7 +419,7 @@ Catatan:
 | F1-03 empat tab | PASS | PlayMode + screenshot + perangkat |
 | F1-04 12 topik | PASS | `TopicPathTests` + 12 baris PlayMode + perangkat |
 | F1-05 empty state | PASS | Screenshot Editor + perangkat |
-| F1-06 alur pelajaran | PASS (APK rilis 0.2.0) | Satu pelajaran Topik 1 di OPPO `CPH1803`, portrait; belum semua pelajaran/perangkat |
+| F1-06 alur pelajaran | PASS (APK rilis 0.2.0) | Hanya pelajaran pertama per topik dapat dibuka (`FindLessonForTopic` = `FirstOrDefault`); pelajaran 2–3 belum punya layar pemilih. Satu perangkat, portrait |
 | F1-07 outbox | PASS | Outbox + sinkron server lokal teruji di perangkat (10 XP) |
 | F1-08 banner | PARTIAL | Antrean nyata; banner offline belum diuji mock dan masih tampil saat server lokal terjangkau lewat adb reverse |
 | F1-09 panel debug | PASS | Tidak ada panel; pemindaian APK 0 |
@@ -461,6 +461,9 @@ Catatan:
 
 - Reviewer independen untuk Topik 1 (saat ini override pemilik) dan semua
   topik berikutnya.
+- Layar daftar pelajaran per topik. Saat ini hanya pelajaran pertama tiap
+  topik yang dapat dibuka; pelajaran 2 dan 3 Topik 1 sudah ada di APK dan
+  server tetapi belum punya jalur UI.
 - Izin audio dan rekaman penutur untuk pelajaran pertama.
 - Regenerasi/pengurangan hati dan kuota Worker.
 - Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.

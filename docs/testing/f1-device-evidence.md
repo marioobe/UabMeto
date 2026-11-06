@@ -126,6 +126,9 @@ Catatan jujur:
   diperbaiki.
 - `devMode: false` karena pelajaran sudah `validated`; flag
   `DEV_ALLOW_XP_FOR_IN_REVIEW` tidak dipakai untuk hasil ini.
+- Hanya pelajaran pertama per topik yang dapat dibuka dari UI. Pelajaran 2
+  dan 3 Topik 1 ada di APK dan server, tetapi belum ada layar pemilih
+  pelajaran; verifikasi sinkron kedua di perangkat karena itu belum dilakukan.
 
 ### 3.3 Perbaikan XP tertunda setelah sinkron
 
