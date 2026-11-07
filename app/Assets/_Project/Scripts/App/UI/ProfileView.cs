@@ -100,7 +100,7 @@ namespace UabMeto.App.UI
 
             CreateStat(row, "Pelajaran selesai", _shell.Progress.Data.completedLessonIds.Count.ToString());
             CreateStat(row, "XP tertunda", _shell.Progress.PendingXp.ToString());
-            CreateStat(row, "Antrean", _shell.Outbox.Count.ToString());
+            CreateStat(row, "Antrean", _shell.Outbox.PendingCount.ToString());
         }
 
         private void CreateStat(Transform parent, string label, string value)

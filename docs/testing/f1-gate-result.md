@@ -122,13 +122,13 @@ Pemeriksaan lain:
   `service_account`, `client_secret`, `SUPABASE_SERVICE_ROLE`, `sk-...`)
   menghasilkan 0 temuan. Ini bukan jaminan keamanan menyeluruh.
 
-### 2.4 Build rilis 0.2.0 (2026-11-06)
+### 2.4 Build rilis 0.2.0 (2026-11-07)
 
 - Path: `Builds/Android/uabmeto-f1.apk`
-- Ukuran: **28.900.302 byte**
-- SHA-256: `957CECCD4A2814979EA362F327112659856141C5F374844C2CD3915BC4AC3FAB`
-- Hasil: `Succeeded`, 0 error, 4 warning
-- Durasi build: 257,1 detik (build inkremental)
+- Ukuran: **28.900.298 byte**
+- SHA-256: `EA0E0E7500E4169705CEC6DFB50C64E6D3BEC6BDA6549B282FAEE9796290C6BD`
+- Hasil: `Succeeded`, 0 error, 6 warning
+- Durasi build: 257,4 detik (build inkremental)
 - Versi: `0.2.0` (`versionCode 2`)
 - Isi: tiga pelajaran Topik 1 berstatus `validated` (override pemilik)
 - Folder `Resources/Content/preview` kosong (hanya `.gitkeep`), jadi tidak
@@ -145,6 +145,10 @@ mengonfirmasi hasil, angka "XP tertunda" turun mengikuti sisa outbox, baik
 saat aplikasi dibuka maupun setelah sinkron. Di OPPO `CPH1803`, Beranda
 menampilkan **XP tertunda 0** dan **Selesai 1** setelah sinkron sukses.
 Sebelumnya angka tetap 10 karena `pendingXp` tidak pernah dikurangi.
+
+Build final juga memperbaiki statistik Profil: "Antrean" memakai
+`Outbox.PendingCount`, bukan `Outbox.Count`, sehingga tidak lagi menampilkan
+angka antrean setelah semua hasil terkonfirmasi.
 
 ## 3. Tes yang dijalankan
 
@@ -384,7 +388,7 @@ temuan UI aplikasi.
 
 Tanggal: 2026-11-06. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
 (API 27), 720×1520. APK rilis `uabmeto-f1.apk` 0.2.0
-(SHA-256 `957CECCD...AC3FAB`), dipasang dengan `adb install -r` tanpa
+(SHA-256 `EA0E0E75...90C6BD`), dipasang dengan `adb install -r` tanpa
 uninstall.
 
 | Uji | Hasil |
@@ -438,8 +442,8 @@ Catatan:
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
-| F1-25 tanpa warning | PARTIAL | Build penuh 0.2.0 mencatat 4 warning TMP/IL2CPP |
-| F1-26 ukuran APK | PASS | 28.900.302 byte |
+| F1-25 tanpa warning | PARTIAL | Build 0.2.0 mencatat 6 warning TMP/AndroidSDKTools |
+| F1-26 ukuran APK | PASS | 28.900.298 byte |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
 ## 7. Keputusan yang dikunci
@@ -464,6 +468,9 @@ Catatan:
 - Layar daftar pelajaran per topik. Saat ini hanya pelajaran pertama tiap
   topik yang dapat dibuka; pelajaran 2 dan 3 Topik 1 sudah ada di APK dan
   server tetapi belum punya jalur UI.
+- Apakah menyelesaikan ulang pelajaran yang sama boleh memberi XP lagi.
+  Server memberi XP untuk setiap `operationId` baru; klien mencegah XP lokal
+  ganda tetapi tetap mengantrekan hasil baru saat pelajaran diulang.
 - Izin audio dan rekaman penutur untuk pelajaran pertama.
 - Regenerasi/pengurangan hati dan kuota Worker.
 - Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.

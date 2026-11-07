@@ -179,6 +179,7 @@ namespace UabMeto.Tests.PlayMode
             Assert.AreEqual(10, item.awardedXp);
             Assert.AreEqual(0, _outbox.PendingXpTotal);
             Assert.AreEqual(0, _progress.PendingXp);
+            Assert.AreEqual("0", FindChildText("Stat_Antrean", "Body/Value").text);
             StringAssert.Contains(
                 "Sinkron selesai",
                 FindText("OnlineSyncMessage").text);

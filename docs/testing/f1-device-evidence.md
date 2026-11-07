@@ -94,8 +94,8 @@ Tanggal: 2026-11-06. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
 |---|---|
 | APK | `Builds/Android/uabmeto-f1.apk` |
 | Versi | `0.2.0` (`versionCode 2`) |
-| Ukuran | 28.900.302 byte |
-| SHA-256 | `957CECCD4A2814979EA362F327112659856141C5F374844C2CD3915BC4AC3FAB` |
+| Ukuran | 28.900.298 byte |
+| SHA-256 | `EA0E0E7500E4169705CEC6DFB50C64E6D3BEC6BDA6549B282FAEE9796290C6BD` |
 | Pemasangan | `adb install -r` → `Success` (tanpa uninstall) |
 | Tanda tangan | `5a7f688` (sama dengan 0.1.0) |
 
@@ -146,11 +146,18 @@ Perbaikan:
 - Tes baru: `LocalStoreTests.Progress_ReconcilePendingXpFollowsOutbox`
   (EditMode) dan penegasan `PendingXp == 0` di `OnlineUiTests` (PlayMode).
 
-APK diperbaiki: 28.900.302 byte, SHA-256
-`957CECCD4A2814979EA362F327112659856141C5F374844C2CD3915BC4AC3FAB`,
+Temuan lanjutan: statistik Profil menampilkan **"Antrean 1"** padahal kartu
+di bawahnya berkata "Tidak ada hasil menunggu sinkron." Penyebabnya stat
+memakai `Outbox.Count` (termasuk item terkonfirmasi), bukan `PendingCount`.
+Setelah diperbaiki, stat menampilkan **Antrean 0**.
+
+APK final: 28.900.298 byte, SHA-256
+`EA0E0E7500E4169705CEC6DFB50C64E6D3BEC6BDA6549B282FAEE9796290C6BD`,
 dipasang dengan `adb install -r` → `Success`. Setelah dibuka, Beranda
-menampilkan **XP tertunda 0** dan **Selesai 1**. Tes: EditMode 82/82,
-PlayMode 27/27.
+menampilkan **XP tertunda 0** dan **Selesai 1**; Profil menampilkan
+**Pelajaran selesai 1, XP tertunda 0, Antrean 0**, dan mode online **Aktif**.
+Tab Peringkat berhasil memuat data server setelah pemasangan ulang. Tes:
+EditMode 82/82, PlayMode 27/27.
 
 ## 4. Temuan dan perbaikan
 
