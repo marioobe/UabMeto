@@ -248,6 +248,17 @@ Di perangkat Android, `127.0.0.1` menunjuk ke perangkat itu sendiri. Untuk
 pengujian lintas perangkat, isi `baseUrl` dengan alamat LAN komputer yang
 menjalankan `wrangler dev`. Ini tetap bukan mode produksi.
 
+Alternatif tanpa LAN: sambungkan perangkat lewat USB lalu jalankan
+
+```text
+adb reverse tcp:8787 tcp:8787
+```
+
+Pemetaan ini **hilang** setiap kali daemon adb restart atau kabel USB dicabut,
+jadi jalankan ulang sebelum menguji sinkron. Bila perangkat tidak terlihat di
+`adb devices`, sinkron lokal tidak dapat dipakai meskipun `online.json` sudah
+benar.
+
 `AppRoot` hanya membuat `ApiClient`/`SyncService` bila `enabled` bernilai
 `true`; tidak ada sinkronisasi otomatis saat aplikasi dibuka.
 
