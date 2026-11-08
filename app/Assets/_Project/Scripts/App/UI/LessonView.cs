@@ -29,6 +29,7 @@ namespace UabMeto.App.UI
         private readonly LessonContent _lesson;
         private readonly bool _fixture;
         private readonly bool _preview;
+        private readonly bool _alreadyCompleted;
         private readonly Action _onExit;
         private readonly Action<LessonContent> _onCompleted;
 
@@ -45,6 +46,7 @@ namespace UabMeto.App.UI
             LessonContent lesson,
             bool fixture,
             bool preview,
+            bool alreadyCompleted,
             Action onExit,
             Action<LessonContent> onCompleted)
         {
@@ -52,6 +54,7 @@ namespace UabMeto.App.UI
             _lesson = lesson;
             _fixture = fixture;
             _preview = preview;
+            _alreadyCompleted = alreadyCompleted;
             _onExit = onExit;
             _onCompleted = onCompleted;
         }
@@ -83,7 +86,7 @@ namespace UabMeto.App.UI
                     Render();
                     break;
                 case Step.Summary:
-                    if (_preview)
+                    if (_preview || _alreadyCompleted)
                     {
                         _onExit?.Invoke();
                         break;
@@ -774,7 +777,11 @@ namespace UabMeto.App.UI
             UIFactory.CreateText(
                 "Title",
                 parent,
-                _preview ? "Pratinjau selesai" : "Pelajaran selesai",
+                _preview
+                    ? "Pratinjau selesai"
+                    : _alreadyCompleted
+                        ? "Latihan ulang selesai"
+                        : "Pelajaran selesai",
                 theme.HeadingBoldFont,
                 theme.Heading1Size,
                 theme.TextPrimary,
@@ -794,7 +801,9 @@ namespace UabMeto.App.UI
                 parent,
                 _preview
                     ? "XP tidak dicatat pada pratinjau."
-                    : $"{_lesson.xp} XP menunggu verifikasi server.",
+                    : _alreadyCompleted
+                        ? "XP tidak bertambah karena pelajaran ini sudah pernah diselesaikan."
+                        : $"{_lesson.xp} XP menunggu verifikasi server.",
                 theme.BodyBoldFont,
                 theme.BodySize,
                 theme.TextPrimary,
@@ -806,8 +815,11 @@ namespace UabMeto.App.UI
                 _preview
                     ? "Hasil pratinjau tidak masuk progres lokal, antrean, atau XP. " +
                       "Materi masih in_review dan belum divalidasi reviewer independen."
-                    : "Hasil akan disimpan di antrean lokal dan belum dianggap sebagai XP final. " +
-                      "Server menentukan hadiah XP dari versi materi terbit.",
+                    : _alreadyCompleted
+                        ? "Progres dan XP hanya dihitung sekali. Latihan ulang tetap boleh " +
+                          "dilakukan tanpa menambah antrean."
+                        : "Hasil akan disimpan di antrean lokal dan belum dianggap sebagai XP final. " +
+                          "Server menentukan hadiah XP dari versi materi terbit.",
                 theme.BodyFont,
                 theme.LabelSize,
                 theme.TextMuted,
@@ -819,6 +831,15 @@ namespace UabMeto.App.UI
                     "PreviewClose",
                     parent,
                     "Tutup pratinjau",
+                    theme,
+                    () => _onExit?.Invoke());
+            }
+            else if (_alreadyCompleted)
+            {
+                UIFactory.CreateButton(
+                    "FinishRepeat",
+                    parent,
+                    "Selesai",
                     theme,
                     () => _onExit?.Invoke());
             }

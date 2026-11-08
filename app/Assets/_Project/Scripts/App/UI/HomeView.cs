@@ -140,7 +140,7 @@ namespace UabMeto.App.UI
             var catalog = _shell.Catalog;
             if (catalog.HasValidatedLessons)
             {
-                var lesson = catalog.ValidatedLessons[0];
+                var lesson = FirstIncompleteLesson(catalog.ValidatedLessons);
                 BuildLessonCard(parent, lesson, false);
                 return;
             }
@@ -157,6 +157,23 @@ namespace UabMeto.App.UI
             }
 
             BuildEmptyState(parent);
+        }
+
+        /// <summary>
+        /// Pelajaran berikutnya yang belum selesai. Bila semua sudah selesai,
+        /// kembalikan pelajaran pertama agar kartu tetap punya isi.
+        /// </summary>
+        private LessonContent FirstIncompleteLesson(LessonContent[] lessons)
+        {
+            foreach (var lesson in lessons)
+            {
+                if (!_shell.Progress.IsCompleted(lesson.id))
+                {
+                    return lesson;
+                }
+            }
+
+            return lessons[0];
         }
 
         private void BuildLessonCard(
@@ -338,10 +355,13 @@ namespace UabMeto.App.UI
         private void BuildTopicRow(RectTransform parent, TopicEntry topic)
         {
             var theme = _shell.Theme;
-            var lesson = _shell.Catalog.FindLessonForTopic(topic.id);
-            var previewLesson = _shell.Catalog.FindPreviewLessonForTopic(topic.id);
+            var lessons = _shell.Catalog.ValidatedLessonsForTopic(topic.id);
+            var previewLessons = _shell.Catalog.PreviewLessonsForTopic(topic.id);
+            var lesson = lessons.Length > 0 ? lessons[0] : null;
+            var previewLesson = previewLessons.Length > 0 ? previewLessons[0] : null;
             var available = lesson != null;
             var preview = !available && previewLesson != null;
+            var totalLessons = lessons.Length + previewLessons.Length;
 
             var panel = UIFactory.CreatePanel(
                 "Topic_" + topic.id,
@@ -371,6 +391,12 @@ namespace UabMeto.App.UI
             button.colors = colors;
             button.onClick.AddListener(() =>
             {
+                if (totalLessons > 1)
+                {
+                    _shell.ShowLessonList(topic);
+                    return;
+                }
+
                 if (available)
                 {
                     _shell.ShowLesson(lesson, false);
@@ -437,7 +463,13 @@ namespace UabMeto.App.UI
             UIFactory.CreateText(
                 "Status",
                 titles,
-                available ? "Tersedia" : preview ? "Pratinjau — belum divalidasi" : "Segera",
+                available
+                    ? lessons.Length > 1
+                        ? $"{lessons.Length} pelajaran"
+                        : "Tersedia"
+                    : preview
+                        ? "Pratinjau — belum divalidasi"
+                        : "Segera",
                 theme.BodyFont,
                 theme.LabelSize,
                 available ? theme.Success : preview ? theme.Warning : theme.TextMuted);

@@ -31,6 +31,24 @@ namespace UabMeto.App.Content
             return ValidatedLessons.FirstOrDefault(lesson => lesson.topicId == topicId);
         }
 
+        /// <summary>Semua pelajaran tervalidasi untuk satu topik, urut `order`.</summary>
+        public LessonContent[] ValidatedLessonsForTopic(string topicId)
+        {
+            return ValidatedLessons
+                .Where(lesson => lesson.topicId == topicId)
+                .OrderBy(lesson => lesson.order)
+                .ToArray();
+        }
+
+        /// <summary>Semua pelajaran pratinjau untuk satu topik, urut `order`.</summary>
+        public LessonContent[] PreviewLessonsForTopic(string topicId)
+        {
+            return PreviewLessons
+                .Where(lesson => lesson.topicId == topicId)
+                .OrderBy(lesson => lesson.order)
+                .ToArray();
+        }
+
         public int LessonCountForTopic(string topicId)
         {
             return ValidatedLessons.Count(lesson => lesson.topicId == topicId);

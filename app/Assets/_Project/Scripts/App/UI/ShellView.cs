@@ -366,21 +366,41 @@ namespace UabMeto.App.UI
             ResetScrollToTop();
         }
 
-        public void ShowLesson(LessonContent lesson, bool fixture)
+        public void ShowLesson(LessonContent lesson, bool fixture, Action onExit = null)
         {
-            ShowLessonInternal(lesson, fixture, false);
+            ShowLessonInternal(lesson, fixture, false, onExit);
         }
 
         /// <summary>
         /// Membuka pelajaran <c>in_review</c> dalam mode pratinjau. Tidak
         /// pernah mencatat progres atau XP.
         /// </summary>
-        public void ShowPreviewLesson(LessonContent lesson)
+        public void ShowPreviewLesson(LessonContent lesson, Action onExit = null)
         {
-            ShowLessonInternal(lesson, false, true);
+            ShowLessonInternal(lesson, false, true, onExit);
         }
 
-        private void ShowLessonInternal(LessonContent lesson, bool fixture, bool preview)
+        /// <summary>
+        /// Menampilkan daftar pelajaran satu topik. Dipakai bila topik punya
+        /// lebih dari satu pelajaran sehingga pengguna bisa memilih sendiri.
+        /// </summary>
+        public void ShowLessonList(TopicEntry topic)
+        {
+            if (topic == null)
+            {
+                return;
+            }
+
+            _lessonView = null;
+            UIFactory.DestroyChildren(_contentHost);
+            _backButton.gameObject.SetActive(true);
+            SetHeader(topic.title, "Daftar pelajaran");
+            new LessonListView(this, topic).Build(_contentHost);
+            RebuildLayout();
+            ResetScrollToTop();
+        }
+
+        private void ShowLessonInternal(LessonContent lesson, bool fixture, bool preview, Action onExit)
         {
             if (lesson == null)
             {
@@ -391,12 +411,19 @@ namespace UabMeto.App.UI
             _backButton.gameObject.SetActive(true);
             SetHeader(preview ? "Pratinjau pelajaran" : "Pelajaran", lesson.title);
 
+            var alreadyCompleted =
+                !preview &&
+                !fixture &&
+                _progress != null &&
+                _progress.IsCompleted(lesson.id);
+
             _lessonView = new LessonView(
                 this,
                 lesson,
                 fixture,
                 preview,
-                () => ShowTab(Tab.Home),
+                alreadyCompleted,
+                onExit ?? (() => ShowTab(Tab.Home)),
                 OnLessonCompleted);
             _lessonView.Build(_contentHost);
             RebuildLayout();
@@ -464,6 +491,18 @@ namespace UabMeto.App.UI
 
         private void OnLessonCompleted(LessonContent lesson)
         {
+            // PRD §523: sinkronisasi tidak boleh menggandakan XP. Pelajaran
+            // tetap boleh diulang untuk latihan, tetapi hasil ulangan tidak
+            // diantrekan lagi setelah pelajaran tercatat selesai.
+            if (_progress != null && _progress.IsCompleted(lesson.id))
+            {
+                Debug.Log(
+                    $"[UabMeto] Pelajaran {lesson.id} sudah selesai; " +
+                    "hasil latihan ulang tidak diantrekan agar XP tidak berlipat.");
+                ShowTab(Tab.Home);
+                return;
+            }
+
             var item = _outbox.Enqueue(lesson.id, lesson.schemaVersion, lesson.xp);
             _progress.RecordCompletion(lesson.id, lesson.xp);
             Debug.Log(
@@ -830,41 +869,55 @@ namespace UabMeto.App.UI
             var offline = Application.internetReachability == NetworkReachability.NotReachable;
             var pending = _outbox == null ? 0 : _outbox.PendingCount;
 
-            if (_syncing)
+            SetBanner(
+                BannerMessage(
+                    _syncing,
+                    _lastSyncFailed,
+                    _lastSyncMessage,
+                    offline,
+                    OnlineConfigured,
+                    pending));
+        }
+
+        /// <summary>
+        /// Menentukan teks banner. Mode online lokal tidak boleh disebut
+        /// "Offline" hanya karena <see cref="Application.internetReachability"/>
+        /// tidak melihat jaringan: server lokal bisa tetap terjangkau lewat
+        /// <c>adb reverse</c>. Kegagalan server dilaporkan dari hasil sinkron.
+        /// </summary>
+        public static string BannerMessage(
+            bool syncing,
+            bool lastSyncFailed,
+            string lastSyncMessage,
+            bool offline,
+            bool onlineConfigured,
+            int pending)
+        {
+            if (syncing)
             {
-                SetBanner("Menyinkronkan hasil…");
-                return;
+                return "Menyinkronkan hasil…";
             }
 
-            if (_lastSyncFailed && !string.IsNullOrEmpty(_lastSyncMessage))
+            if (lastSyncFailed && !string.IsNullOrEmpty(lastSyncMessage))
             {
-                SetBanner(_lastSyncMessage);
-                return;
+                return lastSyncMessage;
             }
 
-            if (offline && pending > 0)
+            if (offline && !onlineConfigured)
             {
-                SetBanner(
-                    $"Offline — {pending} hasil menunggu sinkron. " +
-                    "Pembelajaran tetap bisa dilanjutkan.");
-                return;
-            }
-
-            if (offline)
-            {
-                SetBanner(
-                    "Offline — pembelajaran tetap bisa dilanjutkan. " +
-                    "Hasil akan disinkronkan saat online.");
-                return;
+                return pending > 0
+                    ? $"Offline — {pending} hasil menunggu sinkron. " +
+                      "Pembelajaran tetap bisa dilanjutkan."
+                    : "Offline — pembelajaran tetap bisa dilanjutkan. " +
+                      "Hasil akan disinkronkan saat online.";
             }
 
             if (pending > 0)
             {
-                SetBanner($"{pending} hasil menunggu sinkron.");
-                return;
+                return $"{pending} hasil menunggu sinkron.";
             }
 
-            SetBanner(null);
+            return null;
         }
 
         private void SetBanner(string message)

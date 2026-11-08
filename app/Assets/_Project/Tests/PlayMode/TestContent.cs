@@ -11,7 +11,7 @@ namespace UabMeto.Tests.PlayMode
     /// </summary>
     internal static class TestContent
     {
-        public static string LoadLessonAsInReview(string fileName = "lesson-001-salam.json")
+        public static string LoadLesson(string fileName = "lesson-001-salam.json")
         {
             var path = Path.GetFullPath(
                 Path.Combine(
@@ -29,7 +29,12 @@ namespace UabMeto.Tests.PlayMode
                     path);
             }
 
-            return File.ReadAllText(path)
+            return File.ReadAllText(path);
+        }
+
+        public static string LoadLessonAsInReview(string fileName = "lesson-001-salam.json")
+        {
+            return LoadLesson(fileName)
                 .Replace("\"status\": \"validated\"", "\"status\": \"in_review\"")
                 .Replace("\"status\": \"published\"", "\"status\": \"in_review\"");
         }

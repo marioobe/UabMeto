@@ -1,6 +1,6 @@
 # Laporan Gate F1
 
-Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-06 (WITA)
+Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-08 (WITA)
 Lingkungan: Windows, Unity `6000.6.0f1`, Android build-tools `36.1.0`.
 Status gate: **TIDAK LULUS.** Build, tes UI, dan verifikasi dasar perangkat
 fisik lulus; syarat reviewer independen, audio/consent, aksesibilitas penuh,
@@ -28,20 +28,31 @@ di perangkat (10 XP, `devMode: false`), dan tab Peringkat menampilkan data
 server. Gate F1 tetap **TIDAK LULUS** karena reviewer independen, audio dan
 consent, D1-04/D1-05/D1-06, serta aksesibilitas penuh belum terpenuhi.
 
+Pembaruan 2026-11-08 (versi 0.2.1): tiga pelajaran Topik 1 kini dapat dibuka
+berurutan lewat layar **daftar pelajaran per topik**. "Lanjutkan belajar"
+maju ke pelajaran berikutnya yang belum selesai, pelajaran selesai diberi
+badge `SELESAI` dan tetap bisa diulang sebagai latihan tanpa menambah XP.
+Banner offline sekarang dibedakan: "Offline" hanya saat perangkat benar-benar
+tanpa internet, sedangkan kegagalan server lokal dilaporkan sebagai
+"Server lokal tidak dapat dihubungi. Hasil tetap tersimpan." Alur 1→2→3,
+replay tanpa XP ganda, banner gagal-sinkron, dan pemulihan sinkron diuji di
+OPPO `CPH1803`. Tes EditMode **87/87** dan PlayMode **31/31** lulus. Gate F1
+tetap **TIDAK LULUS**; blocker tidak berubah.
+
 ## 1. Ringkasan keputusan
 
 | Area | Hasil |
 |---|---|
 | Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
 | Build pratinjau | **PASS** — `Builds/Android/uabmeto-f1-preview.apk` (demo, memuat `in_review`) |
-| Tes EditMode | **PASS** - 82 lulus, 0 gagal, 0 dilewati |
-| Tes PlayMode | **PASS** — 27 lulus, 0 gagal, 0 dilewati |
+| Tes EditMode | **PASS** — 87 lulus, 0 gagal, 0 dilewati |
+| Tes PlayMode | **PASS** — 31 lulus, 0 gagal, 0 dilewati |
 | Validator konten | **PASS** — 0 error, 4 warning audio di `content/samples/` |
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
 | Target sentuh F1 | **PASS (UI F1)** — 4/4 tes aksesibilitas/layout |
 | Materi Topik 1 | **VALIDATED (override pemilik)** — 3 pelajaran, 50 item elisitasi `SPK-001` |
 | Konten tervalidasi | **ADA** — 3 pelajaran Topik 1, tanpa reviewer independen |
-| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-03 (satu pelajaran), D1-07 lulus; D1-04..D1-06 belum |
+| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-03 (tiga pelajaran, 0.2.1), D1-07 lulus; D1-04..D1-06 belum |
 | Gate F1 | **TIDAK LULUS** |
 
 ## 2. Build
@@ -150,11 +161,30 @@ Build final juga memperbaiki statistik Profil: "Antrean" memakai
 `Outbox.PendingCount`, bukan `Outbox.Count`, sehingga tidak lagi menampilkan
 angka antrean setelah semua hasil terkonfirmasi.
 
+### 2.5 Build rilis 0.2.1 (2026-11-07)
+
+- Path: `Builds/Android/uabmeto-f1.apk`
+- Ukuran: **28.907.506 byte**
+- SHA-256: `8E46C47E16E3B586818F6CDA9D9F7620E6F9B6533AEDA4AE3B8D3F22796BC6A3`
+- Hasil: `Succeeded`, 0 error, 4 warning
+- Durasi build: 243,2 detik (build inkremental)
+- Versi: `0.2.1` (`versionCode 3`)
+- Ringkasan mesin: `Builds/Android/build-summary.json`
+- Isi: tiga pelajaran Topik 1 `validated` (override pemilik), layar daftar
+  pelajaran, navigasi pelajaran berikutnya, pencegahan XP ganda saat replay,
+  dan banner kegagalan server yang terpisah dari status offline
+- Folder `Resources/Content/preview` kosong (hanya `.gitkeep`), jadi tidak
+  ada materi pratinjau di APK rilis
+
+Catatan: 4 warning berasal dari shader/`AndroidSDKTools`; tidak ada error
+kompilasi. F1-25 tetap **PARTIAL** karena build belum bersih dari nol.
+
 ## 3. Tes yang dijalankan
 
 ### 3.1 EditMode
 
-Hasil: **82/82 lulus, 0 gagal, 0 dilewati.**
+Hasil: **87/87 lulus, 0 gagal, 0 dilewati** (2026-11-07,
+`Builds/logs/editmode-results.xml`).
 
 - 19 tes `ApiClient`/`SyncService`: parsing respons, XP resmi server,
   penolakan konten belum valid, konflik, transport gagal, dan batas percobaan.
@@ -168,10 +198,14 @@ Hasil: **82/82 lulus, 0 gagal, 0 dilewati.**
   outbox dan rekonsiliasi.
 - `PublishGateTests`, `SyncReconcilerTests`, `XpAwardPolicyTests`,
   `FontGlyphTests` tetap lulus.
+- `BannerPolicyTests` (5 tes) — "Offline" hanya saat tidak ada internet;
+  kegagalan server lokal tidak diberi label offline; hasil yang tetap
+  tersimpan tidak dihapus dari outbox.
 
 ### 3.2 PlayMode
 
-Hasil: **27/27 lulus, 0 gagal, 0 dilewati.**
+Hasil: **31/31 lulus, 0 gagal, 0 dilewati** (2026-11-07,
+`Builds/logs/playmode-results.xml`).
 
 - 8 tes `OnlineUiTests`: kartu online aktif/nonaktif, sinkron manual, banner,
   tab Peringkat dari transport palsu, dan pesan galat koneksi.
@@ -197,6 +231,8 @@ Hasil: **27/27 lulus, 0 gagal, 0 dilewati.**
   mengikuti preferred height isinya
 - `LayoutTests.NicknameModal_FitsReferenceViewport` — dialog nama muat di
   acuan 360×640 dan mendapat tinggi dari isinya
+- `LessonListShellViewTests` (4 tes) — daftar pelajaran per topik, alur
+  1→2→3, badge selesai, dan replay yang tidak menggandakan XP/outbox
 
 PlayMode berjalan di Editor, bukan perangkat. Tes ini tidak membuktikan
 TalkBack, keyboard Android, lifecycle, atau rotasi perangkat. Percobaan
@@ -326,9 +362,10 @@ densitas 450 dpi, terhubung lewat ADB.
   exception di logcat.
 - **D1-07 PASS** — tombol back dari Profil kembali ke Beranda; back dari
   dialog nama menutup dialog dan kembali ke Profil.
-- **D1-03 PASS (0.2.0, OPPO `CPH1803`)** — alur pelajaran rilis
-  `lesson-001-salam` dijalankan penuh di APK rilis: pembuka, materi, latihan,
-  umpan balik, ringkasan, simpan hasil. Satu pelajaran, portrait.
+- **D1-03 PASS (0.2.1, OPPO `CPH1803`)** — alur tiga pelajaran rilis
+  Topik 1 dijalankan penuh di APK rilis: daftar pelajaran, pelajaran 1→2→3,
+  pembuka, materi, latihan, umpan balik, ringkasan, dan simpan hasil.
+  Replay pelajaran 1 juga diuji; XP tidak bertambah. Portrait.
 - **D1-04 NOT RUN** — mode offline belum diuji dengan mock/mode pesawat.
 - **D1-05 BLOCKED (perangkat)** — perangkat/launcher memaksa orientasi
   portrait. `wm set-ignore-orientation-request true` + rotasi paksa membuat
@@ -414,6 +451,36 @@ Catatan:
 - Bukti: `docs/testing/evidence/f1-device/f1-release-0.2.0-*.png`
   (Beranda, Profil online, sinkron selesai, ringkasan, Peringkat).
 
+### 5.3 Verifikasi rilis 0.2.1: alur tiga pelajaran dan banner (OPPO)
+
+Tanggal: 2026-11-07/08. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
+(API 27), 720×1520. APK rilis 0.2.1 (`versionName=0.2.1`, `versionCode=3`,
+SHA-256 `8E46C47E...96BC6A3`) dipasang dengan `adb install -r`;
+`firstInstallTime` tetap dan tanda tangan `5a7f688` sama dengan 0.1.0/0.2.0.
+
+| Uji | Hasil |
+|---|---|
+| Daftar pelajaran | Kartu Topik 1 membuka daftar 3 pelajaran; meta `Pelajaran N · ±menit · XP` |
+| Alur 1→2→3 | Beranda "Lanjutkan belajar" maju ke pelajaran 2 lalu 3; tiap pelajaran selesai penuh |
+| Badge selesai | Pelajaran selesai berbadge `SELESAI` dan tombol "Ulangi latihan" |
+| Statistik | Profil: **Selesai 3**, **XP tertunda 20**, **Antrean 2** sebelum sinkron |
+| Replay | Pelajaran 1 diulang sampai ringkasan "Latihan ulang selesai"; XP dan Selesai tidak bertambah |
+| Server mati | `adb reverse` dilepas → sinkron gagal → banner "Server lokal tidak dapat dihubungi. Hasil tetap tersimpan." |
+| Pemulihan | `adb reverse` dipasang lagi → sinkron sukses → XP tertunda 0, Antrean 0 |
+| Peringkat | Data server termuat: rio 40 XP, Aina 20 XP, Penguji 10 XP |
+
+Catatan:
+
+- Koneksi tetap memakai `adb reverse tcp:8787 tcp:8787`; ini bukan bukti
+  Wi-Fi/LAN dan bukan uji mode pesawat. D1-04 (mock reachability) tetap
+  **NOT RUN**.
+- Banner "Offline" tidak lagi muncul hanya karena `internetReachability`
+  bernilai salah saat server lokal terjangkau; kegagalan server dilaporkan
+  dari hasil sinkron.
+- Bukti: `docs/testing/evidence/f1-device/f1-release-0.2.1-*.png`
+  (Beranda, daftar selesai, pembuka pelajaran 3, ringkasan, ringkasan replay,
+  banner gagal sinkron, sinkron sukses, statistik Profil, Peringkat).
+
 ## 6. Status kriteria F1
 
 | Kriteria | Status | Catatan |
@@ -423,9 +490,9 @@ Catatan:
 | F1-03 empat tab | PASS | PlayMode + screenshot + perangkat |
 | F1-04 12 topik | PASS | `TopicPathTests` + 12 baris PlayMode + perangkat |
 | F1-05 empty state | PASS | Screenshot Editor + perangkat |
-| F1-06 alur pelajaran | PASS (APK rilis 0.2.0) | Hanya pelajaran pertama per topik dapat dibuka (`FindLessonForTopic` = `FirstOrDefault`); pelajaran 2–3 belum punya layar pemilih. Satu perangkat, portrait |
-| F1-07 outbox | PASS | Outbox + sinkron server lokal teruji di perangkat (10 XP) |
-| F1-08 banner | PARTIAL | Antrean nyata; banner offline belum diuji mock dan masih tampil saat server lokal terjangkau lewat adb reverse |
+| F1-06 alur pelajaran | PASS (APK rilis 0.2.1) | Daftar pelajaran per topik; 3 pelajaran Topik 1 dibuka berurutan. Replay tidak memberi XP. Satu perangkat, portrait |
+| F1-07 outbox | PASS | Outbox + sinkron server lokal teruji di perangkat (tiga hasil, 20 XP tertunda) |
+| F1-08 banner | PARTIAL | Antrean nyata dan banner gagal-server teruji di perangkat; D1-04 offline mock/mode pesawat belum |
 | F1-09 panel debug | PASS | Tidak ada panel; pemindaian APK 0 |
 | F1-10 portrait/landscape | PASS (Editor) | Acuan responsif 360×640 / 640×360; 360×640, 412×915, 915×412 diuji. Landscape masih satu kolom, belum tata letak dua kolom 40/60 §12; landscape perangkat BLOCKED |
 | F1-11 pelajaran validated | **PASS (override pemilik)** | 3 berkas `validated`; bukan reviewer independen |
@@ -442,8 +509,8 @@ Catatan:
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
-| F1-25 tanpa warning | PARTIAL | Build 0.2.0 mencatat 6 warning TMP/AndroidSDKTools |
-| F1-26 ukuran APK | PASS | 28.900.298 byte |
+| F1-25 tanpa warning | PARTIAL | Build 0.2.1 mencatat 4 warning TMP/AndroidSDKTools |
+| F1-26 ukuran APK | PASS | 28.907.506 byte |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
 ## 7. Keputusan yang dikunci
@@ -454,8 +521,10 @@ Catatan:
 - Dark theme; token tunggal; tanpa shadow/blur/gradien.
 - XP klien hanya tampilan tertunda; server tetap otoritatif.
 - Fixture hanya di Editor; build rilis hanya memuat pelajaran `validated`.
-  Versi 0.2.0 memuat tiga pelajaran Topik 1 yang `validated` atas override
+  Versi 0.2.1 memuat tiga pelajaran Topik 1 yang `validated` atas override
   pemilik.
+- Pelajaran boleh diulang untuk latihan, tetapi replay tidak menambah XP
+  lokal maupun mengantrekan hasil baru. XP asli tetap dihitung server.
 - Materi `in_review` hanya untuk pratinjau berlabel; tidak mencatat progres
   atau XP dan tidak masuk build rilis.
 - Hati dari PRD §3.8 **belum** diimplementasikan di F1; kartu "Selesai"
@@ -465,12 +534,6 @@ Catatan:
 
 - Reviewer independen untuk Topik 1 (saat ini override pemilik) dan semua
   topik berikutnya.
-- Layar daftar pelajaran per topik. Saat ini hanya pelajaran pertama tiap
-  topik yang dapat dibuka; pelajaran 2 dan 3 Topik 1 sudah ada di APK dan
-  server tetapi belum punya jalur UI.
-- Apakah menyelesaikan ulang pelajaran yang sama boleh memberi XP lagi.
-  Server memberi XP untuk setiap `operationId` baru; klien mencegah XP lokal
-  ganda tetapi tetap mengantrekan hasil baru saat pelajaran diulang.
 - Izin audio dan rekaman penutur untuk pelajaran pertama.
 - Regenerasi/pengurangan hati dan kuota Worker.
 - Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.
@@ -487,9 +550,9 @@ Catatan:
    tanda tangan, ubah status ke `validated` dengan `reviewedBy`/`reviewedAt`
    yang benar, lalu jalankan `Uab Meto/F1 Setup` dan build rilis. Jangan
    mengarang teks Dawan atau menaikkan status tanpa bukti.
-2. **Gate perangkat:** selesaikan D1-03..D1-06. D1-03 memerlukan pelajaran
-   rilis; D1-05 memerlukan perangkat/launcher yang mendukung landscape atau
-   keputusan produk bahwa F1 portrait-only.
+2. **Gate perangkat:** selesaikan D1-04..D1-06. D1-03 sudah lulus dengan
+   tiga pelajaran rilis 0.2.1; D1-05 memerlukan perangkat/launcher yang
+   mendukung landscape atau keputusan produk bahwa F1 portrait-only.
 3. **Aksesibilitas:** implementasikan pembacaan `AndroidConfiguration.fontScale`
    lalu uji 1.3×/2.0×, audit TalkBack, dan petakan C1–C5/T1–T12 yang tersisa.
 4. **Build:** putuskan apakah 3 warning TMP/IL2CPP dapat diterima atau harus

@@ -182,10 +182,12 @@ dihitung ganda pada tingkat penyimpanan.
 Setelah Topik 1 divalidasi, sync `lesson-001-salam` berhasil tanpa flag dev
 (`devMode: false`). Bukti perangkat ada di 6.2.
 
-### 6.2 Bukti perangkat (rilis 0.2.0)
+### 6.2 Bukti perangkat (rilis 0.2.0 dan 0.2.1)
 
-OPPO `CPH1803`, Android 8.1 (API 27), APK `0.2.0`, koneksi
-`adb reverse tcp:8787 tcp:8787` (bukan Wi-Fi/LAN), 2026-11-06.
+OPPO `CPH1803`, Android 8.1 (API 27), koneksi
+`adb reverse tcp:8787 tcp:8787` (bukan Wi-Fi/LAN).
+
+Rilis **0.2.0** (2026-11-06):
 
 | Uji | Hasil |
 |---|---|
@@ -195,9 +197,21 @@ OPPO `CPH1803`, Android 8.1 (API 27), APK `0.2.0`, koneksi
 | Beranda setelah sinkron | "XP tertunda 0", "Selesai 1" (rekonsiliasi) |
 | `GET /v1/leaderboard` dari aplikasi | 3 peserta; rio 10 XP ditandai aksen |
 
-Banner aplikasi masih menampilkan "Offline" karena `internetReachability`
-melihat Wi-Fi seluler mati; ini tidak menghalangi sinkron lewat adb reverse.
-Rincian dan tangkapan layar: `docs/testing/f1-device-evidence.md` §3.2.
+Rilis **0.2.1** (2026-11-07/08):
+
+| Uji | Hasil |
+|---|---|
+| Tiga pelajaran diselesaikan | Profil "Selesai 3", "XP tertunda 20", "Antrean 2" |
+| Replay pelajaran 1 | "Latihan ulang selesai"; XP dan Selesai tidak bertambah |
+| `adb reverse` dilepas lalu sinkron | Gagal; banner "Server lokal tidak dapat dihubungi. Hasil tetap tersimpan." |
+| `adb reverse` dipasang lagi lalu sinkron | Sukses; XP tertunda 0, Antrean 0 |
+| `GET /v1/leaderboard` dari aplikasi | rio 40 XP, Aina 20 XP, Penguji 10 XP |
+
+Pada 0.2.0, banner masih menampilkan "Offline" karena `internetReachability`
+melihat Wi-Fi seluler mati. Di 0.2.1 banner dibedakan: "Offline" hanya saat
+perangkat benar-benar tanpa internet; kegagalan server lokal dilaporkan dari
+hasil sinkron. Rincian dan tangkapan layar:
+`docs/testing/f1-device-evidence.md` §3.2 dan §3.4.
 
 ## 7. Batasan yang diakui
 
@@ -277,16 +291,15 @@ Perilaku UI:
 - Baris peringkat pengguna saat ini ditandai warna aksen, bukan warna teks
   bahaya.
 
-Tes EditMode: **82/82 lulus** (19 tes untuk `ApiClient` dan `SyncService`),
-PlayMode **27/27 lulus** (8 tes untuk kartu online, banner, dan Peringkat),
-2026-11-06.
+Tes EditMode: **87/87 lulus** (19 tes untuk `ApiClient` dan `SyncService`,
+termasuk 5 tes kebijakan banner), PlayMode **31/31 lulus** (8 tes untuk kartu
+online, banner, dan Peringkat), 2026-11-07.
 
-APK rilis dan bukti gate F1 **belum** dibangun ulang setelah UI online
-ditambahkan. Gate F1 tetap **TIDAK LULUS**; jangan memakai dokumen ini sebagai
-bukti perangkat.
+APK rilis 0.2.1 memuat UI online ini dan sudah diuji di perangkat. Gate F1
+tetap **TIDAK LULUS** karena blocker reviewer independen, audio/consent,
+D1-04/D1-05/D1-06, dan aksesibilitas penuh.
 
 ## 9. Langkah berikutnya
 
-1. Setelah ada pelajaran `validated`, uji XP tanpa flag dev.
-2. Bangun ulang APK dan ulangi bukti perangkat bila UI ini akan dirilis.
-3. Untuk produksi: Firebase Auth + Firestore + Worker terverifikasi.
+1. Uji offline dengan mode pesawat/mock reachability (D1-04).
+2. Untuk produksi: Firebase Auth + Firestore + Worker terverifikasi.

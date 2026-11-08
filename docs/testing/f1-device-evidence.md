@@ -1,42 +1,50 @@
 # Bukti Uji Perangkat F1
 
-Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-06 (WITA)
+Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-08 (WITA)
 Status: **PARTIAL** — instalasi, peluncuran, UI dasar, tombol back, alur
-pelajaran rilis (satu pelajaran, portrait), dan sinkron lokal lulus di OPPO
-`CPH1803`; offline mock, landscape, dan skala font belum.
+tiga pelajaran rilis (portrait), replay tanpa XP ganda, banner gagal-server,
+dan sinkron lokal lulus di OPPO `CPH1803`; offline mock (D1-04), landscape,
+dan skala font belum.
 
 ## 1. Perangkat dan APK
 
+Tabel ini menunjukkan APK yang terpasang saat pembaruan terakhir. Riwayat
+perangkat Xiaomi `24117RN76O` dan APK 0.1.0/0.2.0 tetap dicatat di bagian
+2–3.
+
 | Item | Nilai |
 |---|---|
-| Perangkat | Xiaomi `24117RN76O` |
-| Android | 16 (API 36) |
-| Layar | 1080×2400, 450 dpi |
+| Perangkat | OPPO `CPH1803` (`26b4c7b0`) |
+| Android | 8.1 (API 27) |
+| Layar | 720×1520, 320 dpi |
 | ADB | `device` (terotorisasi) |
 | Paket | `id.uabmeto.app` |
-| Versi | `0.1.0` (`versionCode 1`) |
+| Versi | `0.2.1` (`versionCode 3`) |
 | minSdk / targetSdk | 26 / 36 |
 | ABI | `arm64-v8a` |
 | APK | `Builds/Android/uabmeto-f1.apk` |
-| Ukuran | 28.278.020 byte |
-| SHA-256 | `D4416E0250AD0F188A45B142BE6A1764850D4C4BD0D6BF18A0FE3AF97BA3C465` |
-| firstInstallTime | 2026-11-03 13:56:17 |
-| lastUpdateTime | 2026-11-03 14:47:55 |
+| Ukuran | 28.907.506 byte |
+| SHA-256 | `8E46C47E16E3B586818F6CDA9D9F7620E6F9B6533AEDA4AE3B8D3F22796BC6A3` |
+| firstInstallTime | 2026-11-06 00:15:17 |
+| lastUpdateTime | 2026-11-07 16:38:52 |
+| Tanda tangan | `5a7f688` (sama dengan 0.1.0/0.2.0) |
 
 `adb install -r` berhasil. `dumpsys package` mengonfirmasi versi, minSdk,
-targetSdk, dan waktu instalasi di atas.
+targetSdk, ABI, tanda tangan, dan waktu instalasi di atas. Perangkat Xiaomi
+`24117RN76O` (Android 16, 1080×2400) dipakai pada verifikasi 0.1.0 dan
+dicatat di bagian 2–3.
 
 ## 2. Hasil per butir gate perangkat
 
 | ID | Status | Bukti |
 |---|---|---|
-| D1-01 APK terpasang | **PASS** | `adb install -r` → `Success`; `dumpsys package` |
+| D1-01 APK terpasang | **PASS** | `adb install -r` → `Success`; `dumpsys package` (0.2.1, `versionCode 3`) |
 | D1-02 Dibuka tanpa crash | **PASS** | `UnityPlayerGameActivity` foreground; logcat tanpa fatal/exception aplikasi |
-| D1-03 Alur pelajaran | **BLOCKED** | APK rilis tidak memuat pelajaran `validated`; fixture Editor tidak boleh masuk rilis |
-| D1-04 Mode offline | **NOT RUN** | Belum diuji dengan mode pesawat/mock reachability |
+| D1-03 Alur pelajaran | **PASS (0.2.1)** | Tiga pelajaran rilis Topik 1 dibuka berurutan lewat daftar; replay tanpa XP ganda |
+| D1-04 Mode offline | **NOT RUN** | Banner gagal-server/offline sudah diuji dengan melepas `adb reverse`, tetapi mode pesawat/mock reachability belum |
 | D1-05 Rotasi portrait ↔ landscape | **BLOCKED (perangkat)** | Perangkat/launcher memaksa portrait; rotasi paksa menghasilkan letterbox ±885×1080 |
 | D1-06 Font sistem 1.3×/2.0× | **NOT RUN / BLOCKED (fitur)** | Belum diuji; audit statis: tidak ada pembacaan `AndroidConfiguration.fontScale` |
-| D1-07 Tombol back | **PASS** | Profil → Beranda; dialog nama → Profil |
+| D1-07 Tombol back | **PASS** | Profil → Beranda; dialog nama → Profil; daftar pelajaran → Beranda |
 
 ## 3. UI yang diperiksa
 
@@ -159,6 +167,57 @@ menampilkan **XP tertunda 0** dan **Selesai 1**; Profil menampilkan
 Tab Peringkat berhasil memuat data server setelah pemasangan ulang. Tes:
 EditMode 82/82, PlayMode 27/27.
 
+### 3.4 Verifikasi rilis 0.2.1: tiga pelajaran, replay, dan banner (OPPO)
+
+Tanggal: 2026-11-07/08. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
+(API 27), `arm64-v8a`, 720×1520, 320 dpi.
+
+| Item | Nilai |
+|---|---|
+| APK | `Builds/Android/uabmeto-f1.apk` |
+| Versi | `0.2.1` (`versionCode 3`) |
+| Ukuran | 28.907.506 byte |
+| SHA-256 | `8E46C47E16E3B586818F6CDA9D9F7620E6F9B6533AEDA4AE3B8D3F22796BC6A3` |
+| Pemasangan | `adb install -r` → `Success` (tanpa uninstall) |
+| Tanda tangan | `5a7f688` |
+| Tes | EditMode 87/87, PlayMode 31/31 |
+
+Alur yang dijalankan:
+
+1. Beranda menampilkan "Lanjutkan belajar" untuk pelajaran berikutnya.
+   Menyelesaikan pelajaran 1 memajukan tombol ke pelajaran 2, lalu 3.
+2. Kartu Topik 1 membuka daftar tiga pelajaran. Tiap baris menampilkan
+   `Pelajaran N`, perkiraan menit, XP, dan tombol mulai. Pelajaran yang sudah
+   selesai berbadge **`SELESAI`** dengan tombol "Ulangi latihan"; pelajaran
+   yang belum selesai tetap bisa dibuka.
+3. Pelajaran 1→2→3 diselesaikan penuh (pembuka → materi → latihan → umpan
+   balik → ringkasan → simpan). Setelah tiga pelajaran: Beranda dan Profil
+   menampilkan **Selesai 3**, **XP tertunda 20**, **Antrean 2** sebelum
+   sinkron.
+4. Pelajaran 1 diulang dari daftar. Ringkasan menampilkan **"Latihan ulang
+   selesai"** dan catatan bahwa XP tidak bertambah; tombol `FinishRepeat`.
+   Setelah replay, statistik tetap **Selesai 3** dan **XP tertunda 20**.
+5. `adb reverse tcp:8787 tcp:8787` dilepas, lalu sinkron ditekan. Sinkron
+   gagal dan banner menampilkan **"Server lokal tidak dapat dihubungi. Hasil
+   tetap tersimpan."** Antrean tidak hilang.
+6. `adb reverse` dipasang lagi, sinkron ditekan. Hasil terkirim, **XP
+   tertunda 0** dan **Antrean 0**. Peringkat memuat data server: rio 40 XP,
+   Aina 20 XP, Penguji 10 XP.
+
+Bukti: `docs/testing/evidence/f1-device/f1-release-0.2.1-*.png`
+(Beranda, daftar pelajaran selesai, pembuka pelajaran 3, ringkasan pelajaran
+3, ringkasan replay, banner gagal sinkron, sinkron sukses, statistik Profil,
+Peringkat).
+
+Catatan jujur:
+
+- Koneksi memakai `adb reverse`, bukan Wi-Fi/LAN. Melepas `adb reverse`
+  mensimulasikan server tidak terjangkau, **bukan** mode pesawat; D1-04
+  tetap **NOT RUN**.
+- Banner "Offline" tidak lagi muncul hanya karena `internetReachability`
+  salah saat server lokal masih terjangkau.
+- Wi-Fi/LAN belum bisa diuji karena HP tidak terhubung ke hotspot PC.
+
 ## 4. Temuan dan perbaikan
 
 ### 4.1 Scroll tidak dapat digeser
@@ -205,6 +264,7 @@ bagian UI aplikasi. Tidak dihitung sebagai temuan aplikasi.
 - TalkBack, keyboard Android, dan skala font sistem belum diuji. Aplikasi
   juga belum membaca `AndroidConfiguration.fontScale`, jadi D1-06 tidak
   dapat lulus tanpa perubahan kode.
-- Banner offline belum diuji dengan mode pesawat.
+- Banner gagal-server sudah diuji dengan melepas `adb reverse`, tetapi
+  banner offline belum diuji dengan mode pesawat (D1-04).
 - Tidak ada profiling performa atau pengukuran startup.
-- Build masih memiliki 3 warning TMP/IL2CPP.
+- Build 0.2.1 masih memiliki 4 warning TMP/AndroidSDKTools.
