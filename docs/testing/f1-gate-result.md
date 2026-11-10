@@ -211,9 +211,10 @@ kompilasi. F1-25 tetap **PARTIAL** karena build belum bersih dari nol.
   pratinjau yang ikut ke APK rilis
 - Versi dinaikkan lewat `ProjectConfigurator.BundleVersion` dan
   `bundleVersionCode`, karena `Apply()` menimpa `ProjectSettings` saat build
-- Build ini menggantikan build 0.3.0 antara (`ABC76522…`, 28.926.554 byte)
-  yang belum memuat perbaikan keyboard; UI Tutor tidak berubah, hanya
-  `KeyboardInset.cs` dan pemanggilan `DeactivateInputField()`
+- Build ini menggantikan build 0.3.0 antara
+  (`ABC765226DB678E3B34B02349402421C69D542211FD77D3D6471A71F45542018`,
+  28.926.554 byte) yang belum memuat perbaikan keyboard; UI Tutor tidak
+  berubah, hanya `KeyboardInset.cs` dan pemanggilan `DeactivateInputField()`
 
 ## 3. Tes yang dijalankan
 

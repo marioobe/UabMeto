@@ -23,10 +23,10 @@ perangkat Xiaomi `24117RN76O` dan APK 0.1.0/0.2.0 tetap dicatat di bagian
 | minSdk / targetSdk | 26 / 36 |
 | ABI | `arm64-v8a` |
 | APK | `Builds/Android/uabmeto-f1.apk` |
-| Ukuran | 28.926.554 byte |
-| SHA-256 | `ABC765226DB678E3B34B02349402421C69D542211FD77D3D6471A71F45542018` |
+| Ukuran | 28.932.254 byte |
+| SHA-256 | `BA99B129FF5CEDD5830DC443F162B2F6639540054C76DF9A57281B95C00FE713` |
 | firstInstallTime | 2026-11-06 00:15:17 |
-| lastUpdateTime | 2026-11-09 (instalasi 0.3.0) |
+| lastUpdateTime | 2026-11-09/10 (instalasi APK final 0.3.0) |
 | Tanda tangan | `5a7f688` (sama dengan 0.1.0/0.2.0/0.2.1) |
 
 `adb install -r` berhasil. `dumpsys package` mengonfirmasi versi, minSdk,
