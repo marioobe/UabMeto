@@ -7,7 +7,9 @@
     "dev": "wrangler dev --local --port 8787",
     "db:init": "wrangler d1 execute uabmeto-local --local --file=./schema.sql",
     "seed": "node scripts/generate-content-seed.mjs",
-    "test": "node --disable-warning=ExperimentalWarning --test test/sync.test.mjs"
+    "corpus": "node scripts/generate-tutor-corpus.mjs",
+    "test": "node --disable-warning=ExperimentalWarning --test test/sync.test.mjs test/tutor.test.mjs",
+    "eval:tutor": "node --disable-warning=ExperimentalWarning scripts/run-tutor-eval.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.158.0"

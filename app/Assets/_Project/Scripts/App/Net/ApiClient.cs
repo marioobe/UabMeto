@@ -72,6 +72,40 @@ namespace UabMeto.App.Net
     }
 
     [Serializable]
+    public sealed class TutorMessage
+    {
+        public string role;
+        public string content;
+    }
+
+    [Serializable]
+    public sealed class TutorAskRequest
+    {
+        public string question;
+        public TutorMessage[] history;
+    }
+
+    [Serializable]
+    public sealed class TutorSource
+    {
+        public string lessonId;
+        public string title;
+        public string sourceRef;
+    }
+
+    [Serializable]
+    public sealed class TutorAskResponse
+    {
+        public string answer;
+        public TutorSource[] sources;
+        public QuotaCounter quota;
+        public bool refused;
+        public string model;
+        public string error;
+        public string message;
+    }
+
+    [Serializable]
     public sealed class LeaderboardEntry
     {
         public string userId;
@@ -153,6 +187,47 @@ namespace UabMeto.App.Net
             }
 
             return SendAsync<LeaderboardResponse>("GET", path, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Mengirim satu pertanyaan ke Tutor AI. Riwayat hanya dipakai sebagai
+        /// konteks percakapan; server tetap membatasi jawaban pada korpus
+        /// tervalidasi dan kuota harian.
+        /// </summary>
+        public Task<TutorAskResponse> AskTutorAsync(
+            string question,
+            IReadOnlyList<TutorMessage> history = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(question))
+            {
+                throw new ArgumentException("Pertanyaan wajib diisi.", nameof(question));
+            }
+
+            var messages = new List<TutorMessage>();
+            if (history != null)
+            {
+                for (var index = 0; index < history.Count; index++)
+                {
+                    var message = history[index];
+                    if (message != null && !string.IsNullOrWhiteSpace(message.content))
+                    {
+                        messages.Add(message);
+                    }
+                }
+            }
+
+            var request = new TutorAskRequest
+            {
+                question = question.Trim(),
+                history = messages.ToArray()
+            };
+
+            return SendAsync<TutorAskResponse>(
+                "POST",
+                "/v1/tutor/ask",
+                request,
+                cancellationToken);
         }
 
         private async Task<T> SendAsync<T>(

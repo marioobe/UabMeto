@@ -126,8 +126,11 @@ dan ADR-0007.
 
 ## 8. AI dan suara
 
-- Tutor AI memakai retrieval di atas korpus tervalidasi (tag topik + pencarian
-  kata kunci/BM25). Vector search ditunda sampai korpus cukup besar.
+- Tutor AI teks (0.3.0) memakai retrieval BM25 di atas korpus tervalidasi;
+  jawaban hanya dari konteks, dengan penolakan eksplisit bila referensi tidak
+  ada. Vector search ditunda sampai korpus cukup besar.
+- Provider lokal bawaan `mock`; provider Workers AI sudah disiapkan tetapi
+  belum diuji tanpa kredensial. Lihat `docs/testing/tutor-ai-quality.md`.
 - Pengenalan ucapan dan penilaian kualitas pelafalan adalah dua hal berbeda.
 - Hasil yang tidak meyakinkan → `not_assessable` → UI "belum dapat dinilai".
 - Tidak ada status lulus/gagal dari fitur pelafalan.

@@ -22,3 +22,10 @@ APP_ENV="development"
 # Nilai "true" mengizinkan XP untuk konten in_review agar alur sync bisa
 # diuji sebelum ada pelajaran validated.
 DEV_ALLOW_XP_FOR_IN_REVIEW="true"
+
+# --- Tutor AI ---
+# "mock" = jawaban deterministik dari korpus tervalidasi, tanpa model.
+# "workers-ai" = panggil Workers AI (butuh `wrangler login` atau
+# CLOUDFLARE_API_TOKEN serta internet dari komputer ini).
+TUTOR_PROVIDER="mock"
+TUTOR_MODEL="@cf/meta/llama-3.1-8b-instruct"

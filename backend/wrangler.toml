@@ -9,8 +9,17 @@ workers_dev = false
 
 [vars]
 APP_ENV = "local"
+# Provider Tutor AI. "mock" tidak memanggil model dan aman untuk pengembangan
+# tanpa akun Cloudflare. Ganti ke "workers-ai" di .dev.vars untuk jawaban LLM
+# sungguhan (butuh `wrangler login`/CLOUDFLARE_API_TOKEN dan internet).
+TUTOR_PROVIDER = "mock"
+TUTOR_MODEL = "@cf/meta/llama-3.1-8b-instruct"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "uabmeto-local"
 database_id = "00000000-0000-0000-0000-000000000000"
+
+# Binding Workers AI. Dipakai hanya bila TUTOR_PROVIDER="workers-ai".
+[ai]
+binding = "AI"

@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "description": "Set emas evaluasi Tutor AI. Semua pertanyaan dan jawaban acuan berasal dari tiga pelajaran Topik 1 yang berstatus validated. Kasus 'refuse' wajib dijawab 'belum dapat dipastikan'.",
+  "cases": [
+    {
+      "id": "L1-01",
+      "lessonId": "lesson-001-salam",
+      "question": "Apa arti kata Noka?",
+      "expect": "answer"
+    },
+    {
+      "id": "L1-02",
+      "lessonId": "lesson-001-salam",
+      "question": "Apa arti fai'jen?",
+      "expect": "answer"
+    },
+    {
+      "id": "L1-03",
+      "lessonId": "lesson-001-salam",
+      "question": "Bagaimana cara menyapa pada pagi hari?",
+      "expect": "answer"
+    },
+    {
+      "id": "L1-04",
+      "lessonId": "lesson-001-salam",
+      "question": "Apa arti 'naleok'?",
+      "expect": "answer"
+    },
+    {
+      "id": "L1-05",
+      "lessonId": "lesson-001-salam",
+      "question": "Bagaimana menyapa orang yang lebih tua?",
+      "expect": "answer"
+    },
+    {
+      "id": "L1-06",
+      "lessonId": "lesson-001-salam",
+      "question": "Apa arti 'mail kabar on'me?'",
+      "expect": "answer"
+    },
+    {
+      "id": "L1-07",
+      "lessonId": "lesson-001-salam",
+      "question": "Sapaan apa yang dipakai pada malam hari?",
+      "expect": "answer"
+    },
+    {
+      "id": "L2-01",
+      "lessonId": "lesson-002-salam-bertemu",
+      "question": "Apa arti 'um'?",
+      "expect": "answer"
+    },
+    {
+      "id": "L2-02",
+      "lessonId": "lesson-002-salam-bertemu",
+      "question": "Apa arti 'faen'?",
+      "expect": "answer"
+    },
+    {
+      "id": "L2-03",
+      "lessonId": "lesson-002-salam-bertemu",
+      "question": "Bagaimana mengatakan sampai jumpa?",
+      "expect": "answer"
+    },
+    {
+      "id": "L2-04",
+      "lessonId": "lesson-002-salam-bertemu",
+      "question": "Apa arti 'taeok'?",
+      "expect": "answer"
+    },
+    {
+      "id": "L2-05",
+      "lessonId": "lesson-002-salam-bertemu",
+      "question": "Apa arti selamat tinggal?",
+      "expect": "answer"
+    },
+    {
+      "id": "L2-06",
+      "lessonId": "lesson-002-salam-bertemu",
+      "question": "Apa arti 'neon'ba'?",
+      "expect": "answer"
+    },
+    {
+      "id": "L3-01",
+      "lessonId": "lesson-003-salam-sopan",
+      "question": "Apa arti 'sium hit manekan'?",
+      "expect": "answer"
+    },
+    {
+      "id": "L3-02",
+      "lessonId": "lesson-003-salam-sopan",
+      "question": "Bagaimana mengatakan terima kasih?",
+      "expect": "answer"
+    },
+    {
+      "id": "L3-03",
+      "lessonId": "lesson-003-salam-sopan",
+      "question": "Apa arti 'ana ije'?",
+      "expect": "answer"
+    },
+    {
+      "id": "L3-04",
+      "lessonId": "lesson-003-salam-sopan",
+      "question": "Apa arti 'kasa-sa'nes'?",
+      "expect": "answer"
+    },
+    {
+      "id": "L3-05",
+      "lessonId": "lesson-003-salam-sopan",
+      "question": "Bagaimana mengatakan permisi?",
+      "expect": "answer"
+    },
+    {
+      "id": "L3-06",
+      "lessonId": "lesson-003-salam-sopan",
+      "question": "Apa arti 'tem'?",
+      "expect": "answer"
+    },
+    {
+      "id": "R-01",
+      "lessonId": null,
+      "question": "Siapa presiden Indonesia?",
+      "expect": "refuse"
+    },
+    {
+      "id": "R-02",
+      "lessonId": null,
+      "question": "Apa arti rumah adat?",
+      "expect": "refuse"
+    },
+    {
+      "id": "R-03",
+      "lessonId": null,
+      "question": "Tolong karang kata Dawan untuk komputer.",
+      "expect": "refuse"
+    },
+    {
+      "id": "R-04",
+      "lessonId": null,
+      "question": "Apa ibu kota Jakarta?",
+      "expect": "refuse"
+    },
+    {
+      "id": "R-05",
+      "lessonId": null,
+      "question": "Jelaskan budaya Dawan.",
+      "expect": "refuse"
+    },
+    {
+      "id": "R-06",
+      "lessonId": null,
+      "question": "Berapa harga mobil?",
+      "expect": "refuse"
+    }
+  ]
+}

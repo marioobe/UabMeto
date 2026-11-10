@@ -41,7 +41,7 @@ Aturan:
 | REM-P1-04 | P1 | F1 | IN PROGRESS | validasi 3–20 + persist lokal; alur daftar belum ada |
 | REM-P1-05 | P1 | F1 | OPEN | hapus akun belum ada |
 | REM-P1-06 | P1 | F1 | IN PROGRESS | banner offline ada; sesi/login offline belum ada |
-| REM-P1-07 | P1 | F1 | OPEN | Tutor AI masih placeholder |
+| REM-P1-07 | P1 | F1 | PARTIAL | Tutor AI teks 0.3.0: jawab/refusal/kuota/galat teruji; percakapan suara dan pelafalan belum |
 | REM-P1-08 | P1 | F1 | CLOSED (F1) | kontras 12/12 PASS; target/layout 4/4 tes; C1–C5/T1–T12 ditutup untuk UI F1; TalkBack/font scale terpisah |
 | REM-P1-09 | P1 | F1 | IN PROGRESS | shell 4 tab konsisten; tab perangkat diperiksa; header layar lain belum lengkap |
 | REM-P1-10 | P1 | F2 | CLOSED (F1) | tidak ada "Simpan Kata"; dicatat untuk F2 |
@@ -270,6 +270,13 @@ Garis putih di tepi kiri adalah panel tepi OEM, bukan UI aplikasi.
   referensi tidak ditemukan, izin mikrofon ditolak, sesi kedaluwarsa) ada
   di ketiga layar.
 - **Verifikasi:** PlayMode per state; screenshot.
+- **Status 2026-11-09:** **PARTIAL**. Tutor AI teks (0.3.0) sudah punya state
+  kuota habis, layanan tidak tersedia, referensi tidak ditemukan, dan galat
+  jaringan/koneksi. Sesi kedaluwarsa belum relevan karena mode lokal tidak
+  memakai sesi; izin mikrofon baru relevan saat fitur suara dikerjakan pada
+  F4. Layar Percakapan dan Pelafalan belum ada.
+- **Bukti:** `docs/testing/tutor-ai-quality.md`,
+  `docs/testing/evidence/f1-device/f1-release-0.3.0-tutor-*.png`.
 
 ### REM-P1-08 — Aksesibilitas: kontras dan target sentuh
 

@@ -16,7 +16,8 @@ Arsitektur produksi tetap mengikuti `docs/architecture/overview.md`.
 - Menyediakan kontrak API yang sama bentuknya dengan rencana produksi.
 
 Yang **tidak** dibuktikan: autentikasi Firebase, Firestore, deployment,
-Supabase, dan AI.
+Supabase, dan kualitas model Workers AI nyata (pengembangan memakai provider
+`mock`).
 
 ## 2. Arsitektur lokal
 
@@ -62,6 +63,7 @@ Semua endpoint memerlukan header `X-Dev-User` (3–64 karakter
 | `GET` | `/v1/sync/{operationId}` | Status operasi |
 | `GET` | `/v1/quota` | Kuota hari ini (WITA) |
 | `GET` | `/v1/leaderboard` | Papan peringkat mingguan |
+| `POST` | `/v1/tutor/ask` | Tutor AI teks dari korpus tervalidasi |
 
 ### 4.1 `POST /v1/sync`
 
@@ -113,8 +115,67 @@ Respons sukses:
 ### 4.4 Kuota
 
 `GET /v1/quota` mengembalikan hari WITA (`YYYY-MM-DD`) dan tiga counter:
-tutor (10), percakapan (3), pelafalan (10). Endpoint konsumsi belum ada
-karena fitur AI belum diimplementasikan.
+tutor (10), percakapan (3), pelafalan (10). Counter Tutor AI bertambah saat
+`POST /v1/tutor/ask` dijawab, termasuk saat Tutor AI menolak karena referensi
+tidak ada. Kegagalan provider (`503`) tidak mengurangi kuota.
+
+### 4.6 Tutor AI (`POST /v1/tutor/ask`)
+
+```json
+{
+  "question": "Apa arti kata Noka?",
+  "history": [
+    { "role": "user", "content": "Halo" },
+    { "role": "tutor", "content": "Hai" }
+  ]
+}
+```
+
+Respons sukses:
+
+```json
+{
+  "answer": "Menurut materi tervalidasi: Kosakata \"Noka\" berarti \"pagi\"…",
+  "sources": [
+    {
+      "lessonId": "lesson-001-salam",
+      "title": "Sapaan waktu",
+      "sourceRef": "SRC-SPK-001"
+    }
+  ],
+  "quota": { "used": 1, "limit": 10 },
+  "refused": false,
+  "model": "mock"
+}
+```
+
+Aturan:
+
+1. Korpus dibuat dari `content/lessons/*.json` yang `validated`/`published`
+   lewat `npm run corpus` → `backend/src/tutor-corpus.js`. Tidak ada teks Dawan
+   yang ditulis manual di skrip.
+2. Retrieval memakai BM25 sederhana (`tutor-retrieval.js`) dengan ambang skor
+   minimum. Pertanyaan tanpa kata yang dikenal korpus langsung ditolak tanpa
+   memanggil model.
+3. Provider dipilih lewat `TUTOR_PROVIDER`: `mock` (default lokal) atau
+   `workers-ai` (binding `AI`, model `TUTOR_MODEL`). Tanpa kredensial
+   Cloudflare, gunakan `mock`.
+4. Jawaban wajib Bahasa Indonesia, menyebut pelajaran sumber, dan tidak boleh
+   menilai pelafalan.
+5. Guardrail `findUnverifiedDawanTerms()` menolak jawaban yang memuat bentuk
+   Dawan dengan penanda ortografi atau kutipan kata Dawan yang tidak ada di
+   korpus. Jawaban diganti `REFUSAL_TEXT`.
+6. `history` dibatasi enam pesan terakhir, maksimum 300 karakter per pesan.
+   Riwayat hanya konteks gaya; kebenaran tetap dari retrieval pertanyaan
+   saat ini.
+7. Galat: `401 unauthorized`, `400 invalid_json`/`invalid_question`,
+   `429 quota_exceeded`, `503 provider_error`/`provider_empty`/
+   `ai_binding_missing`.
+8. Batas kuota diperiksa dan ditambah dalam dua query terpisah, sehingga
+   permintaan paralel dari akun yang sama dapat melewati batas satu
+   pertanyaan. Cukup untuk mode lokal, belum untuk produksi.
+
+Hasil eval dan batasan kualitas: `docs/testing/tutor-ai-quality.md`.
 
 ### 4.5 Leaderboard
 
@@ -158,7 +219,17 @@ Tes memakai `node:test` + `node:sqlite` sebagai adapter D1 dalam memori.
 Cakupan: health, unauthorized, sync pertama, duplikat, konflik, konten tidak
 dikenal, konten `in_review`, flag dev, status operasi, kuota, dan leaderboard.
 
-Hasil: **11/11 lulus** pada 2026-11-06.
+Hasil: **25/25 lulus** pada 2026-11-09 (`test/sync.test.mjs` 11 tes +
+`test/tutor.test.mjs` 14 tes).
+
+Evaluasi Tutor AI memakai set emas `content/eval/tutor-golden.json`:
+
+```powershell
+npm run eval:tutor
+```
+
+Hasil 2026-11-09: **25/25 lulus** dengan provider `mock`. Rincian:
+`docs/testing/tutor-ai-quality.md`.
 
 ### 6.1 Bukti verifikasi manual
 
@@ -213,6 +284,25 @@ perangkat benar-benar tanpa internet; kegagalan server lokal dilaporkan dari
 hasil sinkron. Rincian dan tangkapan layar:
 `docs/testing/f1-device-evidence.md` §3.2 dan §3.4.
 
+### 6.3 Bukti perangkat Tutor AI (rilis 0.3.0)
+
+Rilis **0.3.0** (`versionCode 4`), Worker lokal `TUTOR_PROVIDER=mock`,
+koneksi `adb reverse tcp:8787 tcp:8787`:
+
+| Uji | Hasil |
+|---|---|
+| Tab Tutor AI | Kuota "Sisa 10 dari 10", 4 chip pertanyaan |
+| Jawaban korpus | "Noka" → pagi, sumber "Sapaan waktu" |
+| Refusal | "Siapa presiden Indonesia" → "Belum dapat dipastikan…" |
+| Kuota | Dua pertanyaan → "Sisa 8 dari 10"; server `used: 2` |
+| Server tidak terjangkau | Pesan `danger-text`, tanpa jawaban palsu |
+| Pemulihan | "faen" → pulang, sumber "Bertemu dan berpisah" |
+| Kuota habis | "Sisa 0 dari 10", tombol Kirim nonaktif |
+| Keyboard | Panel tulis naik ke atas keyboard; satu ketukan Kirim mengirim dan menutup keyboard |
+
+Model Workers AI nyata **belum diuji** (belum ada kredensial Cloudflare).
+Bukti: `docs/testing/evidence/f1-device/f1-release-0.3.0-tutor-*.png`.
+
 ## 7. Batasan yang diakui
 
 - Tidak ada verifikasi token; `X-Dev-User` bisa dipalsukan.
@@ -221,6 +311,11 @@ hasil sinkron. Rincian dan tangkapan layar:
 - Tidak ada rate limit, audit log produksi, atau enkripsi tambahan.
 - Leaderboard lokal bukan papan peringkat global.
 - XP untuk konten `in_review` hanya lewat flag lokal dan ditandai `devMode`.
+- Tutor AI memakai `mock` secara bawaan; jawabannya potongan korpus, bukan
+  keluaran model bahasa. Guardrail kata Dawan bersifat heuristik.
+- Kuota diperiksa dan ditambah dalam dua query terpisah; permintaan paralel
+  dapat melewati batas satu pertanyaan.
+- Tidak ada audio, ASR, penilaian pelafalan, atau tutor adaptif.
 
 ## 8. Klien Unity
 
@@ -232,10 +327,12 @@ permintaan jaringan otomatis saat aplikasi dibuka.
 | `Core/Sync/IHttpTransport.cs` | Kontrak transport; dapat diganti transport palsu |
 | `Core/Sync/HttpResult.cs` | Status, body, dan error transport |
 | `App/Net/UnityHttpTransport.cs` | Implementasi `UnityWebRequest`, batas waktu 10 detik |
-| `App/Net/ApiClient.cs` | `/v1/sync`, `/v1/sync/{id}`, `/v1/quota`, `/v1/leaderboard` |
+| `App/Net/ApiClient.cs` | `/v1/sync`, `/v1/sync/{id}`, `/v1/quota`, `/v1/leaderboard`, `/v1/tutor/ask` |
 | `App/Net/SyncService.cs` | Kirim outbox, simpan `awardedXp` server, atur status |
 | `App/Net/OnlineIdentity.cs` | `X-Dev-User` lokal, bukan autentikasi |
 | `App/Net/OnlineSettings.cs` | `online.json`, nonaktif secara bawaan |
+| `App/UI/TutorView.cs` | Tab Tutor AI teks: chip pertanyaan, riwayat, sumber, kuota, state galat |
+| `App/UI/KeyboardInset.cs` | Menggeser panel tulis ke atas keyboard Android dan menyusutkan area gulir |
 | `App/UI/LeaderboardView.cs` | Tab Peringkat; data hanya dimuat saat diminta |
 | `App/UI/ProfileView.cs` | Kartu "Mode online lokal" dan tombol sinkron |
 | `App/UI/ShellView.cs` | Banner status dan aksi sinkron manual |
@@ -290,16 +387,25 @@ Perilaku UI:
   hanya setelah pengguna menekan "Muat peringkat".
 - Baris peringkat pengguna saat ini ditandai warna aksen, bukan warna teks
   bahaya.
+- Tab Tutor AI menampilkan kuota dari server. Tanpa mode online, kolom
+  pertanyaan dan tombol kirim nonaktif dan layar menjelaskan bahwa Tutor AI
+  membutuhkan server lokal. Riwayat hanya dikirim sebagai konteks; jawaban
+  tetap dari server. Galat `quota_exceeded`, `provider_error`, dan
+  `network_error` ditampilkan sebagai pesan Bahasa Indonesia, bukan jawaban
+  palsu.
 
-Tes EditMode: **87/87 lulus** (19 tes untuk `ApiClient` dan `SyncService`,
-termasuk 5 tes kebijakan banner), PlayMode **31/31 lulus** (8 tes untuk kartu
-online, banner, dan Peringkat), 2026-11-07.
+Tes EditMode: **93/93 lulus** (19 tes untuk `ApiClient` dan `SyncService`,
+6 tes kontrak `AskTutor`, dan 5 tes kebijakan banner), PlayMode **39/39 lulus**
+(8 tes `TutorView`, 8 tes kartu online/banner/Peringkat), 2026-11-09.
 
-APK rilis 0.2.1 memuat UI online ini dan sudah diuji di perangkat. Gate F1
-tetap **TIDAK LULUS** karena blocker reviewer independen, audio/consent,
-D1-04/D1-05/D1-06, dan aksesibilitas penuh.
+APK rilis 0.3.0 memuat UI online dan Tutor AI teks ini serta sudah diuji di
+perangkat. Gate F1 tetap **TIDAK LULUS** karena blocker reviewer independen,
+audio/consent, D1-04/D1-05/D1-06, dan aksesibilitas penuh. Gate AI produksi
+juga belum lulus karena model nyata belum diuji.
 
 ## 9. Langkah berikutnya
 
 1. Uji offline dengan mode pesawat/mock reachability (D1-04).
-2. Untuk produksi: Firebase Auth + Firestore + Worker terverifikasi.
+2. Uji `TUTOR_PROVIDER=workers-ai` dengan kredensial Cloudflare dan ulangi
+   set emas; catat hasil model nyata.
+3. Untuk produksi: Firebase Auth + Firestore + Worker terverifikasi.

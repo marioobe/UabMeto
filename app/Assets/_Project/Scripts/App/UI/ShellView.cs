@@ -344,12 +344,8 @@ namespace UabMeto.App.UI
                     new HomeView(this).Build(_contentHost);
                     break;
                 case Tab.Tutor:
-                    SetHeader("Tutor AI", "Latihan percakapan");
-                    BuildPlaceholder(
-                        "Tutor AI belum tersedia",
-                        "Fitur Tutor AI akan dikerjakan setelah alur pelajaran dan konten tervalidasi siap. " +
-                        "Tidak ada percakapan yang dikarang untuk mengisi layar ini.",
-                        "menu_book");
+                    SetHeader("Tutor AI", "Tanya materi tervalidasi");
+                    new TutorView(this).Build(_contentHost);
                     break;
                 case Tab.Leaderboard:
                     SetHeader("Peringkat", "Mingguan · reset Senin 00.00 WITA");

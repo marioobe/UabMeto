@@ -1,10 +1,10 @@
 # Bukti Uji Perangkat F1
 
-Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-08 (WITA)
+Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-09 (WITA)
 Status: **PARTIAL** — instalasi, peluncuran, UI dasar, tombol back, alur
 tiga pelajaran rilis (portrait), replay tanpa XP ganda, banner gagal-server,
-dan sinkron lokal lulus di OPPO `CPH1803`; offline mock (D1-04), landscape,
-dan skala font belum.
+sinkron lokal, dan Tutor AI teks lulus di OPPO `CPH1803`; offline mock (D1-04),
+landscape, dan skala font belum.
 
 ## 1. Perangkat dan APK
 
@@ -19,15 +19,15 @@ perangkat Xiaomi `24117RN76O` dan APK 0.1.0/0.2.0 tetap dicatat di bagian
 | Layar | 720×1520, 320 dpi |
 | ADB | `device` (terotorisasi) |
 | Paket | `id.uabmeto.app` |
-| Versi | `0.2.1` (`versionCode 3`) |
+| Versi | `0.3.0` (`versionCode 4`) |
 | minSdk / targetSdk | 26 / 36 |
 | ABI | `arm64-v8a` |
 | APK | `Builds/Android/uabmeto-f1.apk` |
-| Ukuran | 28.907.506 byte |
-| SHA-256 | `8E46C47E16E3B586818F6CDA9D9F7620E6F9B6533AEDA4AE3B8D3F22796BC6A3` |
+| Ukuran | 28.926.554 byte |
+| SHA-256 | `ABC765226DB678E3B34B02349402421C69D542211FD77D3D6471A71F45542018` |
 | firstInstallTime | 2026-11-06 00:15:17 |
-| lastUpdateTime | 2026-11-07 16:38:52 |
-| Tanda tangan | `5a7f688` (sama dengan 0.1.0/0.2.0) |
+| lastUpdateTime | 2026-11-09 (instalasi 0.3.0) |
+| Tanda tangan | `5a7f688` (sama dengan 0.1.0/0.2.0/0.2.1) |
 
 `adb install -r` berhasil. `dumpsys package` mengonfirmasi versi, minSdk,
 targetSdk, ABI, tanda tangan, dan waktu instalasi di atas. Perangkat Xiaomi
@@ -38,7 +38,7 @@ dicatat di bagian 2–3.
 
 | ID | Status | Bukti |
 |---|---|---|
-| D1-01 APK terpasang | **PASS** | `adb install -r` → `Success`; `dumpsys package` (0.2.1, `versionCode 3`) |
+| D1-01 APK terpasang | **PASS** | `adb install -r` → `Success`; `dumpsys package` (0.3.0, `versionCode 4`) |
 | D1-02 Dibuka tanpa crash | **PASS** | `UnityPlayerGameActivity` foreground; logcat tanpa fatal/exception aplikasi |
 | D1-03 Alur pelajaran | **PASS (0.2.1)** | Tiga pelajaran rilis Topik 1 dibuka berurutan lewat daftar; replay tanpa XP ganda |
 | D1-04 Mode offline | **NOT RUN** | Banner gagal-server/offline sudah diuji dengan melepas `adb reverse`, tetapi mode pesawat/mock reachability belum |
@@ -218,6 +218,58 @@ Catatan jujur:
   salah saat server lokal masih terjangkau.
 - Wi-Fi/LAN belum bisa diuji karena HP tidak terhubung ke hotspot PC.
 
+### 3.5 Verifikasi Tutor AI rilis 0.3.0 (OPPO)
+
+Tanggal: 2026-11-09/10. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
+(API 27), `arm64-v8a`, 720×1520, 320 dpi.
+
+| Item | Nilai |
+|---|---|
+| APK | `Builds/Android/uabmeto-f1.apk` |
+| Versi | `0.3.0` (`versionCode 4`) |
+| Ukuran | 28.932.254 byte |
+| SHA-256 | `BA99B129FF5CEDD5830DC443F162B2F6639540054C76DF9A57281B95C00FE713` |
+| Pemasangan | `adb install -r` → `Success` (data lama tetap) |
+| Server | `wrangler dev --local` port 8787, `TUTOR_PROVIDER=mock` |
+| Koneksi | `adb reverse tcp:8787 tcp:8787` |
+| Tes | EditMode 93/93, PlayMode 39/39, backend 25/25, eval Tutor 25/25 |
+
+Alur yang dijalankan:
+
+1. Tab Tutor AI menampilkan penjelasan batas, kuota "Sisa 10 dari 10
+   pertanyaan hari ini", empat chip pertanyaan, kolom tulis, dan tombol Kirim.
+2. Ketuk kolom tulis: keyboard muncul, panel tulis dan tombol Kirim bergeser
+   ke atas keyboard (offset 275 unit kanvas ≈ 550 px), teks yang diketik
+   terlihat penuh.
+3. Satu ketukan "Kirim" saat keyboard terbuka mengirim pertanyaan, menutup
+   keyboard, dan menampilkan jawaban.
+4. "Apa arti kata Noka?" dijawab Noka = pagi, sumber "Berdasarkan: Sapaan
+   waktu", status "Jawaban berasal dari materi tervalidasi."
+5. "Siapa presiden Indonesia" dijawab "Belum dapat dipastikan dari materi
+   tervalidasi saat ini…", tanpa sumber, status "Jawaban tidak dikarang."
+6. Setelah dua pertanyaan, kuota menjadi "Sisa 8 dari 10"; `GET /v1/quota`
+   dengan identitas perangkat mencatat `used: 2`.
+7. `adb reverse` dilepas, pertanyaan dikirim → pesan "Tidak dapat menghubungi
+   server lokal. Tutor AI membutuhkan server lokal yang aktif." berwarna
+   `danger-text`; tidak ada jawaban palsu.
+8. `adb reverse` dipasang lagi → "faen" dijawab pulang, sumber "Bertemu dan
+   berpisah".
+9. Kuota dihabiskan (10 pertanyaan) → "Sisa 0 dari 10", status kuota habis,
+   tombol Kirim nonaktif.
+
+Bukti: `docs/testing/evidence/f1-device/f1-release-0.3.0-tutor-*.png`
+(8 berkas: tab, keyboard, jawaban, refusal, kuota, offline, pemulihan,
+kuota habis).
+
+Catatan jujur:
+
+- Provider `mock` menghasilkan jawaban dari potongan chunk tervalidasi; model
+  Workers AI nyata **belum diuji** karena mesin ini belum login Cloudflare.
+- Tidak ada audio, ASR, atau penilaian pelafalan pada versi ini.
+- Melepas `adb reverse` bukan uji mode pesawat; D1-04 tetap **NOT RUN**.
+- Kuota D1 lokal direset sebelum rangkaian bukti agar dimulai dari 10/10;
+  reset hanya untuk pengujian lokal.
+
 ## 4. Temuan dan perbaikan
 
 ### 4.1 Scroll tidak dapat digeser
@@ -255,16 +307,41 @@ Garis melengkung putih di tepi kiri terlihat di semua layar aplikasi. Garis
 yang sama terlihat di home screen sistem, jadi ini panel tepi OEM, bukan
 bagian UI aplikasi. Tidak dihitung sebagai temuan aplikasi.
 
+### 4.5 Keyboard Android menutup kolom tulis
+
+- **Gejala:** pada build 0.3.0 pertama, membuka keyboard di tab Tutor AI
+  menutupi panel tulis; teks yang diketik tidak terlihat.
+- **Penyebab:** Unity Android (Game Activity) tidak melakukan `adjustResize`,
+  dan `TouchScreenKeyboard.visible`/`area` selalu kosong di perangkat ini
+  meski log native mencatat "Keyboard Visible = True".
+- **Perbaikan:** `KeyboardInset.cs` membaca tinggi keyboard dari window insets
+  Android (`getWindowVisibleDisplayFrame`), lalu menggeser panel tulis dan
+  menyusutkan area gulir. Panel tidak digeser selama jari masih menekan agar
+  pointer-up tombol Kirim tidak jatuh di luar tombol; `Send()` juga memanggil
+  `DeactivateInputField()` setelah mengirim.
+- **Verifikasi:** APK final 0.3.0 (SHA-256 `BA99B129…`) — keyboard terbuka,
+  panel tulis dan tombol Kirim terlihat di atas keyboard, satu ketukan Kirim
+  mengirim, menutup keyboard, dan menampilkan jawaban. Bukti:
+  `f1-release-0.3.0-tutor-keyboard-oppo.png` dan
+  `f1-release-0.3.0-tutor-answer-oppo.png`.
+- **Batasan:** offset mengikuti window insets sehingga menyisakan celah kecil
+  di atas keyboard (±77 px pada perangkat ini); ini kosmetik, bukan
+  teks terpotong.
+
 ## 5. Batasan yang belum ditutup
 
 - Tidak ada audio pada pelajaran `validated`, jadi alur audio dan consent
   tidak dapat diuji. Tiga pelajaran Topik 1 `validated` atas override pemilik,
   bukan reviewer independen.
 - Perangkat/launcher portrait-only; uji landscape perangkat tidak sah.
-- TalkBack, keyboard Android, dan skala font sistem belum diuji. Aplikasi
-  juga belum membaca `AndroidConfiguration.fontScale`, jadi D1-06 tidak
-  dapat lulus tanpa perubahan kode.
+- TalkBack dan skala font sistem belum diuji. Aplikasi juga belum membaca
+  `AndroidConfiguration.fontScale`, jadi D1-06 tidak dapat lulus tanpa
+  perubahan kode. Keyboard Android kini diuji untuk layar Tutor AI
+  (lihat §4.5), tetapi belum untuk layar lain karena belum ada kolom tulis
+  lain di F1.
 - Banner gagal-server sudah diuji dengan melepas `adb reverse`, tetapi
   banner offline belum diuji dengan mode pesawat (D1-04).
 - Tidak ada profiling performa atau pengukuran startup.
-- Build 0.2.1 masih memiliki 4 warning TMP/AndroidSDKTools.
+- Build 0.3.0 masih memiliki 3 warning shader TMP.
+- Tutor AI memakai provider `mock`; kualitas model Workers AI nyata belum
+  diukur dan belum ada kredensial Cloudflare di mesin pengembangan.

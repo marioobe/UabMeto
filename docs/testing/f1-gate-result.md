@@ -1,6 +1,6 @@
 # Laporan Gate F1
 
-Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-08 (WITA)
+Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-09 (WITA)
 Lingkungan: Windows, Unity `6000.6.0f1`, Android build-tools `36.1.0`.
 Status gate: **TIDAK LULUS.** Build, tes UI, dan verifikasi dasar perangkat
 fisik lulus; syarat reviewer independen, audio/consent, aksesibilitas penuh,
@@ -39,20 +39,37 @@ replay tanpa XP ganda, banner gagal-sinkron, dan pemulihan sinkron diuji di
 OPPO `CPH1803`. Tes EditMode **87/87** dan PlayMode **31/31** lulus. Gate F1
 tetap **TIDAK LULUS**; blocker tidak berubah.
 
+Pembaruan 2026-11-09 (versi 0.3.0): **Tutor AI teks** tersedia di tab
+Tutor AI. Jawaban hanya diambil dari korpus tiga pelajaran Topik 1 yang
+`validated`, selalu dalam Bahasa Indonesia, menyebut pelajaran sumber, dan
+menolak dengan "Belum dapat dipastikan…" bila referensi tidak ada. Kuota
+10 pertanyaan/akun/hari dihitung di server. Provider lokal memakai `mock`
+karena mesin ini belum memiliki kredensial Cloudflare; model Workers AI
+sungguhan **belum diuji**. Tes EditMode **93/93**, PlayMode **39/39**,
+backend **25/25**, dan eval Tutor **25/25** lulus. Alur jawaban, refusal,
+kuota berkurang, server tidak terjangkau, pemulihan, dan kuota habis diuji
+di OPPO `CPH1803`. Perbaikan keyboard Android juga diuji di sana: panel tulis
+naik ke atas keyboard, teks terlihat, dan satu ketukan Kirim mengirim lalu
+menutup keyboard. Rincian dan batasan:
+`docs/testing/tutor-ai-quality.md`. Gate F1 tetap **TIDAK LULUS**; gate AI
+produksi juga belum lulus.
+
 ## 1. Ringkasan keputusan
 
 | Area | Hasil |
 |---|---|
 | Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
 | Build pratinjau | **PASS** — `Builds/Android/uabmeto-f1-preview.apk` (demo, memuat `in_review`) |
-| Tes EditMode | **PASS** — 87 lulus, 0 gagal, 0 dilewati |
-| Tes PlayMode | **PASS** — 31 lulus, 0 gagal, 0 dilewati |
+| Tes EditMode | **PASS** — 93 lulus, 0 gagal, 0 dilewati |
+| Tes PlayMode | **PASS** — 39 lulus, 0 gagal, 0 dilewati |
+| Tes backend | **PASS** — 25 lulus (termasuk 14 tes Tutor AI) |
+| Eval Tutor AI | **PASS (mock)** — 25/25 kasus emas; model nyata belum diuji |
 | Validator konten | **PASS** — 0 error, 4 warning audio di `content/samples/` |
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
 | Target sentuh F1 | **PASS (UI F1)** — 4/4 tes aksesibilitas/layout |
 | Materi Topik 1 | **VALIDATED (override pemilik)** — 3 pelajaran, 50 item elisitasi `SPK-001` |
 | Konten tervalidasi | **ADA** — 3 pelajaran Topik 1, tanpa reviewer independen |
-| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-03 (tiga pelajaran, 0.2.1), D1-07 lulus; D1-04..D1-06 belum |
+| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-03 (tiga pelajaran, 0.2.1), Tutor AI teks (0.3.0), D1-07 lulus; D1-04..D1-06 belum |
 | Gate F1 | **TIDAK LULUS** |
 
 ## 2. Build
@@ -179,15 +196,37 @@ angka antrean setelah semua hasil terkonfirmasi.
 Catatan: 4 warning berasal dari shader/`AndroidSDKTools`; tidak ada error
 kompilasi. F1-25 tetap **PARTIAL** karena build belum bersih dari nol.
 
+### 2.6 Build rilis 0.3.0 (2026-11-09/10)
+
+- Path: `Builds/Android/uabmeto-f1.apk`
+- Ukuran: **28.932.254 byte**
+- SHA-256: `BA99B129FF5CEDD5830DC443F162B2F6639540054C76DF9A57281B95C00FE713`
+- Hasil: `Succeeded`, 0 error, 3 warning (shader TMP `enable_d3d11_debug_symbols`)
+- Durasi build: 144,8 detik (inkremental)
+- Versi: `0.3.0` (`versionCode 4`), terverifikasi lewat `aapt2 dump badging`
+- Ringkasan mesin: `Builds/Android/build-summary.json`
+- Isi: tab **Tutor AI teks**, kontrak `POST /v1/tutor/ask`, kuota Tutor AI di
+  klien, perbaikan keyboard Android, serta seluruh isi 0.2.1
+- Folder `Resources/Content/preview` hanya berisi `.gitkeep`; tidak ada materi
+  pratinjau yang ikut ke APK rilis
+- Versi dinaikkan lewat `ProjectConfigurator.BundleVersion` dan
+  `bundleVersionCode`, karena `Apply()` menimpa `ProjectSettings` saat build
+- Build ini menggantikan build 0.3.0 antara (`ABC76522…`, 28.926.554 byte)
+  yang belum memuat perbaikan keyboard; UI Tutor tidak berubah, hanya
+  `KeyboardInset.cs` dan pemanggilan `DeactivateInputField()`
+
 ## 3. Tes yang dijalankan
 
 ### 3.1 EditMode
 
-Hasil: **87/87 lulus, 0 gagal, 0 dilewati** (2026-11-07,
+Hasil: **93/93 lulus, 0 gagal, 0 dilewati** (2026-11-09,
 `Builds/logs/editmode-results.xml`).
 
 - 19 tes `ApiClient`/`SyncService`: parsing respons, XP resmi server,
   penolakan konten belum valid, konflik, transport gagal, dan batas percobaan.
+- 6 tes `TutorApiClientTests`: pertanyaan + riwayat, sumber, kuota, penolakan
+  pertanyaan kosong, kode `quota_exceeded`, `provider_error`, dan
+  `network_error`.
 - `TopicPathTests` — 12 ID topik persis PRD, tanpa topik ujian, tanpa label
   dialek luar TTU di UI/registry.
 - `ContentRepositoryTests` — empty state, validated/published, penolakan
@@ -204,9 +243,12 @@ Hasil: **87/87 lulus, 0 gagal, 0 dilewati** (2026-11-07,
 
 ### 3.2 PlayMode
 
-Hasil: **31/31 lulus, 0 gagal, 0 dilewati** (2026-11-07,
+Hasil: **39/39 lulus, 0 gagal, 0 dilewati** (2026-11-09,
 `Builds/logs/playmode-results.xml`).
 
+- 8 tes `TutorViewTests`: kuota awal, chip pertanyaan, jawaban + sumber,
+  refusal, kuota habis (tombol kirim nonaktif), `quota_exceeded` dari server,
+  galat jaringan, dan state tanpa mode online.
 - 8 tes `OnlineUiTests`: kartu online aktif/nonaktif, sinkron manual, banner,
   tab Peringkat dari transport palsu, dan pesan galat koneksi.
 - `Shell_HasFourTabsAndTwelveTopics`
@@ -481,6 +523,36 @@ Catatan:
   (Beranda, daftar selesai, pembuka pelajaran 3, ringkasan, ringkasan replay,
   banner gagal sinkron, sinkron sukses, statistik Profil, Peringkat).
 
+### 5.4 Verifikasi Tutor AI rilis 0.3.0 (OPPO)
+
+Tanggal: 2026-11-09/10 (WITA). Perangkat dan koneksi sama; APK 0.3.0 final
+(`versionName=0.3.0`, `versionCode=4`, SHA-256 `BA99B129...FE713`) dipasang
+dengan `adb install -r`. Worker lokal berjalan dengan `TUTOR_PROVIDER=mock`;
+tidak ada kredensial Cloudflare, jadi model Workers AI nyata tidak dipanggil.
+Kuota direset di D1 lokal agar rangkaian bukti dimulai dari "Sisa 10 dari 10".
+
+| Uji | Hasil |
+|---|---|
+| Tab Tutor AI | Judul, penjelasan batas, "Sisa 10 dari 10", 4 chip pertanyaan |
+| Keyboard | Ketuk kolom tulis → keyboard muncul; panel tulis dan tombol Kirim bergeser ke atas keyboard dan teks yang diketik terlihat |
+| Kirim satu ketuk | Dengan keyboard terbuka, satu ketukan Kirim mengirim pertanyaan, menutup keyboard, dan menampilkan jawaban |
+| Pertanyaan dari korpus | "Apa arti kata Noka?" → jawaban pagi, sumber "Sapaan waktu", status "materi tervalidasi" |
+| Pertanyaan di luar korpus | "Siapa presiden Indonesia" → "Belum dapat dipastikan…", tanpa sumber |
+| Kuota | Setelah dua pertanyaan "Sisa 8 dari 10"; server mencatat `used: 2` |
+| Server tidak terjangkau | `adb reverse` dilepas → pesan `danger-text`, tanpa jawaban palsu |
+| Pemulihan | `adb reverse` dipasang lagi → jawaban "faen = pulang" dari "Bertemu dan berpisah" |
+| Kuota habis | 10 pertanyaan → "Sisa 0 dari 10", status kuota habis, tombol Kirim nonaktif |
+
+Catatan:
+
+- Semua jawaban berasal dari provider `mock`, yaitu potongan chunk
+  tervalidasi. Ini bukan bukti kualitas model bahasa.
+- Tidak ada audio, ASR, atau skor pelafalan pada versi ini.
+- Bukti: `docs/testing/evidence/f1-device/f1-release-0.3.0-tutor-*.png`
+  (8 berkas: tab, keyboard, jawaban, refusal, kuota, offline, pemulihan,
+  kuota habis).
+- Rincian kualitas dan batasan: `docs/testing/tutor-ai-quality.md`.
+
 ## 6. Status kriteria F1
 
 | Kriteria | Status | Catatan |
@@ -509,8 +581,8 @@ Catatan:
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
-| F1-25 tanpa warning | PARTIAL | Build 0.2.1 mencatat 4 warning TMP/AndroidSDKTools |
-| F1-26 ukuran APK | PASS | 28.907.506 byte |
+| F1-25 tanpa warning | PARTIAL | Build 0.3.0 mencatat 3 warning shader TMP; bukan build bersih dari nol |
+| F1-26 ukuran APK | PASS | 28.932.254 byte |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
 ## 7. Keputusan yang dikunci
@@ -537,7 +609,10 @@ Catatan:
 - Izin audio dan rekaman penutur untuk pelajaran pertama.
 - Regenerasi/pengurangan hati dan kuota Worker.
 - Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.
-- Tutor AI, lima jenis latihan lain, ujian akhir, auth, dan hapus akun.
+- Tutor AI teks, lima jenis latihan lain, ujian akhir, auth, dan hapus akun.
+  Tutor AI teks sudah ada di 0.3.0 untuk korpus Topik 1; percakapan suara,
+  pelafalan/ASR, dan tutor adaptif tetap tertunda.
+- Uji model Workers AI nyata setelah kredensial Cloudflare tersedia.
 - Audit TalkBack, uji font sistem 1.3×/2.0×, dan uji landscape perangkat.
 - Tata letak landscape dua kolom 40/60 sesuai `docs/design/screens.md` §12;
   F1 masih memakai satu kolom yang dapat digulir.

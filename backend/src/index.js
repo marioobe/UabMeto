@@ -1,4 +1,19 @@
 import { contentSeed } from './content-seed.js';
+import { tutorCorpus } from './tutor-corpus.js';
+import {
+  buildIndex,
+  hasUsableContext,
+  retrieve
+} from './tutor-retrieval.js';
+import {
+  REFUSAL_TEXT,
+  findUnverifiedDawanTerms,
+  normalizeHistory
+} from './tutor-prompt.js';
+import {
+  TutorProviderError,
+  createTutorProvider
+} from './tutor-provider.js';
 
 // Worker mode online LOKAL. Tidak ada autentikasi Firebase, tidak ada
 // Firestore, dan tidak boleh di-deploy. Lihat docs/architecture/local-online-mode.md.
@@ -22,6 +37,10 @@ const QUOTA_LIMITS = {
 };
 
 const WITA_OFFSET_MS = 8 * 60 * 60 * 1000;
+
+// Indeks retrieval dibangun sekali saat modul dimuat. Korpus hanya berasal
+// dari content/lessons yang validated/published.
+const TUTOR_INDEX = buildIndex(tutorCorpus);
 
 export default {
   fetch(request, env) {
@@ -59,6 +78,10 @@ export async function handleRequest(request, env, now = new Date()) {
 
     if (url.pathname === '/v1/leaderboard' && request.method === 'GET') {
       return await handleLeaderboard(request, env, url, now);
+    }
+
+    if (url.pathname === '/v1/tutor/ask' && request.method === 'POST') {
+      return await handleTutorAsk(request, env, now);
     }
 
     return json({ error: 'not_found' }, 404);
@@ -300,6 +323,147 @@ async function handleQuota(request, env, url, now) {
       limit: QUOTA_LIMITS.pronunciation
     }
   });
+}
+
+async function handleTutorAsk(request, env, now) {
+  const user = getDevUser(request);
+  if (!user) {
+    return json(
+      { error: 'unauthorized', message: 'Header X-Dev-User wajib di mode lokal.' },
+      401
+    );
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'invalid_json' }, 400);
+  }
+
+  const question = stringField(body?.question, 2, 500);
+  if (!question) {
+    return json({ error: 'invalid_question' }, 400);
+  }
+
+  const history = normalizeHistory(body?.history);
+  const day = dayKey(now);
+  const used = await readTutorUsed(env, user, day);
+  if (used >= QUOTA_LIMITS.tutor) {
+    return json(
+      {
+        error: 'quota_exceeded',
+        message:
+          `Kuota Tutor AI hari ini habis (${QUOTA_LIMITS.tutor} pertanyaan). ` +
+          'Coba lagi besok atau lanjutkan pelajaran.',
+        quota: { used, limit: QUOTA_LIMITS.tutor }
+      },
+      429
+    );
+  }
+
+  const results = retrieve(question, TUTOR_INDEX);
+  let answer;
+  let sources = [];
+  let refused = false;
+  let model = 'none';
+
+  if (!hasUsableContext(results)) {
+    refused = true;
+    answer = REFUSAL_TEXT;
+  } else {
+    const provider = createTutorProvider(env);
+    let completion;
+    try {
+      completion = await provider.complete({ question, results, history });
+    } catch (error) {
+      if (error instanceof TutorProviderError) {
+        console.warn(`[uabmeto-local] tutor provider failed: ${error.code}`);
+        return json(
+          { error: error.code, message: error.message },
+          503
+        );
+      }
+
+      throw error;
+    }
+
+    answer = completion.answer;
+    model = completion.model;
+
+    const unverified = findUnverifiedDawanTerms(answer, tutorCorpus);
+    if (unverified.length > 0) {
+      // Model menulis bentuk Dawan yang tidak ada di korpus. Jawaban tidak
+      // boleh diteruskan karena berarti menambah materi yang belum tervalidasi.
+      console.warn(
+        `[uabmeto-local] tutor answer rejected; unverified Dawan: ${unverified.join(', ')}`
+      );
+      refused = true;
+      answer = REFUSAL_TEXT;
+    } else {
+      sources = collectTutorSources(results);
+    }
+  }
+
+  // Pertanyaan yang dijawab (termasuk penolakan) tetap dihitung kuota,
+  // sedangkan kegagalan provider di atas tidak mengurangi kuota pengguna.
+  const updatedUsed = await incrementTutorUsed(env, user, day);
+
+  return json({
+    answer,
+    sources,
+    quota: { used: updatedUsed, limit: QUOTA_LIMITS.tutor },
+    refused,
+    model
+  });
+}
+
+async function readTutorUsed(env, user, day) {
+  const row = await env.DB.prepare(
+    'SELECT tutor_used FROM quota WHERE user_id = ? AND day_wita = ?'
+  )
+    .bind(user, day)
+    .first();
+
+  return row?.tutor_used ?? 0;
+}
+
+async function incrementTutorUsed(env, user, day) {
+  await env.DB.prepare(
+    `INSERT INTO quota (user_id, day_wita, tutor_used)
+     VALUES (?, ?, 1)
+     ON CONFLICT(user_id, day_wita) DO UPDATE SET
+       tutor_used = tutor_used + 1`
+  )
+    .bind(user, day)
+    .run();
+
+  return readTutorUsed(env, user, day);
+}
+
+function collectTutorSources(results) {
+  const seen = new Set();
+  const sources = [];
+
+  for (const result of results) {
+    const chunk = result.chunk;
+    if (seen.has(chunk.lessonId)) {
+      continue;
+    }
+
+    seen.add(chunk.lessonId);
+    sources.push({
+      lessonId: chunk.lessonId,
+      title: chunk.lessonTitle,
+      sourceRef: chunk.sourceRef
+    });
+
+    if (sources.length === 3) {
+      break;
+    }
+  }
+
+  return sources;
 }
 
 async function handleLeaderboard(request, env, url, now) {
