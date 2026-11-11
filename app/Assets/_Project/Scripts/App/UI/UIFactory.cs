@@ -13,6 +13,7 @@ namespace UabMeto.App.UI
     public static class UIFactory
     {
         private static readonly Dictionary<int, Sprite> RoundedSprites = new Dictionary<int, Sprite>();
+        private static readonly Dictionary<int, Sprite> OutlineSprites = new Dictionary<int, Sprite>();
 
         public static Canvas CreateCanvas(string name, ThemeTokens theme)
         {
@@ -142,6 +143,14 @@ namespace UabMeto.App.UI
             colors.disabledColor = new Color(1f, 1f, 1f, 0.45f);
             button.colors = colors;
 
+            if (!primary && !ghost)
+            {
+                // design-tokens §6: tombol sekunder memakai garis tepi.
+                AddRoundedBorder(panel.rectTransform, theme, (int)theme.CornerRadius, 2);
+            }
+
+            panel.gameObject.AddComponent<PressScale>();
+
             var layout = panel.gameObject.AddComponent<LayoutElement>();
             layout.minHeight = theme.TouchTarget;
             layout.preferredHeight = 52f;
@@ -190,6 +199,7 @@ namespace UabMeto.App.UI
             var button = panel.gameObject.AddComponent<Button>();
             button.targetGraphic = panel;
             button.transition = Selectable.Transition.ColorTint;
+            panel.gameObject.AddComponent<PressScale>();
 
             var icon = CreateIcon(
                 "Icon",
@@ -299,11 +309,9 @@ namespace UabMeto.App.UI
             RectOffset padding = null,
             int cornerRadius = -1)
         {
-            var card = CreatePanel(
-                name,
-                parent,
-                color,
-                cornerRadius >= 0 ? cornerRadius : (int)theme.Space12);
+            var radius = cornerRadius >= 0 ? cornerRadius : (int)theme.Space12;
+            var card = CreatePanel(name, parent, color, radius);
+            AddRoundedBorder(card.rectTransform, theme, radius);
 
             var cardLayout = card.gameObject.AddComponent<VerticalLayoutGroup>();
             cardLayout.spacing = 0f;
@@ -518,6 +526,170 @@ namespace UabMeto.App.UI
             sprite.name = texture.name;
             sprite.hideFlags = HideFlags.HideAndDontSave;
             RoundedSprites[radius] = sprite;
+            return sprite;
+        }
+
+        /// <summary>
+        /// Garis tepi 1 dp di atas kartu. Dibuat sebagai anak dengan
+        /// <c>ignoreLayout</c> agar hierarki <c>Body</c> dan ukuran kartu tidak
+        /// berubah, sehingga tes layout yang membaca <c>Body</c> tetap sah.
+        /// </summary>
+        public static void AddRoundedBorder(
+            RectTransform target,
+            ThemeTokens theme,
+            int radius,
+            int thickness = 1)
+        {
+            if (target == null || target.Find("Border") != null)
+            {
+                return;
+            }
+
+            var border = CreatePanel("Border", target, theme.Border, 0);
+            border.sprite = RoundedOutlineSprite(radius, thickness);
+            border.type = Image.Type.Sliced;
+            border.raycastTarget = false;
+            Stretch(border.rectTransform);
+
+            var layout = border.gameObject.AddComponent<LayoutElement>();
+            layout.ignoreLayout = true;
+
+            border.transform.SetAsFirstSibling();
+        }
+
+        /// <summary>
+        /// Bilah progres datar: lintasan <c>surface-high</c> dan isi <c>accent</c>.
+        /// Nilai 0-1 dipetakan ke lebar lewat anchor, tanpa shader atau mask.
+        /// </summary>
+        public static RectTransform CreateProgressBar(
+            string name,
+            Transform parent,
+            ThemeTokens theme,
+            float value,
+            float height = 6f)
+        {
+            value = Mathf.Clamp01(value);
+            var radius = Mathf.Max(1, Mathf.RoundToInt(height / 2f));
+            var track = CreatePanel(name, parent, theme.SurfaceHigh, radius);
+            var layout = track.gameObject.AddComponent<LayoutElement>();
+            layout.minHeight = height;
+            layout.preferredHeight = height;
+            layout.flexibleWidth = 1f;
+
+            if (value > 0f)
+            {
+                var fill = CreatePanel("Fill", track.transform, theme.Accent, radius);
+                fill.raycastTarget = false;
+                var rect = fill.rectTransform;
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = new Vector2(value, 1f);
+                rect.offsetMin = Vector2.zero;
+                rect.offsetMax = Vector2.zero;
+            }
+
+            return track.rectTransform;
+        }
+
+        /// <summary>
+        /// Pemisah motif belah ketupat 4 dp pada garis 1 dp
+        /// (design-tokens §1 butir 4). Dekoratif, tanpa teks.
+        /// </summary>
+        public static RectTransform CreateMotifDivider(
+            string name,
+            Transform parent,
+            ThemeTokens theme)
+        {
+            var row = CreateHorizontalGroup(name, parent, theme.Space8);
+            row.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
+            AddLayoutElement(row.gameObject, minHeight: 10f, preferredHeight: 10f);
+
+            CreateHairline(row, theme);
+            CreateDiamond(row, theme);
+            CreateDiamond(row, theme);
+            CreateDiamond(row, theme);
+            CreateHairline(row, theme);
+
+            return row;
+        }
+
+        private static void CreateHairline(Transform parent, ThemeTokens theme)
+        {
+            var line = CreatePanel("Line", parent, theme.Border, 0);
+            line.raycastTarget = false;
+            var layout = line.gameObject.AddComponent<LayoutElement>();
+            layout.flexibleWidth = 1f;
+            layout.minWidth = 8f;
+            layout.minHeight = 1f;
+            layout.preferredHeight = 1f;
+        }
+
+        private static void CreateDiamond(Transform parent, ThemeTokens theme)
+        {
+            var diamond = CreatePanel("Diamond", parent, theme.Border, 0);
+            diamond.raycastTarget = false;
+            diamond.rectTransform.localEulerAngles = new Vector3(0f, 0f, 45f);
+            var layout = diamond.gameObject.AddComponent<LayoutElement>();
+            layout.minWidth = 4f;
+            layout.preferredWidth = 4f;
+            layout.minHeight = 4f;
+            layout.preferredHeight = 4f;
+        }
+
+        public static Sprite RoundedOutlineSprite(int radius, int thickness = 1)
+        {
+            radius = Mathf.Max(1, radius);
+            thickness = Mathf.Clamp(thickness, 1, radius);
+            var key = (radius * 16) + thickness;
+            if (OutlineSprites.TryGetValue(key, out var cached))
+            {
+                return cached;
+            }
+
+            var size = radius * 2 + 4;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                name = $"RoundedOutline_{radius}_{thickness}",
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear,
+                hideFlags = HideFlags.HideAndDontSave
+            };
+
+            var pixels = new Color32[size * size];
+            var half = size / 2f;
+            var inner = half - radius;
+
+            for (var y = 0; y < size; y++)
+            {
+                for (var x = 0; x < size; x++)
+                {
+                    var dx = Mathf.Max(0f, Mathf.Abs(x - half + 0.5f) - inner);
+                    var dy = Mathf.Max(0f, Mathf.Abs(y - half + 0.5f) - inner);
+                    // Jarak bertanda terhadap tepi luar: 0 tepat di tepi.
+                    var signed = Mathf.Sqrt(dx * dx + dy * dy) - radius;
+                    var outer = Mathf.Clamp01(-signed + 0.5f);
+                    var innerAlpha = Mathf.Clamp01(-signed - thickness + 0.5f);
+                    pixels[y * size + x] = new Color32(
+                        255,
+                        255,
+                        255,
+                        (byte)(Mathf.Clamp01(outer - innerAlpha) * 255f));
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false, true);
+
+            var sprite = Sprite.Create(
+                texture,
+                new Rect(0f, 0f, size, size),
+                new Vector2(0.5f, 0.5f),
+                100f,
+                0,
+                SpriteMeshType.FullRect,
+                new Vector4(radius, radius, radius, radius));
+            sprite.name = texture.name;
+            sprite.hideFlags = HideFlags.HideAndDontSave;
+            OutlineSprites[key] = sprite;
             return sprite;
         }
 

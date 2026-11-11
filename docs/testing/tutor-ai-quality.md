@@ -80,7 +80,11 @@ Tutor AI eval: 25/25 lulus, 0 gagal (provider=mock).
 |---|---|---|
 | Backend `npm test` | **25/25 lulus** | 11 tes sinkron/kuota/leaderboard + 14 tes Tutor AI |
 | Unity EditMode | **93/93 lulus** | 87 lama + 6 tes kontrak `AskTutor` |
-| Unity PlayMode | **39/39 lulus** | 31 lama + 8 tes `TutorView` |
+| Unity PlayMode | **39/39 lulus** (historis 0.3.0) | 31 lama + 8 tes `TutorView` |
+
+Catatan: angka baris PlayMode diambil saat rilis 0.3.0. Pada rilis 0.4.0
+(penyegaran visual) PlayMode menjadi **41/41** karena tambahan 2 tes gerak di
+`TweenTests`; EditMode tetap **93/93** dan cakupan Tutor AI tidak berubah.
 
 Tes Tutor AI mencakup: tanpa identitas → 401; pertanyaan kosong/terlalu
 panjang → 400; jawaban + sumber; refusal di luar korpus; permintaan mengarang

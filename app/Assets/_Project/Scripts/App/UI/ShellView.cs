@@ -37,6 +37,7 @@ namespace UabMeto.App.UI
 
         private Canvas _canvas;
         private RectTransform _safeRoot;
+        private CanvasGroup _contentGroup;
         private RectTransform _contentHost;
         private TextMeshProUGUI _title;
         private TextMeshProUGUI _subtitle;
@@ -244,20 +245,37 @@ namespace UabMeto.App.UI
             var layout = _contentHost.gameObject.AddComponent<LayoutElement>();
             layout.flexibleHeight = 1f;
             layout.minHeight = 0f;
+
+            // Dipakai untuk transisi masuk antar-tab. Alpha saja; layout tidak
+            // terpengaruh sehingga rect tetap bisa diukur tes.
+            _contentGroup = _contentHost.gameObject.AddComponent<CanvasGroup>();
+            _contentGroup.interactable = true;
+            _contentGroup.blocksRaycasts = true;
         }
 
         private void BuildBottomNavigation()
         {
             var nav = UIFactory.CreatePanel("BottomNav", _safeRoot, _theme.Surface);
             var layout = nav.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 64f;
-            layout.preferredHeight = 64f;
+            layout.minHeight = 68f;
+            layout.preferredHeight = 68f;
+
+            // Garis rambut di tepi atas memisahkan bar dari konten tanpa bayangan.
+            var hairline = UIFactory.CreatePanel("Hairline", nav.transform, _theme.Border, 0);
+            hairline.raycastTarget = false;
+            var hairlineRect = hairline.rectTransform;
+            hairlineRect.anchorMin = new Vector2(0f, 1f);
+            hairlineRect.anchorMax = new Vector2(1f, 1f);
+            hairlineRect.pivot = new Vector2(0.5f, 1f);
+            hairlineRect.anchoredPosition = Vector2.zero;
+            hairlineRect.sizeDelta = new Vector2(0f, 1f);
+            hairline.gameObject.AddComponent<LayoutElement>().ignoreLayout = true;
 
             var row = UIFactory.CreateHorizontalGroup(
                 "Tabs",
                 nav.transform,
                 0f,
-                new RectOffset(8, 8, 4, 4));
+                new RectOffset(8, 8, 6, 6));
             UIFactory.Stretch(row);
 
             AddTab(row, Tab.Home, "home", "Beranda");
@@ -271,8 +289,8 @@ namespace UabMeto.App.UI
             var panel = UIFactory.CreatePanel(
                 "Tab_" + tab,
                 parent,
-                new Color(_theme.Surface.r, _theme.Surface.g, _theme.Surface.b, 0f),
-                (int)_theme.Space12,
+                Transparent(_theme.Surface),
+                (int)_theme.Space24,
                 true);
             var layout = panel.gameObject.AddComponent<LayoutElement>();
             layout.flexibleWidth = 1f;
@@ -289,6 +307,7 @@ namespace UabMeto.App.UI
             colors.pressedColor = new Color(0.82f, 0.82f, 0.82f, 1f);
             button.colors = colors;
             button.onClick.AddListener(() => ShowTab(tab));
+            panel.gameObject.AddComponent<PressScale>();
 
             var group = UIFactory.CreateVerticalGroup(
                 "TabContent",
@@ -312,9 +331,10 @@ namespace UabMeto.App.UI
                 group,
                 label,
                 _theme.BodyFont,
-                11f,
+                _theme.LabelSize,
                 _theme.TextMuted,
                 TextAlignmentOptions.Center);
+            text.characterSpacing = 4f;
             UIFactory.AddLayoutElement(text.gameObject, minHeight: 16f, preferredHeight: 16f);
 
             UIFactory.AddAccessibilityLabel(button.gameObject, label);
@@ -360,7 +380,23 @@ namespace UabMeto.App.UI
             UpdateTabStyles();
             RebuildLayout();
             ResetScrollToTop();
+            PlayContentEntrance();
         }
+
+        /// <summary>Konten tab memudar masuk sambil naik 8 dp (200 ms).</summary>
+        private void PlayContentEntrance()
+        {
+            if (_contentGroup == null || _contentHost == null || _contentHost.childCount == 0)
+            {
+                return;
+            }
+
+            var target = _contentHost.GetChild(0) as RectTransform;
+            UITween.SlideFade(_contentGroup, target, 8f, UITween.Normal);
+        }
+
+        private static Color Transparent(Color color) =>
+            new Color(color.r, color.g, color.b, 0f);
 
         public void ShowLesson(LessonContent lesson, bool fixture, Action onExit = null)
         {
@@ -608,14 +644,15 @@ namespace UabMeto.App.UI
 
         private void UpdateTabStyles()
         {
+            var activeBackground = new Color(_theme.Accent.r, _theme.Accent.g, _theme.Accent.b, 0.12f);
+            var inactiveBackground = Transparent(_theme.Surface);
             foreach (var tabButton in _tabButtons)
             {
                 var selected = tabButton.Tab == _tab;
                 tabButton.Icon.color = selected ? _theme.Accent : _theme.TextMuted;
                 tabButton.Label.color = selected ? _theme.Accent : _theme.TextMuted;
-                tabButton.Background.color = selected
-                    ? new Color(_theme.SurfaceHigh.r, _theme.SurfaceHigh.g, _theme.SurfaceHigh.b, 1f)
-                    : new Color(_theme.Surface.r, _theme.Surface.g, _theme.Surface.b, 0f);
+                tabButton.Label.font = selected ? _theme.BodyBoldFont : _theme.BodyFont;
+                tabButton.Background.color = selected ? activeBackground : inactiveBackground;
             }
         }
 

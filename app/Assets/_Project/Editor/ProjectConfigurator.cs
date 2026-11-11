@@ -13,7 +13,7 @@ namespace UabMeto.Editor
         public const string CompanyName = "Uab Meto Project";
         public const string ProductName = "Uab Meto";
         public const string ApplicationIdentifier = "id.uabmeto.app";
-        public const string BundleVersion = "0.3.0";
+        public const string BundleVersion = "0.4.0";
 
         private const int MinimumApiLevel = 26;  // Android 8.0
         private const int TargetApiLevel = 36;   // Google Play requirement (2026)
@@ -40,7 +40,7 @@ namespace UabMeto.Editor
                 NamedBuildTarget.Android,
                 Il2CppCompilerConfiguration.Release);
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
-            PlayerSettings.Android.bundleVersionCode = 4;
+            PlayerSettings.Android.bundleVersionCode = 5;
             PlayerSettings.Android.minSdkVersion = (AndroidSdkVersions)MinimumApiLevel;
             PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions)TargetApiLevel;
 

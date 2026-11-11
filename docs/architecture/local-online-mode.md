@@ -395,10 +395,10 @@ Perilaku UI:
   palsu.
 
 Tes EditMode: **93/93 lulus** (19 tes untuk `ApiClient` dan `SyncService`,
-6 tes kontrak `AskTutor`, dan 5 tes kebijakan banner), PlayMode **39/39 lulus**
-(8 tes `TutorView`, 8 tes kartu online/banner/Peringkat), 2026-11-09.
+6 tes kontrak `AskTutor`, dan 5 tes kebijakan banner), PlayMode **41/41 lulus**
+(8 tes `TutorView`, 8 tes kartu online/banner/Peringkat, 2 tes gerak), 2026-11-12.
 
-APK rilis 0.3.0 memuat UI online dan Tutor AI teks ini serta sudah diuji di
+APK rilis 0.4.0 memuat UI online dan Tutor AI teks ini serta sudah diuji di
 perangkat. Gate F1 tetap **TIDAK LULUS** karena blocker reviewer independen,
 audio/consent, D1-04/D1-05/D1-06, dan aksesibilitas penuh. Gate AI produksi
 juga belum lulus karena model nyata belum diuji.

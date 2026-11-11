@@ -10,6 +10,11 @@ Platform: Android, Unity 6 (`6000.6.0f1`).
 > APK sudah dipasang dan diuji dasar pada satu perangkat Android fisik
 > portrait; landscape perangkat, TalkBack, dan skala font belum diuji. Lihat
 > `docs/testing/f1-gate-result.md` dan `docs/testing/f1-device-evidence.md`.
+>
+> Rilis **0.4.0** (code 5) berisi penyegaran visual Tahap 1–2: garis tepi kartu,
+> bilah progres, motif belah ketupat, tab pil aktif, hero "Lanjutkan belajar",
+> baris statistik ringkas, dan progres per topik. Gerak 150–200 ms hanya
+> transform + opasitas. Gate F1 **tetap belum lulus**.
 
 ## Desain
 

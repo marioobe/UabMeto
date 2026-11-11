@@ -19,14 +19,14 @@ perangkat Xiaomi `24117RN76O` dan APK 0.1.0/0.2.0 tetap dicatat di bagian
 | Layar | 720×1520, 320 dpi |
 | ADB | `device` (terotorisasi) |
 | Paket | `id.uabmeto.app` |
-| Versi | `0.3.0` (`versionCode 4`) |
+| Versi | `0.4.0` (`versionCode 5`) |
 | minSdk / targetSdk | 26 / 36 |
 | ABI | `arm64-v8a` |
 | APK | `Builds/Android/uabmeto-f1.apk` |
-| Ukuran | 28.932.254 byte |
-| SHA-256 | `BA99B129FF5CEDD5830DC443F162B2F6639540054C76DF9A57281B95C00FE713` |
+| Ukuran | 28.942.014 byte |
+| SHA-256 | `B02341187AEAB6621D8AC70E113742A26FBF114C0E6024F676D9233FBD1492F0` |
 | firstInstallTime | 2026-11-06 00:15:17 |
-| lastUpdateTime | 2026-11-09/10 (instalasi APK final 0.3.0) |
+| lastUpdateTime | 2026-11-12 (instalasi APK rilis 0.4.0) |
 | Tanda tangan | `5a7f688` (sama dengan 0.1.0/0.2.0/0.2.1) |
 
 `adb install -r` berhasil. `dumpsys package` mengonfirmasi versi, minSdk,
@@ -38,7 +38,7 @@ dicatat di bagian 2–3.
 
 | ID | Status | Bukti |
 |---|---|---|
-| D1-01 APK terpasang | **PASS** | `adb install -r` → `Success`; `dumpsys package` (0.3.0, `versionCode 4`) |
+| D1-01 APK terpasang | **PASS** | `adb install -r` → `Success`; `dumpsys package` (0.4.0, `versionCode 5`) |
 | D1-02 Dibuka tanpa crash | **PASS** | `UnityPlayerGameActivity` foreground; logcat tanpa fatal/exception aplikasi |
 | D1-03 Alur pelajaran | **PASS (0.2.1)** | Tiga pelajaran rilis Topik 1 dibuka berurutan lewat daftar; replay tanpa XP ganda |
 | D1-04 Mode offline | **NOT RUN** | Banner gagal-server/offline sudah diuji dengan melepas `adb reverse`, tetapi mode pesawat/mock reachability belum |
@@ -269,6 +269,45 @@ Catatan jujur:
 - Melepas `adb reverse` bukan uji mode pesawat; D1-04 tetap **NOT RUN**.
 - Kuota D1 lokal direset sebelum rangkaian bukti agar dimulai dari 10/10;
   reset hanya untuk pengujian lokal.
+
+### 3.6 Verifikasi visual rilis 0.4.0 (OPPO)
+
+Tanggal: 2026-11-12. Perangkat: OPPO `CPH1803` (`26b4c7b0`), Android 8.1
+(API 27), 720×1520, 320 dpi.
+
+| Item | Nilai |
+|---|---|
+| APK | `Builds/Android/uabmeto-f1.apk` |
+| Versi | `0.4.0` (`versionCode 5`) |
+| Ukuran | 28.942.014 byte |
+| SHA-256 | `B02341187AEAB6621D8AC70E113742A26FBF114C0E6024F676D9233FBD1492F0` |
+| Pemasangan | `adb install -r` → `Success`; data lama tetap (progres 3/36, Topik 1 3/3) |
+| Tes | EditMode 93/93, PlayMode 41/41, backend 25/25, eval Tutor 25/25, kontras 12/12 |
+
+Yang diperiksa pada layar:
+
+1. Beranda menampilkan satu kartu hero: sapaan "Selamat datang, rio", motif
+   tiga belah ketupat, badge pelajaran tervalidasi, judul, metadata, label
+   "3 dari 36 pelajaran", bilah progres terisi, dan tombol Mulai.
+2. Tiga kotak statistik sudah diganti satu baris ramping dengan dua pemisah
+   garis: Streak 0, XP tertunda 0, Selesai 3.
+3. Setelah digulir, 12 baris topik menampilkan bilah progres 4 dp dan angka
+   "3/3" pada Topik 1; baris lain "0/3".
+4. Tab bar 68 dp: tab aktif berpil `accent` 12%, ikon dan label `accent`,
+   label tebal; tab pasif `text-muted`.
+5. Tab Tutor AI dan Profil tetap berfungsi dan ikut memakai tab pil baru.
+
+Bukti: `docs/testing/evidence/f1-device/f1-release-0.4.0-*.png` (4 berkas:
+Beranda, daftar topik setelah gulir, Tutor AI, Profil).
+
+Catatan jujur:
+
+- Ini pemeriksaan visual pada satu perangkat portrait, bukan uji TalkBack,
+  skala font, landscape, atau mode pesawat. D1-04..D1-06 tidak berubah.
+- `ScreenshotTests` di batchmode hanya menghasilkan gambar kosong karena
+  `-nographics`; karena itu tangkapan perangkat menjadi bukti visual utama.
+- Gerak tekan/transisi tidak dapat dibuktikan lewat tangkapan statis; yang
+  diuji otomatis adalah easing dan keadaan akhirnya saat gerak dimatikan.
 
 ## 4. Temuan dan perbaikan
 

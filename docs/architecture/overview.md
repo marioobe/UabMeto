@@ -126,7 +126,8 @@ dan ADR-0007.
 
 ## 8. AI dan suara
 
-- Tutor AI teks (0.3.0) memakai retrieval BM25 di atas korpus tervalidasi;
+- Tutor AI teks (0.3.0, UI diperbarui di 0.4.0) memakai retrieval BM25 di atas
+  korpus tervalidasi;
   jawaban hanya dari konteks, dengan penolakan eksplisit bila referensi tidak
   ada. Vector search ditunda sampai korpus cukup besar.
 - Provider lokal bawaan `mock`; provider Workers AI sudah disiapkan tetapi

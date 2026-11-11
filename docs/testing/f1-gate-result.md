@@ -54,6 +54,18 @@ menutup keyboard. Rincian dan batasan:
 `docs/testing/tutor-ai-quality.md`. Gate F1 tetap **TIDAK LULUS**; gate AI
 produksi juga belum lulus.
 
+Pembaruan 2026-11-12 (versi 0.4.0): **penyegaran visual Tahap 1–2** tanpa
+perubahan alur atau konten. Kartu mendapat garis tepi 1 dp, Beranda memakai
+hero "Lanjutkan belajar" dengan motif belah ketupat dan bilah progres
+"N dari 36 pelajaran", tiga kotak statistik diganti satu baris ramping, dan
+12 baris topik menampilkan bilah progres 4 dp + "x/3". Tab aktif menjadi pil
+`accent` 12% dengan label tebal; semua tombol mengecil 0.97 saat ditekan dan
+konten tab memudar-masuk 8 dp (150–200 ms, hanya transform + opasitas).
+Tes EditMode **93/93**, PlayMode **41/41** (39 lama + 2 tes gerak), backend
+**25/25**, eval Tutor **25/25**, kontras **12/12**. Build 0.4.0 terpasang dan
+diperiksa di OPPO `CPH1803`. Gate F1 tetap **TIDAK LULUS**; blocker tidak
+berubah.
+
 ## 1. Ringkasan keputusan
 
 | Area | Hasil |
@@ -61,7 +73,7 @@ produksi juga belum lulus.
 | Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
 | Build pratinjau | **PASS** — `Builds/Android/uabmeto-f1-preview.apk` (demo, memuat `in_review`) |
 | Tes EditMode | **PASS** — 93 lulus, 0 gagal, 0 dilewati |
-| Tes PlayMode | **PASS** — 39 lulus, 0 gagal, 0 dilewati |
+| Tes PlayMode | **PASS** — 41 lulus, 0 gagal, 0 dilewati |
 | Tes backend | **PASS** — 25 lulus (termasuk 14 tes Tutor AI) |
 | Eval Tutor AI | **PASS (mock)** — 25/25 kasus emas; model nyata belum diuji |
 | Validator konten | **PASS** — 0 error, 4 warning audio di `content/samples/` |
@@ -69,7 +81,7 @@ produksi juga belum lulus.
 | Target sentuh F1 | **PASS (UI F1)** — 4/4 tes aksesibilitas/layout |
 | Materi Topik 1 | **VALIDATED (override pemilik)** — 3 pelajaran, 50 item elisitasi `SPK-001` |
 | Konten tervalidasi | **ADA** — 3 pelajaran Topik 1, tanpa reviewer independen |
-| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-03 (tiga pelajaran, 0.2.1), Tutor AI teks (0.3.0), D1-07 lulus; D1-04..D1-06 belum |
+| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-03 (tiga pelajaran, 0.2.1), Tutor AI teks (0.3.0), tampilan 0.4.0, D1-07 lulus; D1-04..D1-06 belum |
 | Gate F1 | **TIDAK LULUS** |
 
 ## 2. Build
@@ -216,12 +228,29 @@ kompilasi. F1-25 tetap **PARTIAL** karena build belum bersih dari nol.
   28.926.554 byte) yang belum memuat perbaikan keyboard; UI Tutor tidak
   berubah, hanya `KeyboardInset.cs` dan pemanggilan `DeactivateInputField()`
 
+### 2.7 Build rilis 0.4.0 (2026-11-12)
+
+- Path: `Builds/Android/uabmeto-f1.apk`
+- Ukuran: **28.942.014 byte**
+- SHA-256: `B02341187AEAB6621D8AC70E113742A26FBF114C0E6024F676D9233FBD1492F0`
+- Hasil: `Succeeded`, 0 error, 4 warning (semuanya shader TMP
+  `enable_d3d11_debug_symbols`)
+- Durasi build: 420,5 detik
+- Versi: `0.4.0` (`versionCode 5`), terverifikasi lewat `aapt2 dump badging`
+- Ringkasan mesin: `Builds/Android/build-summary.json`
+- Isi: seluruh isi 0.3.0 ditambah penyegaran visual Tahap 1–2 (garis tepi
+  kartu, bilah progres, motif, tab pil, hero Beranda, baris statistik,
+  progres per topik, gerak tekan/transisi)
+- Folder `Resources/Content/preview` hanya berisi `.gitkeep`; tidak ada materi
+  pratinjau yang ikut ke APK rilis
+- Tidak ada perubahan perilaku data: XP, kuota, dan outbox tetap seperti 0.3.0
+
 ## 3. Tes yang dijalankan
 
 ### 3.1 EditMode
 
-Hasil: **93/93 lulus, 0 gagal, 0 dilewati** (2026-11-09,
-`Builds/logs/editmode-results.xml`).
+Hasil: **93/93 lulus, 0 gagal, 0 dilewati** (2026-11-12,
+`Builds/logs/editmode-results.xml`). Jumlah tidak berubah dari 0.3.0.
 
 - 19 tes `ApiClient`/`SyncService`: parsing respons, XP resmi server,
   penolakan konten belum valid, konflik, transport gagal, dan batas percobaan.
@@ -244,8 +273,14 @@ Hasil: **93/93 lulus, 0 gagal, 0 dilewati** (2026-11-09,
 
 ### 3.2 PlayMode
 
-Hasil: **39/39 lulus, 0 gagal, 0 dilewati** (2026-11-09,
-`Builds/logs/playmode-results.xml`).
+Hasil: **41/41 lulus, 0 gagal, 0 dilewati** (2026-11-12,
+`Builds/logs/playmode-results.xml`). Dua tes baru di `TweenTests` mengunci
+easing dan keadaan akhir gerak saat batchmode.
+
+- `TweenTests.EaseOutCubic_IsClampedAndMonotonic` — easing 0→1 dan tidak
+  menurun
+- `TweenTests.SlideFade_WhenMotionDisabled_SnapsToFinalState` — batchmode
+  langsung ke alpha 1 dan posisi akhir, sehingga tes layout tetap deterministik
 
 - 8 tes `TutorViewTests`: kuota awal, chip pertanyaan, jawaban + sumber,
   refusal, kuota habis (tombol kirim nonaktif), `quota_exceeded` dari server,
@@ -554,6 +589,32 @@ Catatan:
   kuota habis).
 - Rincian kualitas dan batasan: `docs/testing/tutor-ai-quality.md`.
 
+### 5.5 Verifikasi visual rilis 0.4.0 (OPPO)
+
+Tanggal: 2026-11-12 (WITA). APK 0.4.0 (`versionName=0.4.0`, `versionCode=5`,
+SHA-256 `B0234118...92F0`) dipasang dengan `adb install -r` di perangkat yang
+sama (`CPH1803`, Android 8.1/API 27, 720×1520). Data lama dipertahankan:
+progres 3/36, Topik 1 "3/3", XP tertunda 0.
+
+| Uji | Hasil |
+|---|---|
+| Beranda | Hero dengan sapaan "rio", motif belah ketupat, "3 dari 36 pelajaran", bilah progres terisi, tombol Mulai |
+| Statistik | Satu baris ramping dengan dua pemisah garis: Streak 0, XP 0, Selesai 3 |
+| 12 topik | Baris topik menampilkan bilah 4 dp dan "3/3" pada Topik 1 |
+| Tab bar | Tinggi 68 dp; tab aktif berpil `accent` 12% dengan ikon/label `accent` dan label tebal; tab pasif `text-muted` |
+| Tab Tutor AI | Tata letak dan isi tidak berubah dari 0.3.0, ikut memakai tab pil baru |
+| Tab Profil | Kartu identitas dan statistik tetap utuh, garis tepi baru terlihat |
+
+Catatan:
+
+- Ini pemeriksaan visual, bukan bukti TalkBack, skala font, landscape, atau
+  mode pesawat.
+- Tangkapan layar diambil lewat `adb shell screencap`; ini satu-satunya bukti
+  visual yang sah karena `ScreenshotTests` di batchmode hanya menghasilkan
+  gambar kosong (`-nographics`).
+- Bukti: `docs/testing/evidence/f1-device/f1-release-0.4.0-*.png` (4 berkas:
+  Beranda, daftar topik setelah gulir, Tutor AI, Profil).
+
 ## 6. Status kriteria F1
 
 | Kriteria | Status | Catatan |
@@ -582,8 +643,8 @@ Catatan:
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
-| F1-25 tanpa warning | PARTIAL | Build 0.3.0 mencatat 3 warning shader TMP; bukan build bersih dari nol |
-| F1-26 ukuran APK | PASS | 28.932.254 byte |
+| F1-25 tanpa warning | PARTIAL | Build 0.4.0 mencatat 4 warning shader TMP; bukan build bersih dari nol |
+| F1-26 ukuran APK | PASS | 28.942.014 byte (0.4.0) |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
 ## 7. Keputusan yang dikunci

@@ -195,6 +195,18 @@ State tile jawaban:
 - Hormati "kurangi gerak": ganti transisi dengan perubahan langsung.
 - Tanpa animasi loop kecuali indikator memuat.
 
+Implementasi: `App/UI/UITween.cs`.
+
+| Gerak | Nilai | Dipakai di |
+|---|---|---|
+| Konten tab masuk | 200 ms, +8 dp, ease-out cubic | `ShellView.PlayContentEntrance` |
+| Tekan tombol | skala 0.97, 150 ms | `PressScale` pada semua tombol |
+
+Catatan jujur: mesin ini belum membaca preferensi "kurangi gerak" sistem.
+Gerak sudah otomatis dimatikan pada batchmode (`Application.isBatchMode`)
+agar tangkapan layar dan pengukuran rect tes deterministik, dan seluruh
+animasi hanya transform + opasitas tanpa shader, bayangan, atau gradien.
+
 ## 9. Tema gelap saja
 
 Versi pertama hanya tema gelap. Alasan: satu tema lebih murah diuji pada
@@ -212,6 +224,16 @@ sebagai klaim pemasaran.
 | Spasi | konstanta `float` di `ThemeTokens` |
 | Komponen | prefab di `Assets/_Project/Prefabs/UI` |
 | Tema | satu aset, di-inject lewat `AppRoot` |
+
+Komponen yang sudah diterapkan (rilis 0.4.0, Tahap 1–2 penyegaran visual):
+
+| Komponen | Implementasi | Catatan |
+|---|---|---|
+| Garis tepi kartu | `UIFactory.AddRoundedBorder` | sprite 9-slice, 1 dp, anak `Border` dengan `ignoreLayout` |
+| Bilah progres | `UIFactory.CreateProgressBar` | lintasan `surface-high`, isi `accent`, 4–6 dp |
+| Motif belah ketupat | `UIFactory.CreateMotifDivider` | 3 ketupat 4 dp pada garis 1 dp |
+| Tab pil aktif | `ShellView.UpdateTabStyles` | latar `accent` 12%, ikon + label `accent`, label tebal |
+| Gerak | `UITween` + `PressScale` | 150–200 ms, transform + opasitas |
 
 Aturan penegakan:
 

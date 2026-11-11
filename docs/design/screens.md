@@ -245,8 +245,9 @@ implementasi:
 | Peringkat | satu kolom | papan kiri, posisi pengguna kanan |
 | Profil | satu kolom | daftar bagian kiri, detail kanan |
 
-Aturan: tidak ada teks di bawah 14 sp; tidak ada kontrol yang terpotong;
-safe area tetap dihormati; bottom bar tetap 4 tab.
+Aturan: teks isi tidak di bawah 14 sp; metadata boleh 12 sp menurut gaya
+`label-caps`/`label-chip` di `design-tokens.md` §3; tidak ada kontrol yang
+terpotong; safe area tetap dihormati; bottom bar tetap 4 tab.
 
 ## 13. Overlay debug
 
