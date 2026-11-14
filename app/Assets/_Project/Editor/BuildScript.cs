@@ -18,6 +18,7 @@ namespace UabMeto.Editor
         private const string OutputFolderName = "Builds/Android";
         private const string OutputFileName = "uabmeto-f1.apk";
         private const string PreviewOutputFileName = "uabmeto-f1-preview.apk";
+        private const string SchoolUniversalOutputFileName = "uabmeto-sekolah-universal.apk";
 
         private static string RepositoryRoot =>
             Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
@@ -27,7 +28,20 @@ namespace UabMeto.Editor
 
         public static void BuildAndroid()
         {
-            BuildAndroidInternal(includePreview: false, OutputFileName);
+            BuildAndroidInternal(includePreview: false, OutputFileName, universal: false);
+        }
+
+        /// <summary>
+        /// Build cadangan untuk uji sekolah: ARMv7 + ARM64. Versi dan konten
+        /// sama dengan build rilis; hanya ABI yang diperluas agar dapat
+        /// dipasang di perangkat 32-bit. Bukan build rilis.
+        /// </summary>
+        public static void BuildAndroidSchoolUniversal()
+        {
+            BuildAndroidInternal(
+                includePreview: false,
+                SchoolUniversalOutputFileName,
+                universal: true);
         }
 
         /// <summary>
@@ -36,15 +50,25 @@ namespace UabMeto.Editor
         /// </summary>
         public static void BuildAndroidPreview()
         {
-            BuildAndroidInternal(includePreview: true, PreviewOutputFileName);
+            BuildAndroidInternal(includePreview: true, PreviewOutputFileName, universal: false);
         }
 
-        private static void BuildAndroidInternal(bool includePreview, string fileName)
+        private static void BuildAndroidInternal(
+            bool includePreview,
+            string fileName,
+            bool universal)
         {
             try
             {
                 F1Setup.SyncContent(includePreview);
                 ProjectConfigurator.Apply();
+
+                if (universal)
+                {
+                    PlayerSettings.Android.targetArchitectures =
+                        AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64;
+                    Debug.Log("[UabMeto] Build uji sekolah: ARMv7 + ARM64");
+                }
 
                 var scenePath = BootstrapSceneBuilder.EnsureScene();
                 EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(scenePath, true) };
