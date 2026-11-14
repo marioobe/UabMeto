@@ -279,8 +279,8 @@ namespace UabMeto.App.UI
             var theme = _shell.Theme;
             var panel = UIFactory.CreatePanel("Chip", parent, theme.SurfaceHigh, 14);
             var layout = panel.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 28f;
-            layout.preferredHeight = 28f;
+            layout.minHeight = UIFactory.Px(28f);
+            layout.preferredHeight = UIFactory.Px(28f);
 
             var row = UIFactory.CreateHorizontalGroup(
                 "Row",
@@ -631,7 +631,7 @@ namespace UabMeto.App.UI
 
             var card = (RectTransform)body.parent;
             var layout = card.GetComponent<LayoutElement>();
-            layout.minHeight = 56f;
+            layout.minHeight = UIFactory.Px(56f);
 
             var button = card.gameObject.AddComponent<Button>();
             button.targetGraphic = panel;

@@ -3,18 +3,21 @@
 Aplikasi pembelajaran Bahasa Dawan (Uab Meto) varian Timor Tengah Utara (TTU).
 Platform: Android, Unity 6 (`6000.6.0f1`).
 
-> **Status: F1 — UI inti dan build APK sudah ada; gate F1 belum lulus.**
-> Belum ada integrasi layanan produksi. Tiga pelajaran Topik 1 dinyatakan
-> `validated` oleh pemilik proyek (override, bukan reviewer independen) dan
-> dapat memberi XP. Topik berikutnya wajib ditinjau reviewer independen.
-> APK sudah dipasang dan diuji dasar pada satu perangkat Android fisik
-> portrait; landscape perangkat, TalkBack, dan skala font belum diuji. Lihat
-> `docs/testing/f1-gate-result.md` dan `docs/testing/f1-device-evidence.md`.
+> **Status: F1 — LULUS DENGAN CATATAN (rilis 0.5.0).**
+> Belum ada integrasi layanan produksi. Tiga pelajaran Topik 1 divalidasi
+> Ibu Nofri (penutur Bahasa Dawan, TTU/Kefamenanu) pada 2026-11-12 tanpa
+> koreksi; bukti berupa chat/pesan suara disimpan di luar repo. APK 0.5.0
+> dipasang dan diuji di satu perangkat Android fisik portrait. Catatan yang
+> mengikat: F1 portrait-only (D1-05 WAIVED), skala font 2.0× hanya terbukti
+> di PlayMode, TalkBack tidak diuji, dan sinkron pemulihan setelah offline
+> belum diuji. Lihat `docs/testing/f1-gate-result.md` dan
+> `docs/testing/f1-device-evidence.md`.
 >
-> Rilis **0.4.0** (code 5) berisi penyegaran visual Tahap 1–2: garis tepi kartu,
-> bilah progres, motif belah ketupat, tab pil aktif, hero "Lanjutkan belajar",
-> baris statistik ringkas, dan progres per topik. Gerak 150–200 ms hanya
-> transform + opasitas. Gate F1 **tetap belum lulus**.
+> Rilis **0.5.0** (code 6) menambahkan validasi penutur, pembacaan skala
+> font sistem (1.0×–2.0×, diterapkan terpusat di `UIFactory`), modal yang
+> dapat digulir, dan perbaikan label statistik pada font besar. Isi visual
+> 0.4.0 tetap: garis tepi kartu, bilah progres, motif belah ketupat, tab pil
+> aktif, hero "Lanjutkan belajar", dan progres per topik.
 
 ## Desain
 

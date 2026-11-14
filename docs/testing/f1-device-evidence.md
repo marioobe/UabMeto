@@ -1,10 +1,11 @@
 # Bukti Uji Perangkat F1
 
-Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-09 (WITA)
-Status: **PARTIAL** — instalasi, peluncuran, UI dasar, tombol back, alur
-tiga pelajaran rilis (portrait), replay tanpa XP ganda, banner gagal-server,
-sinkron lokal, dan Tutor AI teks lulus di OPPO `CPH1803`; offline mock (D1-04),
-landscape, dan skala font belum.
+Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-12 (WITA)
+Status: **PASS dengan catatan** — pada OPPO `CPH1803`, D1-01, D1-02, D1-03,
+D1-04, D1-06 (sampai batas slider perangkat 1.6×), dan D1-07 lulus. D1-05
+**WAIVED** atas keputusan pemilik 2026-11-12: F1 portrait-only, rotasi
+landscape tidak diklaim. Skala 2.0× hanya terbukti di PlayMode karena slider
+font perangkat ini berhenti di 1.6×.
 
 ## 1. Perangkat dan APK
 
@@ -19,15 +20,15 @@ perangkat Xiaomi `24117RN76O` dan APK 0.1.0/0.2.0 tetap dicatat di bagian
 | Layar | 720×1520, 320 dpi |
 | ADB | `device` (terotorisasi) |
 | Paket | `id.uabmeto.app` |
-| Versi | `0.4.0` (`versionCode 5`) |
+| Versi | `0.5.0` (`versionCode 6`) |
 | minSdk / targetSdk | 26 / 36 |
 | ABI | `arm64-v8a` |
 | APK | `Builds/Android/uabmeto-f1.apk` |
-| Ukuran | 28.942.014 byte |
-| SHA-256 | `B02341187AEAB6621D8AC70E113742A26FBF114C0E6024F676D9233FBD1492F0` |
-| firstInstallTime | 2026-11-06 00:15:17 |
-| lastUpdateTime | 2026-11-12 (instalasi APK rilis 0.4.0) |
-| Tanda tangan | `5a7f688` (sama dengan 0.1.0/0.2.0/0.2.1) |
+| Ukuran | 28.994.614 byte |
+| SHA-256 | `4901E8D345ED65B5B395A742A37AFCA73794C5CFF05B10D650C9100F16A7A166` |
+| firstInstallTime | 2026-11-12 16:21:09 (aplikasi di-uninstall lalu dipasang ulang untuk uji D1-04) |
+| lastUpdateTime | 2026-11-12 16:21:09 |
+| Tanda tangan | Android Debug; sertifikat SHA-256 `d1b79798219af505ae030cad661f7b905beb214c71b66ba73d0c9e32b81d90cf` |
 
 `adb install -r` berhasil. `dumpsys package` mengonfirmasi versi, minSdk,
 targetSdk, ABI, tanda tangan, dan waktu instalasi di atas. Perangkat Xiaomi
@@ -38,12 +39,12 @@ dicatat di bagian 2–3.
 
 | ID | Status | Bukti |
 |---|---|---|
-| D1-01 APK terpasang | **PASS** | `adb install -r` → `Success`; `dumpsys package` (0.4.0, `versionCode 5`) |
+| D1-01 APK terpasang | **PASS** | `adb install` → `Success`; `dumpsys package` (0.5.0, `versionCode 6`) |
 | D1-02 Dibuka tanpa crash | **PASS** | `UnityPlayerGameActivity` foreground; logcat tanpa fatal/exception aplikasi |
-| D1-03 Alur pelajaran | **PASS (0.2.1)** | Tiga pelajaran rilis Topik 1 dibuka berurutan lewat daftar; replay tanpa XP ganda |
-| D1-04 Mode offline | **NOT RUN** | Banner gagal-server/offline sudah diuji dengan melepas `adb reverse`, tetapi mode pesawat/mock reachability belum |
-| D1-05 Rotasi portrait ↔ landscape | **BLOCKED (perangkat)** | Perangkat/launcher memaksa portrait; rotasi paksa menghasilkan letterbox ±885×1080 |
-| D1-06 Font sistem 1.3×/2.0× | **NOT RUN / BLOCKED (fitur)** | Belum diuji; audit statis: tidak ada pembacaan `AndroidConfiguration.fontScale` |
+| D1-03 Alur pelajaran | **PASS (0.2.1, diulang 0.5.0)** | Tiga pelajaran rilis Topik 1 dibuka berurutan lewat daftar; replay tanpa XP ganda; alur 5 langkah diulang pada APK 0.5.0 |
+| D1-04 Mode offline | **PASS (0.5.0)** | Wi-Fi + data seluler dimatikan, `ping 8.8.8.8` gagal; pelajaran diselesaikan offline, banner "Offline — 1 hasil menunggu sinkron", XP tertunda 10, Selesai 1 |
+| D1-05 Rotasi portrait ↔ landscape | **WAIVED (keputusan pemilik, 2026-11-12)** | F1 dikunci portrait-only; manifest `screenOrientation=1`; rotasi paksa lewat `settings put` diblokir ColorOS (`WRITE_SETTINGS`). Tidak ada klaim landscape |
+| D1-06 Font sistem 1.3×/2.0× | **PASS sampai 1.6× (0.5.0)** | Perangkat: 1.0×, 1.35×, dan 1.6×; logcat `[UabMeto] fontScale sistem … diterapkan sebagai …`. 2.0× hanya di PlayMode karena slider perangkat maksimum 1.6× |
 | D1-07 Tombol back | **PASS** | Profil → Beranda; dialog nama → Profil; daftar pelajaran → Beranda |
 
 ## 3. UI yang diperiksa
@@ -309,6 +310,68 @@ Catatan jujur:
 - Gerak tekan/transisi tidak dapat dibuktikan lewat tangkapan statis; yang
   diuji otomatis adalah easing dan keadaan akhirnya saat gerak dimatikan.
 
+### 3.7 Verifikasi rilis 0.5.0 (2026-11-12)
+
+Tanggal: 2026-11-12 (WITA). APK 0.5.0 (`versionName=0.5.0`,
+`versionCode=6`, SHA-256 `4901E8D3…A166`) dipasang dan dibuka di OPPO
+`CPH1803` (Android 8.1/API 27, 720×1520). Tes: EditMode **99/99**,
+PlayMode **43/43**, kontras **12/12**, validator **PASS** (0 error,
+4 warning audio contoh).
+
+**Skala font (D1-06/F1-21).** `UiScale` membaca `Configuration.fontScale`
+lewat JNI dan membatasi 1.0–2.0; `UIFactory` memakai faktor itu untuk teks,
+ikon, target sentuh, padding, dan jarak. Modal dibuat dapat digulir lewat
+`ModalCardFitter`.
+
+| Skala | Cara | Hasil |
+|---|---|---|
+| 1.0× | slider font 0.9 (dibatasi ke 1.0) | Semua layar muat; tidak ada teks terpotong |
+| 1.35× | slider perangkat (langkah terdekat 1.3×) | Logcat `fontScale sistem 1,35 diterapkan sebagai 1,35`; Beranda, Materi, Profil, dan label tab muat |
+| 1.6× | slider maksimum perangkat | Logcat `fontScale sistem 1,60 diterapkan sebagai 1,60`; teks membungkus di batas kata, tombol Mulai tetap dapat dicapai dengan gulir |
+| 2.0× | `LayoutTests` PlayMode | Lulus di Editor; **tidak dapat diuji di perangkat ini** karena slider berhenti di 1.6× |
+
+Temuan saat uji 1.6×: label statistik Beranda terpotong di tengah kata
+("Strea/k hari") dan label "Antrean" di Profil patah karena lebar tiga kartu
+tidak sama. Perbaikan: label statistik memakai autosize dengan batas bawah,
+dan lebar sel/kartu dipaksa sama (`minWidth = preferredWidth = 0`,
+`flexibleWidth = 1`). Setelah perbaikan, tidak ada kata yang patah di 1.6×.
+
+**Mode offline (D1-04).** Wi-Fi dan data seluler dimatikan
+(`svc wifi disable`, `svc data disable`); `ping 8.8.8.8` gagal. APK
+dipasang bersih (uninstall + install), nama "rio" diisi, lalu pelajaran 1
+diselesaikan sampai ringkasan: "10 XP menunggu verifikasi server". Setelah
+"Simpan hasil", Beranda menampilkan banner **"Offline — 1 hasil menunggu
+sinkron. Pembelajaran tetap bisa dilanjutkan."**, XP tertunda 10, Selesai 1,
+Topik 1 1/3. Wi-Fi dinyalakan lagi, tetapi tidak ada jaringan/hotspot dan
+server lokal tidak berjalan, jadi **sinkron pemulihan tidak diuji**.
+
+**Alur pelajaran (D1-03).** Pada APK 0.5.0, pelajaran 1 dijalankan penuh:
+pembuka → materi (kosakata, contoh, dialog) → latihan → umpan balik "Benar"
+→ ringkasan "Latihan ulang selesai" dengan catatan XP tidak bertambah. Ini
+mengulang bukti 0.2.1 pada build dan tata letak terbaru.
+
+**Waiver rotasi (D1-05).** `aapt2 dump xmltree` menunjukkan
+`android:screenOrientation=1` (portrait). Upaya memaksa rotasi lewat
+`settings put system user_rotation 1` dan `cmd window user-rotation lock 1`
+gagal pada ColorOS/API 27 (permission `WRITE_SETTINGS` dan tidak ada
+implementasi perintah). Aplikasi tetap portrait; tidak ada bukti landscape.
+
+Bukti: `docs/testing/evidence/f1-device/f1-release-0.5.0-*.png` (12 berkas:
+Beranda 1×, 1.35×, 1.6×, statistik Beranda 1.6×, statistik Profil 1.6×,
+pembuka/materi/latihan/umpan balik/ringkasan replay, banner offline, dan
+hasil tersimpan offline).
+
+Catatan jujur:
+
+- Uji offline memakai Wi-Fi + data dimatikan, bukan toggle mode pesawat
+  sistem; efeknya sama (tidak ada rute jaringan) dan dibuktikan dengan
+  `ping` yang gagal.
+- Setelah Wi-Fi dinyalakan, perangkat tetap tanpa internet; banner offline
+  tetap tampil. Sinkron pemulihan butuh hotspot/server dan belum dijalankan.
+- Slider font OPPO tidak punya nilai 1.3×; nilai terdekat adalah 1.35×.
+- TalkBack tidak diuji dan tidak diklaim; lihat §5.
+- Tangkapan layar perangkat adalah bukti visual; bukan rekaman video.
+
 ## 4. Temuan dan perbaikan
 
 ### 4.1 Scroll tidak dapat digeser
@@ -367,20 +430,37 @@ bagian UI aplikasi. Tidak dihitung sebagai temuan aplikasi.
   di atas keyboard (±77 px pada perangkat ini); ini kosmetik, bukan
   teks terpotong.
 
+### 4.6 Label statistik patah di tengah kata pada font 1.6×
+
+- **Gejala:** pada skala font perangkat 1.6×, Beranda menampilkan
+  "Strea/k hari"; Profil menampilkan "Antrea/n" pada kartu ketiga.
+- **Penyebab:** label dibungkus hanya di dalam sel selebar sepertiga baris;
+  di Profil, lebar kartu tidak sama karena lebar pilihan teks ikut menentukan
+  pembagian `HorizontalLayoutGroup`.
+- **Perbaikan:** `UIFactory.AllowShrinkToFit` memberi autosize dengan batas
+  bawah pada label statistik; sel Beranda dan kartu Profil diberi
+  `minWidth = 0`, `preferredWidth = 0`, dan `flexibleWidth = 1` agar lebarnya
+  benar-benar dibagi rata.
+- **Regresi:** tes PlayMode 1.3×/2.0× memeriksa teks tidak terpotong di
+  Beranda, Materi, dan Profil, serta label tab tetap satu baris. Perangkat
+  1.6× diperiksa ulang lewat tangkapan layar setelah perbaikan.
+
 ## 5. Batasan yang belum ditutup
 
 - Tidak ada audio pada pelajaran `validated`, jadi alur audio dan consent
-  tidak dapat diuji. Tiga pelajaran Topik 1 `validated` atas override pemilik,
-  bukan reviewer independen.
-- Perangkat/launcher portrait-only; uji landscape perangkat tidak sah.
-- TalkBack dan skala font sistem belum diuji. Aplikasi juga belum membaca
-  `AndroidConfiguration.fontScale`, jadi D1-06 tidak dapat lulus tanpa
-  perubahan kode. Keyboard Android kini diuji untuk layar Tutor AI
-  (lihat §4.5), tetapi belum untuk layar lain karena belum ada kolom tulis
-  lain di F1.
-- Banner gagal-server sudah diuji dengan melepas `adb reverse`, tetapi
-  banner offline belum diuji dengan mode pesawat (D1-04).
+  tidak dapat diuji. Tiga pelajaran Topik 1 divalidasi Ibu Nofri pada
+  2026-11-12 tanpa koreksi; bukti validasi berupa pesan/chat dan disimpan di
+  luar repo.
+- F1 dikunci portrait-only atas keputusan pemilik 2026-11-12. D1-05 dicatat
+  **WAIVED**, bukan lulus; tidak ada klaim landscape perangkat.
+- TalkBack belum diuji dan tidak diklaim. Skala font sistem kini dibaca dan
+  diuji sampai 1.6× di perangkat; 2.0× hanya terbukti di PlayMode karena
+  slider perangkat berhenti di 1.6×. Keyboard Android diuji untuk layar Tutor
+  AI (lihat §4.5), belum untuk layar lain karena belum ada kolom tulis lain.
+- Banner offline dan penyimpanan hasil offline sudah diuji; sinkron pemulihan
+  setelah online belum diuji karena tidak ada hotspot/server lokal saat uji.
 - Tidak ada profiling performa atau pengukuran startup.
-- Build 0.3.0 masih memiliki 3 warning shader TMP.
+- Build 0.5.0 masih mencatat 3 warning IL2CPP "Method was given it's own cpp
+  file…" (informasional, bukan warning kompilasi C#/shader).
 - Tutor AI memakai provider `mock`; kualitas model Workers AI nyata belum
   diukur dan belum ada kredensial Cloudflare di mesin pengembangan.

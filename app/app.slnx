@@ -1,7 +1,7 @@
 ﻿<Solution>
   <Project Path="UabMeto.Tests.EditMode.csproj" />
-  <Project Path="UabMeto.App.csproj" />
   <Project Path="UabMeto.Tests.PlayMode.csproj" />
+  <Project Path="UabMeto.App.csproj" />
   <Project Path="UabMeto.Core.csproj" />
   <Project Path="UabMeto.Editor.csproj" />
 </Solution>

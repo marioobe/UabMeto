@@ -37,8 +37,8 @@ namespace UabMeto.App.UI
             // Kartu ini harus tumbuh mengikuti isi. Tinggi tetap membuat teks
             // bertumpuk saat lebar efektif berbeda dari tangkapan Editor.
             var cardLayout = card.gameObject.AddComponent<VerticalLayoutGroup>();
-            cardLayout.spacing = theme.Space8;
-            cardLayout.padding = new RectOffset(20, 20, 20, 20);
+            cardLayout.spacing = UIFactory.Px(theme.Space8);
+            cardLayout.padding = UIFactory.ScalePadding(new RectOffset(20, 20, 20, 20));
             cardLayout.childControlWidth = true;
             cardLayout.childControlHeight = true;
             cardLayout.childForceExpandWidth = false;
@@ -47,10 +47,10 @@ namespace UabMeto.App.UI
 
             var avatar = UIFactory.CreatePanel("Avatar", card.transform, theme.SurfaceHigh, 32);
             var avatarLayout = avatar.gameObject.AddComponent<LayoutElement>();
-            avatarLayout.minWidth = 64f;
-            avatarLayout.preferredWidth = 64f;
-            avatarLayout.minHeight = 64f;
-            avatarLayout.preferredHeight = 64f;
+            avatarLayout.minWidth = UIFactory.Px(64f);
+            avatarLayout.preferredWidth = UIFactory.Px(64f);
+            avatarLayout.minHeight = UIFactory.Px(64f);
+            avatarLayout.preferredHeight = UIFactory.Px(64f);
 
             var icon = UIFactory.CreateIcon(
                 "Icon",
@@ -96,7 +96,10 @@ namespace UabMeto.App.UI
         {
             var theme = _shell.Theme;
             var row = UIFactory.CreateHorizontalGroup("ProfileStats", parent, theme.Space8);
-            UIFactory.AddLayoutElement(row.gameObject, preferredHeight: 84f);
+            UIFactory.AddLayoutElement(
+                row.gameObject,
+                minHeight: 84f,
+                flexibleWidth: 1f);
 
             CreateStat(row, "Pelajaran selesai", _shell.Progress.Data.completedLessonIds.Count.ToString());
             CreateStat(row, "XP tertunda", _shell.Progress.PendingXp.ToString());
@@ -107,37 +110,42 @@ namespace UabMeto.App.UI
         {
             var theme = _shell.Theme;
             var card = UIFactory.CreatePanel("Stat_" + label, parent, theme.SurfaceCard, (int)theme.Space12);
+            var cardLayout = card.gameObject.AddComponent<VerticalLayoutGroup>();
+            cardLayout.spacing = UIFactory.Px(theme.Space4);
+            cardLayout.padding = UIFactory.ScalePadding(new RectOffset(8, 8, 8, 8));
+            cardLayout.childControlWidth = true;
+            cardLayout.childControlHeight = true;
+            cardLayout.childForceExpandWidth = true;
+            cardLayout.childForceExpandHeight = false;
+            cardLayout.childAlignment = TextAnchor.MiddleCenter;
+
             var layout = card.gameObject.AddComponent<LayoutElement>();
             layout.flexibleWidth = 1f;
-            layout.minHeight = 84f;
-            layout.preferredHeight = 84f;
-
-            var group = UIFactory.CreateVerticalGroup(
-                "Body",
-                card.transform,
-                theme.Space4,
-                new RectOffset(8, 8, 8, 8),
-                false);
-            UIFactory.Stretch(group);
-            group.GetComponent<VerticalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
+            // Lebar ketiga kartu harus sama. Tanpa ini, lebar pilihan teks
+            // (preferred width) membuat kartu 1 lebih lebar dan kartu 3
+            // menyempit sampai label terpotong di tengah kata pada font besar.
+            layout.minWidth = 0f;
+            layout.preferredWidth = 0f;
+            layout.minHeight = UIFactory.Px(84f);
 
             UIFactory.CreateText(
                 "Value",
-                group,
+                card.transform,
                 value,
                 theme.HeadingBoldFont,
                 theme.Heading2Size,
                 theme.TextPrimary,
                 TextAlignmentOptions.Center);
 
-            UIFactory.CreateText(
+            var labelText = UIFactory.CreateText(
                 "Label",
-                group,
+                card.transform,
                 label,
                 theme.BodyFont,
                 10f,
                 theme.TextMuted,
                 TextAlignmentOptions.Center);
+            UIFactory.AllowShrinkToFit(labelText, 8f);
         }
 
         private void BuildOutbox(RectTransform parent)

@@ -379,7 +379,13 @@ namespace UabMeto.App.UI
         {
             var theme = _shell.Theme;
             var cell = UIFactory.CreateVerticalGroup("Stat_" + name, parent, 2f, null, false);
-            UIFactory.AddLayoutElement(cell.gameObject, flexibleWidth: 1f);
+            // Lebar sel dibagi rata; preferred width teks tidak boleh
+            // menggeser pembagian kolom pada font sistem besar.
+            UIFactory.AddLayoutElement(
+                cell.gameObject,
+                minWidth: 0f,
+                preferredWidth: 0f,
+                flexibleWidth: 1f);
             cell.GetComponent<VerticalLayoutGroup>().childAlignment = TextAnchor.MiddleCenter;
 
             var head = UIFactory.CreateHorizontalGroup("Head", cell, theme.Space4);
@@ -409,7 +415,7 @@ namespace UabMeto.App.UI
                 theme.TextPrimary,
                 TextAlignmentOptions.MidlineLeft);
 
-            UIFactory.CreateText(
+            var labelText = UIFactory.CreateText(
                 "Label",
                 cell,
                 label,
@@ -417,6 +423,7 @@ namespace UabMeto.App.UI
                 theme.BodySmallSize,
                 theme.TextMuted,
                 TextAlignmentOptions.Center);
+            UIFactory.AllowShrinkToFit(labelText, 9f);
         }
 
         private void CreateStatDivider(Transform parent)
@@ -490,7 +497,7 @@ namespace UabMeto.App.UI
             panelLayout.childAlignment = TextAnchor.UpperLeft;
 
             var layout = panel.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 64f;
+            layout.minHeight = UIFactory.Px(64f);
 
             var button = panel.gameObject.AddComponent<Button>();
             button.targetGraphic = panel;
@@ -546,10 +553,10 @@ namespace UabMeto.App.UI
 
             var iconPanel = UIFactory.CreatePanel("IconPanel", row, theme.SurfaceHigh, (int)theme.Space12);
             var iconLayout = iconPanel.gameObject.AddComponent<LayoutElement>();
-            iconLayout.minWidth = 40f;
-            iconLayout.preferredWidth = 40f;
-            iconLayout.minHeight = 40f;
-            iconLayout.preferredHeight = 40f;
+            iconLayout.minWidth = UIFactory.Px(40f);
+            iconLayout.preferredWidth = UIFactory.Px(40f);
+            iconLayout.minHeight = UIFactory.Px(40f);
+            iconLayout.preferredHeight = UIFactory.Px(40f);
 
             var icon = UIFactory.CreateIcon(
                 "Icon",

@@ -97,6 +97,10 @@ namespace UabMeto.App.UI
             _outbox = outbox;
             _api = api;
             _sync = sync;
+            // Dibaca sebelum UI dibangun. Setelan font Android biasanya
+            // memicu pembuatan ulang activity, jadi pembacaan saat mulai
+            // cukup untuk F1; perubahan langsung ditangani dengan restart.
+            UiScale.Refresh();
             Build();
         }
 
@@ -139,8 +143,8 @@ namespace UabMeto.App.UI
         {
             var header = UIFactory.CreatePanel("Header", _safeRoot, _theme.Surface);
             var headerLayout = header.gameObject.AddComponent<LayoutElement>();
-            headerLayout.minHeight = 72f;
-            headerLayout.preferredHeight = 72f;
+            headerLayout.minHeight = UIFactory.Px(72f);
+            headerLayout.preferredHeight = UIFactory.Px(72f);
 
             var row = UIFactory.CreateHorizontalGroup(
                 "HeaderRow",
@@ -257,8 +261,8 @@ namespace UabMeto.App.UI
         {
             var nav = UIFactory.CreatePanel("BottomNav", _safeRoot, _theme.Surface);
             var layout = nav.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 68f;
-            layout.preferredHeight = 68f;
+            layout.minHeight = UIFactory.Px(68f);
+            layout.preferredHeight = UIFactory.Px(68f);
 
             // Garis rambut di tepi atas memisahkan bar dari konten tanpa bayangan.
             var hairline = UIFactory.CreatePanel("Hairline", nav.transform, _theme.Border, 0);
@@ -295,8 +299,8 @@ namespace UabMeto.App.UI
             var layout = panel.gameObject.AddComponent<LayoutElement>();
             layout.flexibleWidth = 1f;
             layout.minWidth = _theme.TouchTarget;
-            layout.minHeight = 56f;
-            layout.preferredHeight = 56f;
+            layout.minHeight = UIFactory.Px(56f);
+            layout.preferredHeight = UIFactory.Px(56f);
 
             var button = panel.gameObject.AddComponent<Button>();
             button.targetGraphic = panel;
@@ -335,6 +339,11 @@ namespace UabMeto.App.UI
                 _theme.TextMuted,
                 TextAlignmentOptions.Center);
             text.characterSpacing = 4f;
+            // Label tab tidak boleh turun menjadi dua baris. Autosize hanya
+            // mengecilkan bila "Peringkat" tidak muat pada font 2.0x.
+            text.enableAutoSizing = true;
+            text.fontSizeMin = 10f;
+            text.fontSizeMax = text.fontSize;
             UIFactory.AddLayoutElement(text.gameObject, minHeight: 16f, preferredHeight: 16f);
 
             UIFactory.AddAccessibilityLabel(button.gameObject, label);
@@ -843,22 +852,55 @@ namespace UabMeto.App.UI
             cardRect.anchorMin = new Vector2(0.5f, 0.5f);
             cardRect.anchorMax = new Vector2(0.5f, 0.5f);
             cardRect.pivot = new Vector2(0.5f, 0.5f);
-            var canvasWidth = ((RectTransform)_canvas.transform).rect.width;
-            cardRect.sizeDelta = new Vector2(Mathf.Min(320f, canvasWidth - 32f), 0f);
+            var canvasRect = (RectTransform)_canvas.transform;
+            var canvasWidth = canvasRect.rect.width;
+            var canvasHeight = canvasRect.rect.height;
+            cardRect.sizeDelta = new Vector2(
+                Mathf.Min(UIFactory.Px(320f), canvasWidth - UIFactory.Px(32f)),
+                0f);
 
-            var cardLayout = card.gameObject.AddComponent<VerticalLayoutGroup>();
-            cardLayout.spacing = _theme.Space12;
-            cardLayout.padding = new RectOffset(20, 20, 20, 20);
+            // Dialog harus tetap bisa dipakai pada font 2.0x. Isinya diletakkan
+            // di dalam ScrollRect; tinggi kartu dibatasi oleh ModalCardFitter
+            // agar tombol tidak pernah keluar layar.
+            var viewport = UIFactory.CreateRect("Viewport", card.transform);
+            UIFactory.Stretch(viewport);
+            viewport.gameObject.AddComponent<RectMask2D>();
+            var hitArea = viewport.gameObject.AddComponent<Image>();
+            hitArea.color = new Color(0f, 0f, 0f, 0f);
+            hitArea.raycastTarget = true;
+
+            var content = UIFactory.CreateRect("Content", viewport);
+            content.anchorMin = new Vector2(0f, 1f);
+            content.anchorMax = new Vector2(1f, 1f);
+            content.pivot = new Vector2(0.5f, 1f);
+            content.anchoredPosition = Vector2.zero;
+            content.sizeDelta = Vector2.zero;
+
+            var cardLayout = content.gameObject.AddComponent<VerticalLayoutGroup>();
+            cardLayout.spacing = UIFactory.Px(_theme.Space12);
+            cardLayout.padding = UIFactory.ScalePadding(new RectOffset(20, 20, 20, 20));
             cardLayout.childControlWidth = true;
             cardLayout.childControlHeight = true;
             cardLayout.childForceExpandWidth = true;
             cardLayout.childForceExpandHeight = false;
 
-            var fitter = card.gameObject.AddComponent<ContentSizeFitter>();
-            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var contentFitter = content.gameObject.AddComponent<ContentSizeFitter>();
+            contentFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            contentFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            return cardRect;
+            var scroll = card.gameObject.AddComponent<ScrollRect>();
+            scroll.viewport = viewport;
+            scroll.content = content;
+            scroll.horizontal = false;
+            scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+            scroll.inertia = true;
+            scroll.scrollSensitivity = UIFactory.Px(24f);
+
+            var fitter = card.gameObject.AddComponent<ModalCardFitter>();
+            fitter.Configure(cardRect, content, canvasHeight - UIFactory.Px(32f));
+
+            return content;
         }
 
         public void CloseModal()

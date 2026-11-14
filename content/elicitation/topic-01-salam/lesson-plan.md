@@ -85,13 +85,16 @@ Latihan:
 ## Catatan
 
 - Semua teks Dawan diisi lewat `speaker-sheet-v2.csv` (50 item, `SPK-001`).
-- Hasil elisitasi sudah di-encode ke tiga berkas `content/lessons/*.json`
-  dengan status `in_review`; belum ada yang `validated`.
+- Hasil elisitasi sudah di-encode ke tiga berkas `content/lessons/*.json`.
+  Ketiganya berstatus `validated` setelah divalidasi Ibu Nofri (penutur
+  Bahasa Dawan, TTU/Kefamenanu) pada 2026-11-12 tanpa koreksi; catatan di
+  `content/validation/topic-01-salam/review-signoff.md`.
 - Rencana ini tidak boleh dianggap sebagai materi terbit.
 - Perubahan judul atau urutan pelajaran harus tetap dalam topik yang dikunci.
 - `lesson-001-salam` sudah memakai isi elisitasi. `ELC-104` dipecah menjadi
   dua bentuk: `selamat pagi Am` dan `selamat pagi Aina`.
-- Item yang perlu klarifikasi reviewer: `ELC-108`, `ELC-115`, `ELC-117`,
-  `ELC-211`, `ELC-217`, `ELC-302`.
+- Enam item klarifikasi (`ELC-108`, `ELC-115`, `ELC-117`, `ELC-211`,
+  `ELC-217`, `ELC-302`) tidak dikoreksi penutur pada 2026-11-12; bentuknya
+  dipakai apa adanya.
 - Pratinjau `in_review` di aplikasi berlabel "Pratinjau, belum divalidasi"
   dan tidak mencatat progres atau XP.

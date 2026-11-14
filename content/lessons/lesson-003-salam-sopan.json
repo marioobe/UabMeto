@@ -9,12 +9,16 @@
   "summary": "Menggunakan terima kasih, maaf, dan permisi pada situasi sehari-hari.",
   "status": "validated",
   "validation": {
-    "reviewedBy": "marioobe (pemilik proyek)",
-    "reviewedAt": "2026-11-06",
+    "reviewedBy": "Ibu Nofri (penutur Bahasa Dawan, TTU/Kefamenanu)",
+    "reviewedAt": "2026-11-12",
     "sources": [
       {
         "id": "SRC-SPK-001",
         "citation": "Elisitasi penutur SPK-001 (Iyo), 2026-11-05; pengetahuan dan pemakaian Bahasa Dawan sehari-hari, varian TTU/Kefamenanu."
+      },
+      {
+        "id": "SRC-VER-001",
+        "citation": "Verifikasi independen oleh Ibu Nofri (penutur Bahasa Dawan TTU/Kefamenanu), 2026-11-12; tanpa koreksi. Bukti elektronik di arsip pribadi pemilik proyek di luar repositori."
       }
     ],
     "audioLicense": "Tidak ada audio pada versi ini; tidak ada rekaman yang disertakan atau dilisensikan.",
@@ -37,14 +41,14 @@
       "id": "vocab-002",
       "dawan": "naleok",
       "indonesian": "sama-sama",
-      "notes": "ELC-302. Jawaban terima kasih. Perlu klarifikasi reviewer: bentuk ini belum dikonfirmasi ulang.",
+      "notes": "ELC-302. Jawaban terima kasih. Dikonfirmasi Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12, tanpa koreksi.",
       "audio": null
     },
     {
       "id": "vocab-003",
       "dawan": "maaf",
       "indonesian": "maaf",
-      "notes": "ELC-303. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-303. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     },
     {
@@ -65,7 +69,7 @@
       "id": "vocab-006",
       "dawan": "tolong",
       "indonesian": "tolong",
-      "notes": "ELC-306. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-306. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     },
     {
@@ -163,7 +167,7 @@
       "type": "multiple_choice",
       "skill": "reading",
       "prompt": "Jawaban apa yang dipakai setelah seseorang mengucapkan terima kasih?",
-      "explanation": "Pada lembar elisitasi, naleok dicatat sebagai jawaban \"sama-sama\" (ELC-302). Perlu klarifikasi reviewer.",
+      "explanation": "Pada lembar elisitasi, naleok dicatat sebagai jawaban \"sama-sama\" (ELC-302). Dikonfirmasi Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12, tanpa koreksi.",
       "content": {
         "options": [
           {
@@ -207,5 +211,5 @@
       "audio": null
     }
   ],
-  "notes": "Status validated atas keputusan pemilik proyek (marioobe), 2026-11-06. Ini override pemilik, bukan peninjauan reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001 (Iyo), bukan salinan kamus atau web. Tidak ada audio atau izin rekaman pada versi ini. Ejaan penutur dipertahankan. Item ELC-302, ELC-311 diterima apa adanya oleh pemilik. Catatan dialog: tabe dipakai di acara formal (ELC-311). Topik berikutnya wajib ditinjau reviewer independen."
+  "notes": "Status validated setelah peninjauan independen oleh Ibu Nofri (penutur Bahasa Dawan TTU/Kefamenanu), 2026-11-12, tanpa koreksi. Sumber utama tetap elisitasi SPK-001 (Iyo); verifikasi independen dicatat sebagai SRC-VER-001. Tidak ada audio atau izin rekaman pada versi ini; audio ditunda ke F4. Ejaan penutur dipertahankan. Item ELC-302 dan ELC-311 dikonfirmasi tanpa koreksi. Catatan dialog: tabe dipakai di acara formal (ELC-311)."
 }

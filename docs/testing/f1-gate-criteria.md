@@ -1,8 +1,9 @@
 # Kriteria Gate F1
 
-Status: **F1 sedang berjalan; gate belum lulus.** Dokumen ini menetapkan
-syarat yang harus dipenuhi sebelum F1 dinyatakan lulus. Hasil aktual ada di
-`docs/testing/f1-gate-result.md`.
+Status: **F1 selesai 2026-11-12 dengan catatan.** Hasil aktual ada di
+`docs/testing/f1-gate-result.md`: seluruh kriteria F1 dan gate perangkat
+dijalankan, D1-05 **WAIVED** (portrait-only), dan D1-06 terbukti sampai batas
+slider perangkat 1.6× (2.0× hanya di PlayMode).
 
 ## 1. Prinsip
 
@@ -90,14 +91,12 @@ terhubung.
 | D1-06 | Ukuran font sistem 1.3× dan 2.0× | screenshot |
 | D1-07 | Perilaku tombol back | catatan |
 
-Status saat ini: **PARTIAL** — perangkat fisik terhubung pada 2026-11-03 dan
-D1-01/D1-02/D1-07 lulus. D1-03 terhalang karena belum ada pelajaran
-`validated` di APK rilis; D1-04 (offline) belum dijalankan; D1-05
-(landscape perangkat) terhalang portrait lock OEM; D1-06 (font scale)
-belum dijalankan dan audit statis menemukan aplikasi belum membaca
-`AndroidConfiguration.fontScale`. Bukti:
-`docs/testing/f1-device-evidence.md`. Pada 2026-11-04 perangkat tidak
-terhubung, jadi tidak ada uji perangkat baru.
+Status gate perangkat: **PASS dengan catatan** (2026-11-12, APK 0.5.0).
+D1-01, D1-02, D1-03, D1-04, D1-06 (sampai 1.6×), dan D1-07 lulus. D1-05
+**WAIVED** atas keputusan pemilik 2026-11-12: F1 portrait-only dan rotasi
+landscape tidak diklaim. Slider font OPPO berhenti di 1.6×, jadi skala 2.0×
+hanya dibuktikan lewat PlayMode. Bukti:
+`docs/testing/f1-device-evidence.md`.
 
 ## 5. Bukti yang tidak diterima
 

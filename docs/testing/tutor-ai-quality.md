@@ -85,6 +85,8 @@ Tutor AI eval: 25/25 lulus, 0 gagal (provider=mock).
 Catatan: angka baris PlayMode diambil saat rilis 0.3.0. Pada rilis 0.4.0
 (penyegaran visual) PlayMode menjadi **41/41** karena tambahan 2 tes gerak di
 `TweenTests`; EditMode tetap **93/93** dan cakupan Tutor AI tidak berubah.
+Pada rilis 0.5.0, EditMode menjadi **99/99** (6 tes `UiScaleTests`) dan
+PlayMode **43/43** (2 tes layout font besar); tidak ada tes Tutor AI baru.
 
 Tes Tutor AI mencakup: tanpa identitas → 401; pertanyaan kosong/terlalu
 panjang → 400; jawaban + sumber; refusal di luar korpus; permintaan mengarang
@@ -175,4 +177,6 @@ di dokumen ini karena belum dijalankan.
   di atas.
 - Gate AI produksi tetap **BELUM LULUS** sampai model nyata diuji, audio dan
   consent tersedia, serta evaluasi kualitas independen dilakukan.
-- Gate F1 tetap **TIDAK LULUS**; lihat `docs/testing/f1-gate-result.md`.
+- Gate F1 **LULUS DENGAN CATATAN** (rilis 0.5.0); lihat
+  `docs/testing/f1-gate-result.md`. Blocker Tutor AI (model nyata, audio,
+  consent) tidak berubah oleh gate F1.

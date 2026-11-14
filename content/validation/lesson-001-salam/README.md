@@ -1,7 +1,9 @@
 # Paket Validasi — Pelajaran 1: Salam dan sapaan
 
-Status: **belum divalidasi.** Tidak ada materi Bahasa Dawan di paket ini.
-Semua isi Dawan masih placeholder.
+Status: **paket kerangka historis.** Tidak ada materi Bahasa Dawan nyata di
+paket ini; semua isi Dawan masih placeholder. Validasi materi nyata Topik 1
+dicatat di `content/validation/topic-01-salam/review-signoff.md`
+(Ibu Nofri, 2026-11-12, tiga pelajaran, tanpa koreksi).
 
 Tujuan: menyiapkan satu pelajaran yang bisa diperiksa, disetujui, dan
 diterbitkan tanpa mengarang kosakata, terjemahan, atau dialog.

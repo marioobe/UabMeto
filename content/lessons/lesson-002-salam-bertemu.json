@@ -9,12 +9,16 @@
   "summary": "Mengenali ungkapan kedatangan dan perpisahan, lalu memakainya pada dialog singkat.",
   "status": "validated",
   "validation": {
-    "reviewedBy": "marioobe (pemilik proyek)",
-    "reviewedAt": "2026-11-06",
+    "reviewedBy": "Ibu Nofri (penutur Bahasa Dawan, TTU/Kefamenanu)",
+    "reviewedAt": "2026-11-12",
     "sources": [
       {
         "id": "SRC-SPK-001",
         "citation": "Elisitasi penutur SPK-001 (Iyo), 2026-11-05; pengetahuan dan pemakaian Bahasa Dawan sehari-hari, varian TTU/Kefamenanu."
+      },
+      {
+        "id": "SRC-VER-001",
+        "citation": "Verifikasi independen oleh Ibu Nofri (penutur Bahasa Dawan TTU/Kefamenanu), 2026-11-12; tanpa koreksi. Bukti elektronik di arsip pribadi pemilik proyek di luar repositori."
       }
     ],
     "audioLicense": "Tidak ada audio pada versi ini; tidak ada rekaman yang disertakan atau dilisensikan.",
@@ -65,21 +69,21 @@
       "id": "vocab-006",
       "dawan": "selamat datang",
       "indonesian": "selamat datang",
-      "notes": "ELC-206. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-206. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     },
     {
       "id": "vocab-007",
       "dawan": "selamat jalan",
       "indonesian": "selamat jalan",
-      "notes": "ELC-207. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-207. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     },
     {
       "id": "vocab-008",
       "dawan": "selamat tinggal",
       "indonesian": "selamat tinggal",
-      "notes": "ELC-208. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-208. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     },
     {
@@ -100,7 +104,7 @@
       "id": "vocab-011",
       "dawan": "okan",
       "indonesian": "dia",
-      "notes": "ELC-211. okan = orang ketiga (dia), dipakai di belakang kalimat, misalnya au nao okan = saya pergi dengan dia. na/bi = penanda sebelum nama: na = laki-laki (na rio), bi = perempuan (bi selfi). Perlu klarifikasi reviewer: bentuk ini belum dikonfirmasi ulang.",
+      "notes": "ELC-211. okan = orang ketiga (dia), dipakai di belakang kalimat, misalnya au nao okan = saya pergi dengan dia. na/bi = penanda sebelum nama: na = laki-laki (na rio), bi = perempuan (bi selfi). Dikonfirmasi Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12, tanpa koreksi.",
       "audio": null
     }
   ],
@@ -208,11 +212,11 @@
       "id": "exm-102",
       "dawan": "au u'eok okan",
       "indonesian": "Saya bertemu dia.",
-      "context": "Bertemu seseorang. Diterima pemilik proyek apa adanya (ELC-217); belum dikonfirmasi ulang oleh reviewer independen.",
+      "context": "Bertemu seseorang. Dikonfirmasi Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12, tanpa koreksi (ELC-217).",
       "status": "validated",
       "sourceRef": "SRC-SPK-001",
       "audio": null
     }
   ],
-  "notes": "Status validated atas keputusan pemilik proyek (marioobe), 2026-11-06. Ini override pemilik, bukan peninjauan reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001 (Iyo), bukan salinan kamus atau web. Tidak ada audio atau izin rekaman pada versi ini. Ejaan penutur dipertahankan. Item ELC-211, ELC-217 diterima apa adanya oleh pemilik. Variasi au fin fe dicatat di lembar elisitasi. Topik berikutnya wajib ditinjau reviewer independen."
+  "notes": "Status validated setelah peninjauan independen oleh Ibu Nofri (penutur Bahasa Dawan TTU/Kefamenanu), 2026-11-12, tanpa koreksi. Sumber utama tetap elisitasi SPK-001 (Iyo); verifikasi independen dicatat sebagai SRC-VER-001. Tidak ada audio atau izin rekaman pada versi ini; audio ditunda ke F4. Ejaan penutur dipertahankan. Item ELC-211 dan ELC-217 dikonfirmasi tanpa koreksi. Variasi au fin fe dicatat di lembar elisitasi."
 }

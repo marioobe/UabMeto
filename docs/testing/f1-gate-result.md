@@ -1,10 +1,13 @@
 # Laporan Gate F1
 
-Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-09 (WITA)
+Tanggal: 2026-11-03 (WITA); diperbarui 2026-11-12 (WITA)
 Lingkungan: Windows, Unity `6000.6.0f1`, Android build-tools `36.1.0`.
-Status gate: **TIDAK LULUS.** Build, tes UI, dan verifikasi dasar perangkat
-fisik lulus; syarat reviewer independen, audio/consent, aksesibilitas penuh,
-dan sisa gate perangkat belum terpenuhi.
+Status gate: **LULUS DENGAN CATATAN** (rilis 0.5.0). Build, tes, validasi
+konten, validator, kontras, dan gate perangkat dijalankan. Catatan yang
+mengikat: D1-05 **WAIVED** karena F1 portrait-only (keputusan pemilik
+2026-11-12), skala font 2.0× hanya terbukti di PlayMode karena slider
+perangkat berhenti di 1.6×, TalkBack tidak diuji dan tidak diklaim, dan
+sinkron pemulihan setelah offline belum diuji karena tidak ada server.
 
 Pembaruan 2026-11-05: tiga pelajaran Topik 1 sudah diisi dari elisitasi
 `SPK-001` dan berstatus **`in_review`** (bukan `validated`). Aplikasi punya
@@ -66,23 +69,37 @@ Tes EditMode **93/93**, PlayMode **41/41** (39 lama + 2 tes gerak), backend
 diperiksa di OPPO `CPH1803`. Gate F1 tetap **TIDAK LULUS**; blocker tidak
 berubah.
 
-## 1. Ringkasan keputusan
+Pembaruan 2026-11-12 (versi 0.5.0): **validasi penutur dan skala font**.
+Ibu Nofri (penutur Bahasa Dawan, TTU/Kefamenanu) memvalidasi ketiga pelajaran
+Topik 1 pada 2026-11-12 — seluruh 51 item, **tanpa koreksi**; bukti berupa
+pesan/chat dan suara, disimpan di luar repo. Metadata `reviewedBy`/
+`reviewedAt` di tiga JSON pelajaran diperbarui, dan catatan validasi ada di
+`content/validation/topic-01-salam/`. Skala font sistem kini dibaca lewat
+`UiScale` (clamp 1.0–2.0) dan diterapkan terpusat lewat `UIFactory`; modal
+dibuat dapat digulir. Tes EditMode **99/99**, PlayMode **43/43**, kontras
+**12/12**, validator **PASS** (0 error, 4 warning audio contoh). Build 0.5.0
+(`versionCode 6`) terpasang di OPPO `CPH1803`. D1-04 offline lulus, D1-06
+diuji 1.0×/1.35×/1.6× (2.0× hanya PlayMode), dan D1-05 **WAIVED** karena F1
+dikunci portrait-only. Gate F1 dinyatakan **LULUS DENGAN CATATAN**; rincian
+batasan ada di §5–§9.
+
+
 
 | Area | Hasil |
 |---|---|
-| Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` |
+| Build Android F1 | **PASS** — `Builds/Android/uabmeto-f1.apk` (0.5.0) |
 | Build pratinjau | **PASS** — `Builds/Android/uabmeto-f1-preview.apk` (demo, memuat `in_review`) |
-| Tes EditMode | **PASS** — 93 lulus, 0 gagal, 0 dilewati |
-| Tes PlayMode | **PASS** — 41 lulus, 0 gagal, 0 dilewati |
+| Tes EditMode | **PASS** — 99 lulus, 0 gagal, 0 dilewati |
+| Tes PlayMode | **PASS** — 43 lulus, 0 gagal, 0 dilewati |
 | Tes backend | **PASS** — 25 lulus (termasuk 14 tes Tutor AI) |
 | Eval Tutor AI | **PASS (mock)** — 25/25 kasus emas; model nyata belum diuji |
 | Validator konten | **PASS** — 0 error, 4 warning audio di `content/samples/` |
 | Kontras F1 | **PASS** — 12/12 pasangan ≥ 4.5:1 |
 | Target sentuh F1 | **PASS (UI F1)** — 4/4 tes aksesibilitas/layout |
-| Materi Topik 1 | **VALIDATED (override pemilik)** — 3 pelajaran, 50 item elisitasi `SPK-001` |
-| Konten tervalidasi | **ADA** — 3 pelajaran Topik 1, tanpa reviewer independen |
-| Perangkat fisik | **PARTIAL** — D1-01, D1-02, D1-03 (tiga pelajaran, 0.2.1), Tutor AI teks (0.3.0), tampilan 0.4.0, D1-07 lulus; D1-04..D1-06 belum |
-| Gate F1 | **TIDAK LULUS** |
+| Materi Topik 1 | **VALIDATED** — 3 pelajaran, 51 item divalidasi Ibu Nofri 2026-11-12 tanpa koreksi |
+| Konten tervalidasi | **ADA** — 3 pelajaran Topik 1, penutur Dawan TTU/Kefamenanu |
+| Perangkat fisik | **PASS dengan catatan** — D1-01..D1-04, D1-06 (1.0×–1.6×), D1-07 lulus; D1-05 WAIVED (portrait-only) |
+| Gate F1 | **LULUS DENGAN CATATAN** |
 
 ## 2. Build
 
@@ -245,12 +262,35 @@ kompilasi. F1-25 tetap **PARTIAL** karena build belum bersih dari nol.
   pratinjau yang ikut ke APK rilis
 - Tidak ada perubahan perilaku data: XP, kuota, dan outbox tetap seperti 0.3.0
 
+### 2.8 Build rilis 0.5.0 (2026-11-12)
+
+- Path: `Builds/Android/uabmeto-f1.apk`
+- Ukuran: **28.994.614 byte**
+- SHA-256: `4901E8D345ED65B5B395A742A37AFCA73794C5CFF05B10D650C9100F16A7A166`
+- Hasil: `Succeeded`, 0 error, 3 warning
+- Durasi build: 171,3 detik (inkremental)
+- Versi: `0.5.0` (`versionCode 6`), terverifikasi lewat `aapt2 dump badging`
+  dan `dumpsys package`
+- Orientasi: `android:screenOrientation=1` (portrait) di manifest; F1
+  portrait-only atas keputusan pemilik 2026-11-12
+- Isi: seluruh isi 0.4.0 ditambah validasi penutur, pembacaan skala font
+  sistem, modal dapat digulir, dan perbaikan label statistik pada font besar
+- 3 warning yang tersisa adalah pesan IL2CPP "Method was given it's own cpp
+  file because it is large and costly to compile" untuk `TMP_TextParsingUtilities::.cctor`,
+  `TextMeshPro::GenerateTextMesh`, dan `TextMeshProUGUI::GenerateTextMesh`.
+  Warning shader TMP `enable_d3d11_debug_symbols` sudah hilang. Ini bukan
+  warning kompilasi C#/shader.
+- Folder `Resources/Content/preview` hanya berisi `.gitkeep`; tidak ada materi
+  pratinjau yang ikut ke APK rilis
+
 ## 3. Tes yang dijalankan
 
 ### 3.1 EditMode
 
-Hasil: **93/93 lulus, 0 gagal, 0 dilewati** (2026-11-12,
-`Builds/logs/editmode-results.xml`). Jumlah tidak berubah dari 0.3.0.
+Hasil: **99/99 lulus, 0 gagal, 0 dilewati** (2026-11-12,
+`app/Builds/logs/editmode-font.xml`). Enam tes baru `UiScaleTests` menguji
+pembacaan/pembatasan faktor font dan override tes; jumlah lainnya sama
+dengan 0.4.0.
 
 - 19 tes `ApiClient`/`SyncService`: parsing respons, XP resmi server,
   penolakan konten belum valid, konflik, transport gagal, dan batas percobaan.
@@ -273,9 +313,11 @@ Hasil: **93/93 lulus, 0 gagal, 0 dilewati** (2026-11-12,
 
 ### 3.2 PlayMode
 
-Hasil: **41/41 lulus, 0 gagal, 0 dilewati** (2026-11-12,
-`Builds/logs/playmode-results.xml`). Dua tes baru di `TweenTests` mengunci
-easing dan keadaan akhir gerak saat batchmode.
+Hasil: **43/43 lulus, 0 gagal, 0 dilewati** (2026-11-12,
+`app/Builds/logs/playmode-layout.xml`). Dua tes baru `LayoutTests` menjalankan
+Beranda, Materi, dan Profil pada 1.3× dan 2.0×, memeriksa teks tidak terpotong
+dan label tab tetap satu baris. `OnlineUiTests` menyesuaikan struktur kartu
+statistik (`Stat_Antrean/Value`).
 
 - `TweenTests.EaseOutCubic_IsClampedAndMonotonic` — easing 0→1 dan tidak
   menurun
@@ -342,7 +384,8 @@ Sumber: `content/elicitation/topic-01-salam/speaker-sheet-v2.csv`
 `SPK-001` adalah Iyo, pengembang aplikasi, yang mengisi lembar dari
 pengetahuan dan pemakaian Bahasa Dawan sehari-hari — bukan salinan kamus
 atau web. Pencocokan dengan kamus Tafenpah hanya pengecekan silang, bukan
-sumber, dan tidak dicatat sebagai sumber.
+sumber, dan tidak dicatat sebagai sumber. Verifikasi penutur dicatat terpisah
+sebagai `SRC-VER-001`.
 
 Tiga berkas pelajaran sudah dibuat dan lolos validator:
 
@@ -354,22 +397,23 @@ Tiga berkas pelajaran sudah dibuat dan lolos validator:
 
 Catatan penting:
 
-- Status `validated` diberikan atas **keputusan pemilik proyek**
-  (`marioobe`) pada 2026-11-06. `reviewedBy` berisi
-  `"marioobe (pemilik proyek)"`, dan `notes` menyatakan ini override pemilik,
-  bukan peninjauan reviewer independen. Topik berikutnya wajib ditinjau
-  reviewer independen.
+- **Validasi penutur:** Ibu Nofri (penutur Bahasa Dawan, TTU/Kefamenanu)
+  memeriksa seluruh **51 item** ketiga pelajaran pada **2026-11-12** dan
+  menyatakan **tanpa koreksi**. `reviewedBy` berisi
+  `"Ibu Nofri (penutur Bahasa Dawan, TTU/Kefamenanu)"` dan `reviewedAt`
+  `"2026-11-12"`. Bukti berupa pesan/chat dan pesan suara disimpan di luar
+  repo; tidak ada tanda tangan basah. Rincian:
+  `content/validation/topic-01-salam/review-signoff.md`.
 - `audioLicense` berisi pernyataan benar bahwa tidak ada audio pada versi ini;
   `consentRef` tetap `null` karena tidak ada rekaman.
-- Sumber terdaftar sebagai `SRC-SPK-001` di `content/references/sources.csv`.
+- Sumber terdaftar sebagai `SRC-SPK-001` dan verifikasi sebagai
+  `SRC-VER-001` di `content/references/sources.csv`.
 - 9 entri lembar elisitasi identik dengan kata serapan Bahasa Indonesia
   (`ELC-106`, `107`, `112`, `206`, `207`, `208`, `212`, `303`, `306`);
   catatan di konten menyatakan bentuk Dawan aslinya belum dipastikan.
 - `ELC-104` dipecah menjadi `selamat pagi Am` dan `selamat pagi Aina`.
 - 13 entri memakai apostrof ASCII `'`; normalisasi ortografi `’`/`ʔ`
-  menunggu reviewer.
-- Item yang perlu klarifikasi reviewer: `ELC-108`, `ELC-115`, `ELC-117`,
-  `ELC-211`, `ELC-217`, `ELC-302`.
+  belum diputuskan dan tidak diklaim.
 - Tidak ada audio dan tidak ada `consentRef`; kartu kosakata menampilkan
   "Audio Belum Tersedia".
 
@@ -444,15 +488,24 @@ densitas 450 dpi, terhubung lewat ADB.
   Topik 1 dijalankan penuh di APK rilis: daftar pelajaran, pelajaran 1→2→3,
   pembuka, materi, latihan, umpan balik, ringkasan, dan simpan hasil.
   Replay pelajaran 1 juga diuji; XP tidak bertambah. Portrait.
-- **D1-04 NOT RUN** — mode offline belum diuji dengan mock/mode pesawat.
-- **D1-05 BLOCKED (perangkat)** — perangkat/launcher memaksa orientasi
-  portrait. `wm set-ignore-orientation-request true` + rotasi paksa membuat
-  aplikasi di-letterbox menjadi ±885×1080, bukan landscape penuh. Uji
-  landscape perangkat tidak sah; bukti landscape hanya dari Editor 915×412.
-- **D1-06 NOT RUN / BLOCKED (fitur)** — skala font sistem 1.3×/2.0× belum
-  diuji. Audit statis 2026-11-04 menemukan tidak ada kode yang membaca
-  `AndroidConfiguration.fontScale`; uGUI/TMP tidak menerapkannya otomatis,
-  jadi UI kemungkinan tidak berubah saat skala font sistem dinaikkan.
+- **D1-04 PASS (0.5.0, OPPO `CPH1803`)** — Wi-Fi dan data seluler dimatikan
+  (`ping 8.8.8.8` gagal). Pembelajaran tetap berjalan; banner
+  "Offline — pembelajaran tetap bisa dilanjutkan…" tampil. Setelah pelajaran
+  selesai, banner berubah menjadi "Offline — 1 hasil menunggu sinkron…" dan
+  XP tertunda 10, Selesai 1, Topik 1 1/3. Sinkron saat jaringan kembali
+  **belum diuji** (tidak ada hotspot/server).
+- **D1-05 WAIVED (portrait-only)** — F1 dikunci portrait
+  (`android:screenOrientation=1`, keputusan pemilik 2026-11-12). Perangkat/
+  launcher ColorOS juga memaksa portrait: `wm set-ignore-orientation-request`
+  + rotasi paksa hanya menghasilkan letterbox ±885×1080. Uji landscape
+  perangkat tidak dilakukan dan tidak diklaim; bukti landscape hanya dari
+  Editor 915×412.
+- **D1-06 PASS (perangkat 1.0×/1.35×/1.6×) / PASS (PlayMode 2.0×)** —
+  `UiScale` membaca `Configuration.fontScale` (clamp 1.0–2.0) dan
+  `UIFactory` menskalakan teks, ikon, target sentuh, padding, dan jarak.
+  Logcat 0.5.0 mencatat `fontScale sistem 1,35 diterapkan sebagai 1,35` dan
+  `1,60 … 1,60`; Beranda, Materi, Profil, dan label tab muat. Slider OPPO
+  tidak menyediakan 2.0×, jadi 2.0× hanya dibuktikan di PlayMode.
 
 UI perangkat yang diperiksa: Beranda empty state, 12 topik, scroll,
 tab Tutor AI/Peringkat/Profil, kartu identitas, dialog nama, modal topik,
@@ -615,6 +668,42 @@ Catatan:
 - Bukti: `docs/testing/evidence/f1-device/f1-release-0.4.0-*.png` (4 berkas:
   Beranda, daftar topik setelah gulir, Tutor AI, Profil).
 
+### 5.6 Verifikasi rilis 0.5.0: validasi, font, offline, dan portrait (OPPO)
+
+Tanggal: 2026-11-12 (WITA). APK 0.5.0 (`versionName=0.5.0`,
+`versionCode=6`, SHA-256 `4901E8D3…A166`, 28.994.614 byte) dipasang di OPPO
+`CPH1803` (Android 8.1/API 27, 720×1520). Karena uji offline memakai
+pemasangan bersih, data lama dihapus; `firstInstallTime`/`lastUpdateTime`
+menjadi 2026-11-12 16:21:09.
+
+| Uji | Hasil |
+|---|---|
+| Instalasi | `adb install` → `Success`; `dumpsys package` 0.5.0/code 6 |
+| Peluncuran | `UnityPlayerGameActivity` foreground; tanpa crash |
+| Skala font 1.0× | Semua layar muat; tidak ada teks terpotong |
+| Skala font 1.35× | Logcat `fontScale sistem 1,35 diterapkan sebagai 1,35`; Beranda/Materi/Profil/label tab muat |
+| Skala font 1.6× | Logcat `fontScale sistem 1,60 diterapkan sebagai 1,60`; label statistik membungkus di batas kata, tombol Mulai tercapai dengan gulir |
+| Font 2.0× | Hanya PlayMode; slider perangkat maksimum 1.6× |
+| Alur pelajaran 0.5.0 | Pembuka → materi → latihan → umpan balik "Benar" → ringkasan replay "Latihan ulang selesai" (XP tidak bertambah) |
+| Offline (Wi-Fi + data mati) | Banner "Offline — pembelajaran tetap bisa dilanjutkan…"; pelajaran 1 selesai offline |
+| Hasil offline | Banner "Offline — 1 hasil menunggu sinkron…", XP tertunda 10, Selesai 1, Topik 1 1/3 |
+| Pemulihan online | **Tidak diuji** — tidak ada hotspot/server lokal saat uji |
+| Rotasi | **WAIVED** — manifest portrait (`screenOrientation=1`); perintah rotasi paksa diblokir ColorOS |
+
+Bukti: `docs/testing/evidence/f1-device/f1-release-0.5.0-*.png` (12 berkas:
+Beranda 1×/1.35×/1.6×, statistik Beranda dan Profil 1.6×, pembuka, materi,
+latihan, umpan balik, ringkasan replay, banner offline, hasil tersimpan
+offline).
+
+Catatan jujur:
+
+- Slider font OPPO menyediakan 0.9, 1.0, 1.15, 1.35, 1.6; tidak ada 1.3×.
+  Nilai terdekat 1.3× adalah 1.35×.
+- Uji offline mematikan Wi-Fi dan data seluler; `ping 8.8.8.8` gagal. Ini
+  bukan toggle mode pesawat sistem, tetapi efek jaringannya sama.
+- D1-06 belum mencapai 2.0× di perangkat. Klaim 2.0× hanya dari PlayMode.
+- TalkBack tidak diuji dan tidak diklaim.
+
 ## 6. Status kriteria F1
 
 | Kriteria | Status | Catatan |
@@ -624,27 +713,27 @@ Catatan:
 | F1-03 empat tab | PASS | PlayMode + screenshot + perangkat |
 | F1-04 12 topik | PASS | `TopicPathTests` + 12 baris PlayMode + perangkat |
 | F1-05 empty state | PASS | Screenshot Editor + perangkat |
-| F1-06 alur pelajaran | PASS (APK rilis 0.2.1) | Daftar pelajaran per topik; 3 pelajaran Topik 1 dibuka berurutan. Replay tidak memberi XP. Satu perangkat, portrait |
-| F1-07 outbox | PASS | Outbox + sinkron server lokal teruji di perangkat (tiga hasil, 20 XP tertunda) |
-| F1-08 banner | PARTIAL | Antrean nyata dan banner gagal-server teruji di perangkat; D1-04 offline mock/mode pesawat belum |
+| F1-06 alur pelajaran | PASS (0.2.1, diulang 0.5.0) | Daftar pelajaran per topik; 3 pelajaran Topik 1 dibuka berurutan. Replay tidak memberi XP. Satu perangkat, portrait |
+| F1-07 outbox | PASS | Outbox + sinkron server lokal teruji di perangkat; hasil offline juga masuk antrean |
+| F1-08 banner | PASS | Antrean nyata, banner gagal-server, dan banner offline (Wi-Fi/data mati) teruji di perangkat |
 | F1-09 panel debug | PASS | Tidak ada panel; pemindaian APK 0 |
-| F1-10 portrait/landscape | PASS (Editor) | Acuan responsif 360×640 / 640×360; 360×640, 412×915, 915×412 diuji. Landscape masih satu kolom, belum tata letak dua kolom 40/60 §12; landscape perangkat BLOCKED |
-| F1-11 pelajaran validated | **PASS (override pemilik)** | 3 berkas `validated`; bukan reviewer independen |
-| F1-12 sumber | **PARTIAL** | `SRC-SPK-001` tercatat, tetapi berasal dari elisitasi pengembang sendiri |
-| F1-13 reviewer | **BLOCKED** | Override pemilik, bukan reviewer independen |
-| F1-14 consent audio | **BLOCKED** | Belum ada audio/consent nyata |
+| F1-10 portrait/landscape | PASS (Editor) | Acuan responsif 360×640 / 640×360; 360×640, 412×915, 915×412 diuji. Landscape masih satu kolom, belum tata letak dua kolom 40/60 §12; F1 portrait-only sehingga D1-05 WAIVED |
+| F1-11 pelajaran validated | **PASS** | 3 berkas `validated`; divalidasi Ibu Nofri 2026-11-12 tanpa koreksi |
+| F1-12 sumber | **PASS** | `SRC-SPK-001` dan `SRC-VER-001` tercatat di `sources.csv` + JSON |
+| F1-13 reviewer | **PASS** | `reviewedBy`/`reviewedAt` terisi; bukti chat/pesan suara di luar repo |
+| F1-14 consent audio | **N/A (F1), F4** | Tidak ada audio yang dipakai; audio dan consent masuk F4 |
 | F1-15 audio sintetis | PASS (tidak ada audio) | Tidak ada audio sintetis |
 | F1-16 audio belum tersedia | PASS | Teks "Audio Belum Tersedia" di kartu |
 | F1-17 placeholder rilis | PASS | Tidak ada token placeholder di aset konten APK; literal `[PLACEHOLDER` hanya ada di kode pemeriksaan |
-| F1-18 nama orang | PASS | Tidak ada nama orang nyata di UI/konten |
+| F1-18 nama orang | PASS (izin dicatat) | Nama Ibu Nofri dipakai di catatan validasi repo atas izin; tidak ada nama di UI |
 | F1-19 kontras C1–C5 | PASS (F1) | C1–C5 ditutup untuk UI F1; 12/12 pasangan lulus; layar belum dibangun N/A |
 | F1-20 target T1–T12 | PASS (F1) | T1–T12 ditutup untuk UI F1; 4 tes UI lulus; layar belum dibangun N/A |
-| F1-21 font 1.3×/2.0× | **BLOCKED** | Belum diuji; belum ada pembacaan `fontScale` sistem |
+| F1-21 font 1.3×/2.0× | **PASS (PlayMode)** | 1.3×/2.0× lulus di PlayMode; perangkat 1.0×/1.35×/1.6× lulus, 2.0× tidak tersedia di slider |
 | F1-22 status ikon+teks | PASS (F1) | Status topik/audio punya ikon + teks |
 | F1-23 build IL2CPP ARM64 | PASS | Log build + `aapt list` |
 | F1-24 APK di perangkat | PASS | Terpasang dan dibuka di perangkat fisik |
-| F1-25 tanpa warning | PARTIAL | Build 0.4.0 mencatat 4 warning shader TMP; bukan build bersih dari nol |
-| F1-26 ukuran APK | PASS | 28.942.014 byte (0.4.0) |
+| F1-25 tanpa warning | PASS (dengan catatan) | 0 error; 3 warning IL2CPP informasional ("Method was given it's own cpp file…"), bukan warning kompilasi C#/shader |
+| F1-26 ukuran APK | PASS | 28.994.614 byte (0.5.0) |
 | F1-27 kredensial | PASS (pemindaian terbatas) | Pola umum 0; bukan audit menyeluruh |
 
 ## 7. Keputusan yang dikunci
@@ -655,8 +744,17 @@ Catatan:
 - Dark theme; token tunggal; tanpa shadow/blur/gradien.
 - XP klien hanya tampilan tertunda; server tetap otoritatif.
 - Fixture hanya di Editor; build rilis hanya memuat pelajaran `validated`.
-  Versi 0.2.1 memuat tiga pelajaran Topik 1 yang `validated` atas override
-  pemilik.
+  Versi 0.5.0 memuat tiga pelajaran Topik 1 yang divalidasi Ibu Nofri pada
+  2026-11-12.
+- Validasi Topik 1 oleh Ibu Nofri (penutur Bahasa Dawan, TTU/Kefamenanu)
+  diterima sebagai bukti review; bukti chat/pesan suara disimpan di luar repo
+  dan tidak ada tanda tangan basah.
+- F1 **portrait-only**; D1-05 dicatat **WAIVED**, bukan lulus. Tata letak
+  landscape dua kolom tetap pekerjaan lanjutan.
+- F1 hanya teks. Audio Dawan ditunda ke F4 dan tidak ada audio sintetis;
+  F1-14 dinilai **N/A** untuk F1.
+- TalkBack tidak diimplementasikan pada F1 dan dicatat sebagai batasan rilis;
+  aplikasi tidak diklaim aksesibel penuh.
 - Pelajaran boleh diulang untuk latihan, tetapi replay tidak menambah XP
   lokal maupun mengantrekan hasil baru. XP asli tetap dihitung server.
 - Materi `in_review` hanya untuk pratinjau berlabel; tidak mencatat progres
@@ -666,35 +764,66 @@ Catatan:
 
 ## 8. Keputusan yang tertunda
 
-- Reviewer independen untuk Topik 1 (saat ini override pemilik) dan semua
-  topik berikutnya.
-- Izin audio dan rekaman penutur untuk pelajaran pertama.
-- Regenerasi/pengurangan hati dan kuota Worker.
-- Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.
-- Tutor AI teks, lima jenis latihan lain, ujian akhir, auth, dan hapus akun.
-  Tutor AI teks sudah ada di 0.3.0 untuk korpus Topik 1; percakapan suara,
-  pelafalan/ASR, dan tutor adaptif tetap tertunda.
-- Uji model Workers AI nyata setelah kredensial Cloudflare tersedia.
-- Audit TalkBack, uji font sistem 1.3×/2.0×, dan uji landscape perangkat.
-- Tata letak landscape dua kolom 40/60 sesuai `docs/design/screens.md` §12;
-  F1 masih memakai satu kolom yang dapat digulir.
-- Build rilis tanpa warning dan signing key rilis.
+- **Audio F4:** izin tertulis, rekaman penutur terverifikasi, `consentRef`,
+  `audioLicense`, dan latihan listening. F1 tidak memakai audio apa pun dan
+  tidak boleh diisi dengan suara sintetis.
+- **Topik 2–12:** elicitation dan validasi penutur. Pola validasi Topik 1
+  (bukti chat/pesan suara, `reviewedBy`/`reviewedAt`, catatan di
+  `content/validation/`) dipakai ulang untuk setiap topik.
+- **Pemulihan setelah offline:** sinkron antrean begitu jaringan kembali.
+  Belum diuji karena tidak ada hotspot/server; hanya penambahan ke antrean
+  offline yang terbukti pada F1.
+- **TalkBack:** audit dan implementasi label aksesibilitas. F1 tidak
+  mengklaim aksesibel penuh; ini batasan rilis yang dicatat.
+- **Landscape:** tata letak dua kolom 40/60 sesuai
+  `docs/design/screens.md` §12. F1 mengunci portrait (`D1-05` WAIVED).
+- **Font 2.0× di perangkat:** PlayMode sudah lulus; slider OPPO berhenti di
+  1.6×, sehingga bukti perangkat 2.0× belum ada.
+- **Sinkronisasi Firebase/D1 dan idempotensi lintas sistem nyata.** Outbox
+  dan server lokal sudah diuji; backend produksi belum.
+- **Tutor AI lanjutan:** percakapan suara, pelafalan/ASR, tutor adaptif,
+  lima jenis latihan lain, ujian akhir, auth, dan hapus akun. Tutor AI teks
+  0.3.0 untuk korpus Topik 1 sudah ada.
+- **Model Workers AI nyata** setelah kredensial Cloudflare tersedia. Eval
+  saat ini masih mock (25/25 kasus emas).
+- **Hati dan kuota Worker:** regenerasi/pengurangan hati PRD §3.8 belum
+  diimplementasikan; kartu "Selesai" dipakai agar tidak menampilkan state
+  palsu.
+- **Signing key rilis** dan keputusan apakah 3 warning IL2CPP informasional
+  perlu dihilangkan.
 
 ## 9. Risiko dan tindakan berikutnya
 
-1. **Blocker konten:** mintalah reviewer independen memeriksa
-   `speaker-sheet-v2.csv` dan tiga berkas `content/lessons/*.json`. Setelah
-   tanda tangan, ubah status ke `validated` dengan `reviewedBy`/`reviewedAt`
-   yang benar, lalu jalankan `Uab Meto/F1 Setup` dan build rilis. Jangan
-   mengarang teks Dawan atau menaikkan status tanpa bukti.
-2. **Gate perangkat:** selesaikan D1-04..D1-06. D1-03 sudah lulus dengan
-   tiga pelajaran rilis 0.2.1; D1-05 memerlukan perangkat/launcher yang
-   mendukung landscape atau keputusan produk bahwa F1 portrait-only.
-3. **Aksesibilitas:** implementasikan pembacaan `AndroidConfiguration.fontScale`
-   lalu uji 1.3×/2.0×, audit TalkBack, dan petakan C1–C5/T1–T12 yang tersisa.
-4. **Build:** putuskan apakah 3 warning TMP/IL2CPP dapat diterima atau harus
-   dihilangkan sebelum F1-25 ditutup.
-5. **Offline:** tambahkan mock reachability atau uji mode pesawat untuk
-   membuktikan banner offline.
-6. **Audio:** rekam penutur dengan izin tertulis, simpan `consentRef`, dan
-   isi `audioLicense` sebelum mengaktifkan latihan listening.
+Status gate: **LULUS DENGAN CATATAN** (rilis 0.5.0). Tidak ada blocker yang
+tersisa untuk F1 teks; item di bawah adalah risiko yang harus dijaga saat
+pekerjaan berlanjut.
+
+1. **Konten (risiko sedang):** Topik 1 sudah divalidasi Ibu Nofri
+   (2026-11-12, tanpa koreksi). Untuk Topik 2–12, ulangi proses yang sama
+   dengan penutur terverifikasi, catat `reviewedBy`/`reviewedAt`, dan simpan
+   bukti di luar repo. Jangan mengarang teks Dawan atau menaikkan status
+   `validated` tanpa bukti.
+2. **Audio (risiko tinggi untuk F4):** sebelum latihan listening aktif,
+   rekam penutur dengan izin tertulis, simpan `consentRef`, dan isi
+   `audioLicense`. Audio sintetis tetap dilarang; sampai rekaman ada, UI
+   harus tetap menampilkan "Audio Belum Tersedia".
+3. **Sinkron pemulihan offline (risiko sedang):** banner offline dan
+   penambahan ke antrean sudah terbukti di perangkat, tetapi pengiriman
+   antrean saat jaringan kembali belum diuji. Uji dengan server lokal atau
+   hotspot sebelum mengklaim pemulihan otomatis.
+4. **Aksesibilitas (risiko sedang):** skala font sistem sudah dibaca dan
+   diuji 1.0×/1.35×/1.6× di perangkat serta 1.3×/2.0× di PlayMode. TalkBack
+   belum diuji dan tidak diklaim; audit pembaca layar dan label semantik
+   masuk pekerjaan pasca-F1.
+5. **Portrait-only (risiko rendah, diterima):** manifest mengunci portrait;
+   D1-05 WAIVED atas keputusan pemilik 2026-11-12. Jika landscape dibutuhkan,
+   bangun tata letak dua kolom §12 lalu ulangi D1-05, bukan sekadar membuka
+   kunci orientasi.
+6. **Build (risiko rendah):** 0 error dan 3 warning IL2CPP informasional
+   ("Method was given it's own cpp file…") pada 0.5.0. Warning ini bukan
+   warning kompilasi C#/shader dan tidak menghalangi gate. Sebelum rilis
+   publik, putuskan apakah dapat diterima dan siapkan signing key rilis.
+7. **Backend (risiko sedang):** outbox, banner gagal-server, dan sinkron
+   server lokal sudah diuji; Firebase/D1 produksi, idempotensi lintas sistem,
+   dan model Workers AI nyata belum. Jangan mengklaim hasil produksi sebelum
+   diuji.

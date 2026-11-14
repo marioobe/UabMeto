@@ -9,12 +9,16 @@
   "summary": "Mengenali sapaan waktu pagi, siang, dan malam, lalu menjawab sapaan dengan baik.",
   "status": "validated",
   "validation": {
-    "reviewedBy": "marioobe (pemilik proyek)",
-    "reviewedAt": "2026-11-06",
+    "reviewedBy": "Ibu Nofri (penutur Bahasa Dawan, TTU/Kefamenanu)",
+    "reviewedAt": "2026-11-12",
     "sources": [
       {
         "id": "SRC-SPK-001",
         "citation": "Elisitasi penutur SPK-001 (Iyo), 2026-11-05; pengetahuan dan pemakaian Bahasa Dawan sehari-hari, varian TTU/Kefamenanu."
+      },
+      {
+        "id": "SRC-VER-001",
+        "citation": "Verifikasi independen oleh Ibu Nofri (penutur Bahasa Dawan TTU/Kefamenanu), 2026-11-12; tanpa koreksi. Bukti elektronik di arsip pribadi pemilik proyek di luar repositori."
       }
     ],
     "audioLicense": "Tidak ada audio pada versi ini; tidak ada rekaman yang disertakan atau dilisensikan.",
@@ -51,35 +55,35 @@
       "id": "vocab-004",
       "dawan": "selamat pagi Am",
       "indonesian": "selamat pagi (kepada bapak atau orang tua laki-laki)",
-      "notes": "ELC-104, dipecah menjadi dua bentuk. Am untuk bapak (laki-laki). Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-104, dipecah menjadi dua bentuk. Am untuk bapak (laki-laki). Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     },
     {
       "id": "vocab-005",
       "dawan": "selamat pagi bae",
       "indonesian": "selamat pagi (kepada teman sebaya)",
-      "notes": "ELC-105. bae = saudara/sepupu; bisa juga untuk kakak dan adik. Kakak: tataf, adik: ole. Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-105. bae = saudara/sepupu; bisa juga untuk kakak dan adik. Kakak: tataf, adik: ole. Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     },
     {
       "id": "vocab-006",
       "dawan": "selamat siang",
       "indonesian": "selamat siang",
-      "notes": "ELC-106. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-106. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     },
     {
       "id": "vocab-007",
       "dawan": "selamat malam",
       "indonesian": "selamat malam",
-      "notes": "ELC-107. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-107. Kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     },
     {
       "id": "vocab-008",
       "dawan": "mail kabar on'me?",
       "indonesian": "apa kabar?",
-      "notes": "ELC-108. Perlu klarifikasi reviewer: bentuk ini belum dikonfirmasi ulang. Ejaan penutur dipertahankan.",
+      "notes": "ELC-108. Dikonfirmasi Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12, tanpa koreksi. Ejaan penutur dipertahankan.",
       "audio": null
     },
     {
@@ -107,7 +111,7 @@
       "id": "vocab-012",
       "dawan": "selamat pagi Aina",
       "indonesian": "selamat pagi (kepada mama atau orang tua perempuan)",
-      "notes": "ELC-104, dipecah menjadi dua bentuk. Aina untuk mama (perempuan). Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; bentuk Dawan aslinya belum dipastikan penutur.",
+      "notes": "ELC-104, dipecah menjadi dua bentuk. Aina untuk mama (perempuan). Bagian \"selamat\" adalah kata serapan dari Bahasa Indonesia yang dipakai sehari-hari; pemakaian ini disetujui Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12. Bentuk Dawan asli tidak diklaim.",
       "audio": null
     }
   ],
@@ -215,11 +219,11 @@
       "id": "exm-102",
       "dawan": "selamat malam, au kabar naleok",
       "indonesian": "Selamat malam, saya baik.",
-      "context": "Menjawab sapaan pada malam hari. Diterima pemilik proyek apa adanya (ELC-117); belum dikonfirmasi ulang oleh reviewer independen.",
+      "context": "Menjawab sapaan pada malam hari. Dikonfirmasi Ibu Nofri (penutur TTU/Kefamenanu), 2026-11-12, tanpa koreksi (ELC-117).",
       "status": "validated",
       "sourceRef": "SRC-SPK-001",
       "audio": null
     }
   ],
-  "notes": "Status validated atas keputusan pemilik proyek (marioobe), 2026-11-06. Ini override pemilik, bukan peninjauan reviewer independen. Sumber adalah pengetahuan dan pemakaian sehari-hari SPK-001 (Iyo), bukan salinan kamus atau web. Tidak ada audio atau izin rekaman pada versi ini. Ejaan penutur dipertahankan. Item ELC-108, ELC-115, ELC-117 diterima apa adanya oleh pemilik. Topik berikutnya wajib ditinjau reviewer independen."
+  "notes": "Status validated setelah peninjauan independen oleh Ibu Nofri (penutur Bahasa Dawan TTU/Kefamenanu), 2026-11-12, tanpa koreksi. Sumber utama tetap elisitasi SPK-001 (Iyo); verifikasi independen dicatat sebagai SRC-VER-001. Tidak ada audio atau izin rekaman pada versi ini; audio ditunda ke F4. Ejaan penutur dipertahankan. Item ELC-108, ELC-115, ELC-117 dikonfirmasi tanpa koreksi."
 }

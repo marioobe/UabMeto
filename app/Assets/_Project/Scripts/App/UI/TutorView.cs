@@ -48,6 +48,7 @@ namespace UabMeto.App.UI
         public void Build(RectTransform parent)
         {
             var theme = _shell.Theme;
+            var composerHeight = UIFactory.Px(ComposerHeight);
             var root = UIFactory.CreateRect("TutorRoot", parent);
             UIFactory.Stretch(root);
 
@@ -55,7 +56,7 @@ namespace UabMeto.App.UI
             UIFactory.Stretch(
                 _scroll.GetComponent<RectTransform>(),
                 0f,
-                ComposerHeight);
+                composerHeight);
 
             var content = _scroll.content;
             var intro = UIFactory.CreateCard(
@@ -117,7 +118,7 @@ namespace UabMeto.App.UI
                         }
                     },
                     primary: false);
-                UIFactory.AddLayoutElement(chip.gameObject, preferredHeight: 56f);
+                UIFactory.AddLayoutElement(chip.gameObject, minHeight: 56f);
             }
 
             _messages = UIFactory.CreateVerticalGroup(
@@ -135,12 +136,12 @@ namespace UabMeto.App.UI
                 theme.BodySmallSize,
                 theme.TextMuted);
 
-            var composer = BuildComposer(root);
+            var composer = BuildComposer(root, composerHeight);
             composer.gameObject.AddComponent<KeyboardInset>().Initialize(
                 composer,
                 _scroll.GetComponent<RectTransform>(),
                 _input,
-                ComposerHeight);
+                composerHeight);
 
             if (!_shell.OnlineConfigured)
             {
@@ -151,7 +152,7 @@ namespace UabMeto.App.UI
             _ = LoadQuotaAsync();
         }
 
-        private RectTransform BuildComposer(RectTransform root)
+        private RectTransform BuildComposer(RectTransform root, float composerHeight)
         {
             var theme = _shell.Theme;
             var panel = UIFactory.CreatePanel("TutorComposer", root, theme.Surface, 0);
@@ -159,7 +160,7 @@ namespace UabMeto.App.UI
             rect.anchorMin = new Vector2(0f, 0f);
             rect.anchorMax = new Vector2(1f, 0f);
             rect.pivot = new Vector2(0.5f, 0f);
-            rect.sizeDelta = new Vector2(0f, ComposerHeight);
+            rect.sizeDelta = new Vector2(0f, composerHeight);
             rect.anchoredPosition = Vector2.zero;
 
             var row = UIFactory.CreateHorizontalGroup(

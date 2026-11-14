@@ -13,7 +13,7 @@ namespace UabMeto.Editor
         public const string CompanyName = "Uab Meto Project";
         public const string ProductName = "Uab Meto";
         public const string ApplicationIdentifier = "id.uabmeto.app";
-        public const string BundleVersion = "0.4.0";
+        public const string BundleVersion = "0.5.0";
 
         private const int MinimumApiLevel = 26;  // Android 8.0
         private const int TargetApiLevel = 36;   // Google Play requirement (2026)
@@ -40,18 +40,20 @@ namespace UabMeto.Editor
                 NamedBuildTarget.Android,
                 Il2CppCompilerConfiguration.Release);
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
-            PlayerSettings.Android.bundleVersionCode = 5;
+            PlayerSettings.Android.bundleVersionCode = 6;
             PlayerSettings.Android.minSdkVersion = (AndroidSdkVersions)MinimumApiLevel;
             PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions)TargetApiLevel;
 
             // F0 memakai debug keystore. Keystore rilis tidak dibuat pada tahap ini.
             PlayerSettings.Android.useCustomKeystore = false;
 
-            PlayerSettings.defaultInterfaceOrientation = UIOrientation.AutoRotation;
-            PlayerSettings.allowedAutorotateToPortrait = true;
+            // F1 dikunci portrait-only atas keputusan pemilik 2026-11-12.
+            // Uji rotasi landscape D1-05 dicatat sebagai waiver, bukan lulus.
+            PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
+            PlayerSettings.allowedAutorotateToPortrait = false;
             PlayerSettings.allowedAutorotateToPortraitUpsideDown = false;
-            PlayerSettings.allowedAutorotateToLandscapeLeft = true;
-            PlayerSettings.allowedAutorotateToLandscapeRight = true;
+            PlayerSettings.allowedAutorotateToLandscapeLeft = false;
+            PlayerSettings.allowedAutorotateToLandscapeRight = false;
 
             PlayerSettings.colorSpace = ColorSpace.Linear;
             EditorUserBuildSettings.buildAppBundle = false;

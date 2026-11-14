@@ -37,12 +37,12 @@ ID: `AC-<bagian PRD>.<nomor>`.
 | ID | Persyaratan | Verifikasi | Status |
 |---|---|---|---|
 | AC-6.2.1 | 12 topik tersedia | Validator + review konten | PASS (registry + UI F1); korpus pelajaran belum |
-| AC-6.2.2 | Target 36 pelajaran | Review konten | BLOCKED |
-| AC-6.2.3 | Mencakup 4 keterampilan | Validator + review konten | NOT RUN (aturan skema ada) |
-| AC-6.2.4 | Setiap pelajaran memuat materi, contoh, latihan | Validator + review konten | NOT RUN (aturan skema ada) |
-| AC-6.2.5 | Audio berasal dari rekaman terverifikasi | Review + gate validasi | NOT RUN |
+| AC-6.2.2 | Target 36 pelajaran | Review konten | BLOCKED (3/36 pelajaran Topik 1 tervalidasi) |
+| AC-6.2.3 | Mencakup 4 keterampilan | Validator + review konten | NOT RUN (aturan skema ada; F1 teks saja) |
+| AC-6.2.4 | Setiap pelajaran memuat materi, contoh, latihan | Validator + review konten | PASS (3 pelajaran Topik 1, validator 0 error) |
+| AC-6.2.5 | Audio berasal dari rekaman terverifikasi | Review + gate validasi | NOT RUN (F4; belum ada audio) |
 | AC-6.2.6 | Materi belum tervalidasi tidak dapat diterbitkan | Unit test validator + EditMode | PASS (tool level) |
-| AC-6.2.7 | Pelajaran berikutnya terbuka setelah selesai | EditMode + PlayMode | NOT RUN |
+| AC-6.2.7 | Pelajaran berikutnya terbuka setelah selesai | EditMode + PlayMode | PASS (alur 1→2→3 di perangkat) |
 
 ## 6.3 Fitur AI
 
@@ -97,7 +97,7 @@ ID: `AC-<bagian PRD>.<nomor>`.
 |---|---|---|---|
 | AC-6.6.1 | Materi inti offline setelah login pertama | PlayMode + device | NOT RUN |
 | AC-6.6.2 | Audio bawaan diputar offline | PlayMode + device | NOT RUN |
-| AC-6.6.3 | Latihan inti selesai offline | PlayMode | NOT RUN |
+| AC-6.6.3 | Latihan inti selesai offline | PlayMode | PASS (F1: pelajaran selesai dengan Wi-Fi/data mati, hasil masuk antrean) |
 | AC-6.6.4 | Progres offline tersimpan di perangkat | PlayMode | PASS (local store F1); sinkron server belum |
 | AC-6.6.5 | Sinkron otomatis saat koneksi tersedia | PlayMode + Worker | NOT RUN |
 | AC-6.6.6 | Sinkron tidak menggandakan XP/hasil/lencana | EditMode (`SyncReconcilerTests`) + Worker | PASS (logika keputusan) |
@@ -135,34 +135,42 @@ ID: `AC-<bagian PRD>.<nomor>`.
 |---|---|---|---|
 | AC-6.9.1 | Desain Stitch diterjemahkan ke UI Unity | Review desain + PlayMode | PASS (subset F1; bukan semua layar) |
 | AC-6.9.2 | Seluruh menu Bahasa Indonesia | Review UI | PASS (subset F1) |
-| AC-6.9.3 | Portrait & landscape | PlayMode + device | PASS (editor 360×640/412×915/915×412); landscape perangkat BLOCKED (OEM portrait lock) |
-| AC-6.9.4 | Tombol/teks mudah dibaca | Review aksesibilitas | PASS (12/12 kontras, target F1 ≥48); audit penuh NOT RUN |
+| AC-6.9.3 | Portrait & landscape | PlayMode + device | PASS (portrait terkunci); landscape perangkat BLOCKED (OEM portrait lock); D1-05 WAIVED keputusan pemilik |
+| AC-6.9.4 | Tombol/teks mudah dibaca | Review aksesibilitas | PASS (12/12 kontras, target F1 ≥48, font sistem 1.0×–1.6× perangkat / 2.0× PlayMode); TalkBack NOT RUN |
 | AC-6.9.5 | Lancar di perangkat rendah | Profiling device | NOT RUN (perangkat tersedia; profiling belum) |
-| AC-6.9.6 | Ukuran unduhan/instalasi terukur | Build nyata | PASS (28.278.020 byte; audio belum ada) |
-| AC-6.9.7 | APK dapat dipasang & diuji di perangkat | Device test | PASS (D1-01/D1-02/D1-07); D1-03..D1-06 belum |
+| AC-6.9.6 | Ukuran unduhan/instalasi terukur | Build nyata | PASS (28.994.614 byte; audio belum ada) |
+| AC-6.9.7 | APK dapat dipasang & diuji di perangkat | Device test | PASS (D1-01..D1-04, D1-06, D1-07; D1-05 WAIVED) |
 | AC-6.9.8 | Target API 36 saat rilis | Inspeksi manifest APK | PASS (`aapt`: targetSdk 36) |
 
-## Ringkasan F1 (2026-11-03)
+## Ringkasan F1 (diperbarui 2026-11-12, rilis 0.5.0)
 
 - `PASS`: registry 12 topik, gate penerbitan, logika idempotensi, UI inti
-  F1, build APK, kontras F1, target sentuh F1, targetSdk 36, dan instalasi/
-  peluncuran/back pada perangkat fisik portrait.
-- `PARTIAL`: aksesibilitas penuh, banner offline, build tanpa warning,
-  landscape perangkat, dan beberapa butir UI yang baru mencakup subset F1.
-- `NOT RUN`: auth, hati, kuota, ujian, Tutor AI, lima jenis latihan lain,
-  sinkron server nyata, profiling perangkat, dan uji font 1.3×/2.0×.
-- `BLOCKED`: minimal satu pelajaran `validated`, sumber/reviewer/consent,
-  dan alur pelajaran rilis (D1-03).
+  F1, alur tiga pelajaran Topik 1, outbox dan banner offline, build APK,
+  kontras F1, target sentuh F1, font sistem 1.0×–1.6× di perangkat,
+  validasi penutur, targetSdk 36, dan instalasi/peluncuran/back pada
+  perangkat fisik portrait.
+- `PASS DENGAN CATATAN`: skala font 2.0× (PlayMode saja), build tanpa
+  warning kompilasi (3 warning IL2CPP informasional).
+- `PARTIAL`: aksesibilitas penuh (TalkBack belum), sinkron pemulihan
+  setelah offline, beberapa butir UI yang baru mencakup subset F1.
+- `NOT RUN`: auth, hati, kuota, ujian, model Workers AI nyata, lima jenis
+  latihan lain, sinkron backend produksi, profiling perangkat.
+- `WAIVED`: D1-05 landscape perangkat, karena F1 dikunci portrait-only
+  (keputusan pemilik 2026-11-12).
+- `BLOCKED`: Topik 2–12 (31 pelajaran tersisa), audio/consent F4.
 
 Perubahan F1:
 
 - Shell empat tab, Beranda, Profil, alur pelajaran lima langkah, empty state,
-  nickname lokal, progress/outbox lokal, banner antrean, dan screenshot.
-- Build `uabmeto-f1.apk` 28.278.020 byte; 0 error, 3 warning TMP/IL2CPP.
-- EditMode 56/56; PlayMode 12/12; validator 36/36; CLI 0 error/4 warning.
+  nickname lokal, progress/outbox lokal, banner antrean/offline, dan
+  screenshot.
+- Build `uabmeto-f1.apk` 28.994.614 byte (0.5.0, code 6); 0 error,
+  3 warning IL2CPP informasional.
+- EditMode 99/99; PlayMode 43/43; kontras 12/12; validator 36/36
+  (0 error, 4 warning audio contoh).
 - Uji perangkat menemukan dan memperbaiki scroll mati, kartu Profil
-  bertumpuk, dan kartu modal bertumpuk.
-- F1 **tetap tidak lulus** karena F1-11..F1-14 dan sisa gate perangkat
-  belum terpenuhi.
+  bertumpuk, kartu modal bertumpuk, dan label statistik pada font besar.
+- Gate F1 **LULUS DENGAN CATATAN**; rincian di
+  `docs/testing/f1-gate-result.md`.
 
 Matriks ini diperbarui pada setiap gate.

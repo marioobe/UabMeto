@@ -35,12 +35,12 @@ Aturan:
 | REM-P0-06 | P0 | F1 | IN PROGRESS | aturan consent lulus; belum ada penutur/audio nyata |
 | REM-P0-07 | P0 | F1 | CLOSED (F1) | tidak ada panel debug; APK scan 0 string panel |
 | REM-P0-08 | P0 | F1 | CLOSED (F1) | `ThemeTokens` satu sumber; tanpa shadow/blur/gradien; kontras lulus |
-| REM-P1-01 | P1 | F1 | IN PROGRESS | screenshot Editor 360×640, 412×915, 915×412; landscape perangkat terhalang portrait lock OEM |
+| REM-P1-01 | P1 | F1 | CLOSED (F1, portrait-only) | screenshot Editor 360×640, 412×915, 915×412; D1-05 WAIVED atas keputusan pemilik 2026-11-12 |
 | REM-P1-02 | P1 | F1 | OPEN | layar auth/ujian belum ada |
 | REM-P1-03 | P1 | F1 | OPEN | baru `multiple_choice`; lima jenis lain belum |
 | REM-P1-04 | P1 | F1 | IN PROGRESS | validasi 3–20 + persist lokal; alur daftar belum ada |
 | REM-P1-05 | P1 | F1 | OPEN | hapus akun belum ada |
-| REM-P1-06 | P1 | F1 | IN PROGRESS | banner offline ada; sesi/login offline belum ada |
+| REM-P1-06 | P1 | F1 | PARTIAL | banner offline diuji di perangkat 2026-11-12 (Wi-Fi/data mati); sesi/login offline belum ada |
 | REM-P1-07 | P1 | F1 | PARTIAL | Tutor AI teks 0.3.0: jawab/refusal/kuota/galat teruji; percakapan suara dan pelafalan belum |
 | REM-P1-08 | P1 | F1 | CLOSED (F1) | kontras 12/12 PASS; target/layout 4/4 tes; C1–C5/T1–T12 ditutup untuk UI F1; TalkBack/font scale terpisah |
 | REM-P1-09 | P1 | F1 | IN PROGRESS | shell 4 tab konsisten; tab perangkat diperiksa; header layar lain belum lengkap |
@@ -82,11 +82,11 @@ Aturan:
 - **REM-P1-08:** `AccessibilityTests` 4/4 lulus untuk target sentuh ≥48 dp
   pada Beranda, Profil, tiga langkah pelajaran, dan dialog nama, ditambah
   pemeriksaan layout kartu Profil/modal dan raycast scroll; kontras 12/12
-  lulus. UI perangkat portrait sudah diperiksa, tetapi ini **bukan** audit
-  TalkBack atau uji landscape perangkat. Audit statis 2026-11-04: belum ada
-  pembacaan `AndroidConfiguration.fontScale`, jadi skala font sistem belum
-  didukung dan D1-06/F1-21 tetap terbuka. Sub-butir C1–C5 dan T1–T12
-  ditutup untuk cakupan F1 di §4.3; layar yang belum dibangun ditandai
+  lulus. `UiScale` (0.5.0) membaca `Configuration.fontScale`, membatasi
+  1.0–2.0, dan menskalakan teks/ikon/target/padding; PlayMode 1.3×/2.0× lulus
+  dan perangkat diuji 1.0×–1.6× (slider OPPO berhenti di 1.6×). TalkBack
+  **belum diuji** dan dicatat sebagai batasan rilis. Sub-butir C1–C5 dan
+  T1–T12 ditutup untuk cakupan F1 di §4.3; layar yang belum dibangun ditandai
   N/A dan harus diaudit ulang saat dibangun.
 - **REM-P1-10:** Pencarian UI/APK untuk "Simpan Kata" = 0.
 
@@ -105,9 +105,9 @@ yang tidak tertangkap screenshot Editor:
    group pada panel. Diganti `VerticalLayoutGroup` + fitter; tombol `Batal`
    ditambahkan dan diuji.
 
-Status perangkat: D1-01/D1-02/D1-07 lulus; D1-03 (pelajaran rilis),
-D1-04 (offline), D1-05 (landscape perangkat), dan D1-06 (font scale) belum.
-Garis putih di tepi kiri adalah panel tepi OEM, bukan UI aplikasi.
+Status perangkat 2026-11-12: D1-01, D1-02, D1-03, D1-04, D1-06 (sampai
+1.6×), dan D1-07 lulus; D1-05 **WAIVED** karena F1 portrait-only. Garis putih
+di tepi kiri adalah panel tepi OEM, bukan UI aplikasi.
 
 ## 3. P0 — menghalangi F1
 

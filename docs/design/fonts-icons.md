@@ -46,8 +46,9 @@ Unity.exe -batchmode -nographics -projectPath app `
   -logFile Builds/logs/editmode-font.log
 ```
 
-Hasil terbaru F1 (2026-11-01): **56/56 tes EditMode lulus, 0 gagal, 0 skip.**
-Tujuh di antaranya adalah `FontGlyphTests`.
+Hasil terbaru F1 (2026-11-12): **99/99 tes EditMode lulus, 0 gagal, 0 skip**
+(`app/Builds/logs/editmode-font.xml`). Tujuh di antaranya adalah
+`FontGlyphTests`, enam `UiScaleTests` menguji pembacaan/pembatasan skala font.
 
 | Uji | Hasil |
 |---|---|

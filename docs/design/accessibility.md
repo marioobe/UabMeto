@@ -1,11 +1,12 @@
 # Aksesibilitas UI
 
-Status: **F1 — UI inti sudah diukur, belum lulus penuh.** Angka kontras
-diukur dari `ThemeTokens.cs` lewat `tools/design/contrast.mjs`; target sentuh
-diukur lewat `AccessibilityTests` PlayMode. Uji perangkat dasar portrait
-sudah dilakukan, tetapi ini belum audit TalkBack, belum uji landscape
-perangkat, dan belum uji skala font 1.3×/2.0×. Daftar kerja:
-`remediation.md` REM-P1-08; bukti perangkat:
+Status: **F1 — UI inti diukur dan diuji; TalkBack tetap batasan rilis.**
+Angka kontras diukur dari `ThemeTokens.cs` lewat `tools/design/contrast.mjs`;
+target sentuh diukur lewat `AccessibilityTests` PlayMode. Uji perangkat
+portrait sudah dilakukan; skala font sistem diuji 1.0×–1.6× di perangkat dan
+1.3×/2.0× di PlayMode. F1 dikunci portrait-only (D1-05 **WAIVED**), dan
+TalkBack **belum diuji** sehingga tidak ada klaim aksesibilitas penuh.
+Daftar kerja: `remediation.md` REM-P1-08; bukti perangkat:
 `docs/testing/f1-device-evidence.md`.
 
 ## 1. Standar yang dipakai
@@ -141,13 +142,29 @@ Aturan implementasi:
 5. Label tombol tidak boleh turun menjadi dua baris; bila perlu, perpendek
    teks chrome.
 
-**Audit statis 2026-11-04:** tidak ada kode proyek yang membaca
-`UnityEngine.Android.AndroidConfiguration.fontScale` atau mengalikan ukuran
-TMP dengan skala font sistem. uGUI/TMP tidak menerapkan skala font Android
-secara otomatis. Karena itu, sampai fitur ini diimplementasikan dan diuji,
-D1-06/F1-21 tidak boleh diklaim lulus; mengubah font sistem kemungkinan
-besar tidak mengubah UI aplikasi. Perangkat juga sedang tidak terhubung,
-jadi uji perangkat D1-06 tetap **NOT RUN**.
+**Implementasi 2026-11-12 (rilis 0.5.0):** `UiScale` membaca `fontScale`
+Android lewat JNI (`Configuration.fontScale`), lalu membatasi faktor ke
+1.0–2.0. `UIFactory` memakai `UiScale.Px` untuk ukuran teks, ikon, target
+sentuh, padding, dan jarak, sehingga seluruh layar ikut membesar tanpa
+mengubah `CanvasScaler.referenceResolution`. Modal yang tinggi dibuat dapat
+digulir (`ModalCardFitter`). Label statistik memakai autosize dengan batas
+bawah agar kata tidak patah di tengah, dan lebar sel/kartu statistik dipaksa
+sama.
+
+Hasil:
+
+- EditMode **99/99** (6 tes `UiScaleTests`: clamp 1.0/2.0, pembacaan faktor,
+  override tes).
+- PlayMode **43/43**, termasuk Beranda/Materi/Profil pada 1.3× dan 2.0×:
+  tidak ada teks terpotong dan label tab tetap satu baris.
+- Perangkat OPPO `CPH1803`: skala 1.0×, 1.35× (langkah terdekat 1.3×), dan
+  1.6× (maksimum slider) diperiksa lewat tangkapan layar; logcat mencatat
+  `[UabMeto] fontScale sistem 1,60 diterapkan sebagai 1,60.`
+- Skala 2.0× **tidak dapat diuji di perangkat ini** karena slider berhenti di
+  1.6×; klaim 2.0× hanya berlaku untuk PlayMode.
+
+TalkBack tetap **tidak diuji dan tidak diklaim**. Ini batasan rilis, bukan
+bagian dari klaim aksesibilitas penuh.
 
 ## 5. Ketergantungan warna
 
@@ -182,7 +199,7 @@ Jangan pernah menyampaikan status hanya dengan warna.
 
 | Risiko | Dampak | Rencana |
 |---|---|---|
-| Unity tidak memetakan otomatis ke TalkBack | Pembaca layar terbatas | uji di F1; bila gagal, catat sebagai keterbatasan rilis dan jangan klaim aksesibel |
+| Unity tidak memetakan otomatis ke TalkBack | Pembaca layar terbatas | belum diuji; dicatat sebagai batasan rilis, tidak diklaim aksesibel penuh |
 | Font Dawan belum diuji | Glif hilang | uji cakupan Unicode sebelum prefab |
 | Teks Indonesia panjang | Tombol pecah | uji panjang maksimum per kunci chrome |
 | Landscape tanpa mockup | Layout rusak | spesifikasi di `screens.md` §12 + uji screenshot |
@@ -196,12 +213,14 @@ Jangan pernah menyampaikan status hanya dengan warna.
 - [x] Semua target sentuh di layar F1 yang diuji ≥ 48 dp (4/4 tes).
 - [x] Sub-butir C1–C5/T1–T12 ditutup untuk UI F1; layar yang belum
   dibangun ditandai N/A di `remediation.md` §4.3.
-- [ ] Uji 1.3× dan 2.0× pada 360 × 640 — belum dijalankan; belum ada
-  pembacaan `fontScale` sistem.
+- [x] Uji 1.3× dan 2.0× pada 360 × 640 — PlayMode lulus; perangkat 1.0×,
+  1.35×, dan 1.6× lulus, 2.0× tidak tersedia di slider perangkat.
 - [x] Uji portrait dan landscape di Editor (360×640, 412×915, 915×412).
 - [x] APK dipasang dan UI dasar portrait diperiksa di perangkat fisik.
-- [ ] Landscape perangkat — terhalang portrait lock OEM.
+- [ ] Landscape perangkat — **WAIVED**: F1 portrait-only (keputusan pemilik
+  2026-11-12); tidak ada klaim landscape.
 - [x] Setiap status F1 punya ikon + teks.
 - [x] Setiap tombol ikon F1 punya label aksesibilitas.
-- [ ] Audit TalkBack — belum dijalankan.
-- [ ] Uji keyboard Android dan skala font sistem — belum dijalankan.
+- [ ] Audit TalkBack — belum dijalankan; dicatat sebagai batasan rilis.
+- [x] Uji keyboard Android (Tutor AI) dan skala font sistem (1.0×–1.6×
+  perangkat, 2.0× PlayMode).

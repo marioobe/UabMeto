@@ -144,12 +144,13 @@ namespace UabMeto.Tests.PlayMode
             var modal = GameObject.Find("NicknameModal");
             Assert.IsNotNull(modal);
             var card = modal.transform.Find("Card").GetComponent<RectTransform>();
-            var title = card.Find("Title").GetComponent<RectTransform>();
-            var body = card.Find("Body").GetComponent<RectTransform>();
-            var input = card.Find("Nickname").GetComponent<RectTransform>();
-            var error = card.Find("Error").GetComponent<RectTransform>();
-            var cancel = card.Find("Cancel").GetComponent<RectTransform>();
-            var save = card.Find("Save").GetComponent<RectTransform>();
+            var content = card.Find("Viewport/Content");
+            var title = content.Find("Title").GetComponent<RectTransform>();
+            var body = content.Find("Body").GetComponent<RectTransform>();
+            var input = content.Find("Nickname").GetComponent<RectTransform>();
+            var error = content.Find("Error").GetComponent<RectTransform>();
+            var cancel = content.Find("Cancel").GetComponent<RectTransform>();
+            var save = content.Find("Save").GetComponent<RectTransform>();
 
             Assert.GreaterOrEqual(card.rect.height, 280f, "Kartu dialog terlalu pendek.");
             Assert.LessOrEqual(card.rect.height, 520f, "Kartu dialog keluar dari layar 360x640.");

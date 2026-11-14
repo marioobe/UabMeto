@@ -22,6 +22,8 @@ namespace UabMeto.Tests.PlayMode
         private string _directory;
         private GameObject _root;
         private ShellView _shell;
+        private ContentCatalog _catalog;
+        private LocalProfile _profile;
         private ProgressStore _progress;
         private OutboxStore _outbox;
 
@@ -39,9 +41,11 @@ namespace UabMeto.Tests.PlayMode
             var catalog = ContentRepository.LoadFromText(
                 topics.text,
                 new[] { TestContent.LoadLessonAsInReview() });
+            _catalog = catalog;
 
             var profile = LocalProfile.Load(Path.Combine(_directory, "profile.json"));
             Assert.IsTrue(profile.TrySetNickname("Penguji", out var error), error);
+            _profile = profile;
             _progress = ProgressStore.Load(Path.Combine(_directory, "progress.json"));
             _outbox = OutboxStore.Load(Path.Combine(_directory, "outbox.json"));
 
@@ -55,6 +59,7 @@ namespace UabMeto.Tests.PlayMode
         [TearDown]
         public void TearDown()
         {
+            UiScale.ClearOverride();
             if (_root != null)
             {
                 UnityEngine.Object.DestroyImmediate(_root);
@@ -179,6 +184,86 @@ namespace UabMeto.Tests.PlayMode
             Assert.LessOrEqual(rect.rect.width, 360f, "Dialog lebih lebar dari acuan 360.");
             Assert.LessOrEqual(rect.rect.height, 640f, "Dialog lebih tinggi dari acuan 640.");
             Assert.Greater(rect.rect.height, 100f, "Dialog tidak mendapat tinggi dari isinya.");
+        }
+
+        [UnityTest]
+        public IEnumerator HomeLessonAndProfile_TextFitsAt1_3x()
+        {
+            yield return VerifyScale(1.3f, "1.3x");
+        }
+
+        [UnityTest]
+        public IEnumerator HomeLessonAndProfile_TextFitsAt2_0x()
+        {
+            yield return VerifyScale(2f, "2.0x");
+        }
+
+        private IEnumerator VerifyScale(float scale, string label)
+        {
+            RebuildShellAtScale(scale);
+            yield return null;
+            _shell.RebuildLayout();
+            yield return null;
+
+            var homeChecked = AssertNoClippedText("Beranda " + label);
+            Assert.Greater(homeChecked, 5, "Tidak cukup teks yang diperiksa di Beranda.");
+            AssertTabLabelsSingleLine(label);
+
+            Click("Start");
+            yield return null;
+            Click("Primary");
+            yield return null;
+            Click("StartMaterial");
+            yield return null;
+            _shell.RebuildLayout();
+            yield return null;
+
+            var lessonChecked = AssertNoClippedText("Materi " + label);
+            Assert.Greater(lessonChecked, 5, "Tidak cukup teks yang diperiksa di materi.");
+
+            _shell.ShowTab(ShellView.Tab.Profile);
+            yield return null;
+            _shell.RebuildLayout();
+            yield return null;
+            var profileChecked = AssertNoClippedText("Profil " + label);
+            Assert.Greater(profileChecked, 5, "Tidak cukup teks yang diperiksa di Profil.");
+        }
+
+        private void RebuildShellAtScale(float scale)
+        {
+            if (_root != null)
+            {
+                UnityEngine.Object.DestroyImmediate(_root);
+            }
+
+            UiScale.SetForTests(scale);
+            _root = new GameObject("LayoutTestScaled");
+            _shell = _root.AddComponent<ShellView>();
+            _shell.Initialize(
+                ThemeTokens.Load(),
+                _catalog,
+                _profile,
+                _progress,
+                _outbox);
+        }
+
+        private static void AssertTabLabelsSingleLine(string context)
+        {
+            foreach (var tab in new[] { "Tab_Home", "Tab_Tutor", "Tab_Leaderboard", "Tab_Profile" })
+            {
+                var target = GameObject.Find(tab + "/TabContent/Label");
+                Assert.IsNotNull(target, $"Label tab tidak ditemukan: {tab} ({context}).");
+                var text = target.GetComponent<TextMeshProUGUI>();
+                Assert.IsNotNull(text, $"TextMeshPro tidak ditemukan: {tab} ({context}).");
+                Assert.AreEqual(
+                    1,
+                    text.textInfo.lineCount,
+                    $"Label {tab} turun menjadi {text.textInfo.lineCount} baris pada {context}.");
+                Assert.GreaterOrEqual(
+                    text.fontSize,
+                    10f,
+                    $"Label {tab} terlalu kecil setelah autosize pada {context}.");
+            }
         }
 
         private int AssertNoClippedText(string context)

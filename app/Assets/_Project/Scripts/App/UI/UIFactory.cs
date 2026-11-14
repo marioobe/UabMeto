@@ -83,7 +83,9 @@ namespace UabMeto.App.UI
 
             var text = go.GetComponent<TextMeshProUGUI>();
             text.font = font;
-            text.fontSize = size;
+            // Ukuran dari ThemeTokens adalah ukuran desain 1.0x. Skala font
+            // sistem diterapkan di satu tempat ini agar seluruh layar ikut.
+            text.fontSize = UiScale.Px(size);
             text.color = color;
             text.text = value;
             text.alignment = alignment;
@@ -92,6 +94,19 @@ namespace UabMeto.App.UI
             text.raycastTarget = false;
 
             return text;
+        }
+
+        /// <summary>
+        /// Mengizinkan teks mengecil sampai <paramref name="minSize"/> (satuan
+        /// desain 1.0x) bila ruangnya sempit. Dipakai untuk label statistik
+        /// yang lebarnya tetap terbagi tiga, supaya kata tidak dipotong di
+        /// tengah saat pengguna memakai font sistem besar.
+        /// </summary>
+        public static void AllowShrinkToFit(TextMeshProUGUI text, float minSize)
+        {
+            text.fontSizeMin = UiScale.Px(minSize);
+            text.fontSizeMax = text.fontSize;
+            text.enableAutoSizing = true;
         }
 
         public static TextMeshProUGUI CreateIcon(
@@ -152,8 +167,18 @@ namespace UabMeto.App.UI
             panel.gameObject.AddComponent<PressScale>();
 
             var layout = panel.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = theme.TouchTarget;
-            layout.preferredHeight = 52f;
+            // Tanpa preferredHeight tetap: tinggi tombol mengikuti label yang
+            // membungkus pada skala font besar. minHeight menjaga target 48 dp.
+            layout.minHeight = UiScale.Px(theme.TouchTarget);
+
+            var group = panel.gameObject.AddComponent<VerticalLayoutGroup>();
+            group.padding = ScalePadding(new RectOffset(16, 12, 16, 12));
+            group.spacing = 0f;
+            group.childControlWidth = true;
+            group.childControlHeight = true;
+            group.childForceExpandWidth = true;
+            group.childForceExpandHeight = true;
+            group.childAlignment = TextAnchor.MiddleCenter;
 
             var text = CreateText(
                 "Label",
@@ -163,7 +188,6 @@ namespace UabMeto.App.UI
                 theme.ButtonSize,
                 primary ? theme.OnAccent : theme.TextPrimary,
                 TextAlignmentOptions.Center);
-            Stretch(text.rectTransform, 16f, 12f, 16f, 12f);
 
             if (onClick != null)
             {
@@ -191,10 +215,10 @@ namespace UabMeto.App.UI
                 true);
 
             var layout = panel.gameObject.AddComponent<LayoutElement>();
-            layout.minWidth = theme.TouchTarget;
-            layout.minHeight = theme.TouchTarget;
-            layout.preferredWidth = theme.TouchTarget;
-            layout.preferredHeight = theme.TouchTarget;
+            layout.minWidth = UiScale.Px(theme.TouchTarget);
+            layout.minHeight = UiScale.Px(theme.TouchTarget);
+            layout.preferredWidth = UiScale.Px(theme.TouchTarget);
+            layout.preferredHeight = UiScale.Px(theme.TouchTarget);
 
             var button = panel.gameObject.AddComponent<Button>();
             button.targetGraphic = panel;
@@ -228,15 +252,15 @@ namespace UabMeto.App.UI
         {
             var panel = CreatePanel(name, parent, theme.SurfaceLow, (int)theme.Space12, true);
             var layout = panel.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = 52f;
-            layout.preferredHeight = 52f;
+            layout.minHeight = UiScale.Px(52f);
+            layout.preferredHeight = UiScale.Px(52f);
 
             var input = panel.gameObject.AddComponent<TMP_InputField>();
             input.targetGraphic = panel;
             input.textViewport = panel.rectTransform;
             input.lineType = TMP_InputField.LineType.SingleLine;
             input.characterLimit = characterLimit;
-            input.caretWidth = 2;
+            input.caretWidth = Mathf.Max(2, Mathf.RoundToInt(UiScale.Px(2f)));
             input.caretColor = theme.Accent;
             input.selectionColor = new Color(theme.Accent.r, theme.Accent.g, theme.Accent.b, 0.35f);
 
@@ -248,7 +272,12 @@ namespace UabMeto.App.UI
                 theme.BodySize,
                 theme.TextPrimary,
                 TextAlignmentOptions.MidlineLeft);
-            Stretch(text.rectTransform, 14f, 8f, 14f, 8f);
+            Stretch(
+                text.rectTransform,
+                UiScale.Px(14f),
+                UiScale.Px(8f),
+                UiScale.Px(14f),
+                UiScale.Px(8f));
             text.raycastTarget = true;
 
             var placeholderText = CreateText(
@@ -259,7 +288,12 @@ namespace UabMeto.App.UI
                 theme.BodySize,
                 theme.TextMuted,
                 TextAlignmentOptions.MidlineLeft);
-            Stretch(placeholderText.rectTransform, 14f, 8f, 14f, 8f);
+            Stretch(
+                placeholderText.rectTransform,
+                UiScale.Px(14f),
+                UiScale.Px(8f),
+                UiScale.Px(14f),
+                UiScale.Px(8f));
             placeholderText.raycastTarget = false;
 
             input.textComponent = text;
@@ -277,8 +311,8 @@ namespace UabMeto.App.UI
         {
             var rect = CreateRect(name, parent);
             var layout = rect.gameObject.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = spacing;
-            layout.padding = padding ?? new RectOffset();
+            layout.spacing = UiScale.Px(spacing);
+            layout.padding = ScalePadding(padding);
             layout.childControlWidth = true;
             layout.childControlHeight = true;
             layout.childForceExpandWidth = true;
@@ -342,8 +376,8 @@ namespace UabMeto.App.UI
         {
             var rect = CreateRect(name, parent);
             var layout = rect.gameObject.AddComponent<HorizontalLayoutGroup>();
-            layout.spacing = spacing;
-            layout.padding = padding ?? new RectOffset();
+            layout.spacing = UiScale.Px(spacing);
+            layout.padding = ScalePadding(padding);
             layout.childControlWidth = true;
             layout.childControlHeight = true;
             layout.childForceExpandWidth = false;
@@ -376,8 +410,8 @@ namespace UabMeto.App.UI
             content.sizeDelta = Vector2.zero;
 
             var layout = content.gameObject.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = theme.Space12;
-            layout.padding = new RectOffset(16, 16, 16, 24);
+            layout.spacing = UiScale.Px(theme.Space12);
+            layout.padding = ScalePadding(new RectOffset(16, 16, 16, 24));
             layout.childControlWidth = true;
             layout.childControlHeight = true;
             layout.childForceExpandWidth = true;
@@ -402,8 +436,8 @@ namespace UabMeto.App.UI
         {
             var rect = CreateRect(name, parent);
             var layout = rect.gameObject.AddComponent<LayoutElement>();
-            layout.minHeight = height;
-            layout.preferredHeight = height;
+            layout.minHeight = UiScale.Px(height);
+            layout.preferredHeight = UiScale.Px(height);
             return rect;
         }
 
@@ -428,12 +462,12 @@ namespace UabMeto.App.UI
             var layout = target.GetComponent<LayoutElement>() ?? target.AddComponent<LayoutElement>();
             if (minHeight >= 0f)
             {
-                layout.minHeight = minHeight;
+                layout.minHeight = UiScale.Px(minHeight);
             }
 
             if (preferredHeight >= 0f)
             {
-                layout.preferredHeight = preferredHeight;
+                layout.preferredHeight = UiScale.Px(preferredHeight);
             }
 
             if (flexibleHeight >= 0f)
@@ -443,12 +477,12 @@ namespace UabMeto.App.UI
 
             if (minWidth >= 0f)
             {
-                layout.minWidth = minWidth;
+                layout.minWidth = UiScale.Px(minWidth);
             }
 
             if (preferredWidth >= 0f)
             {
-                layout.preferredWidth = preferredWidth;
+                layout.preferredWidth = UiScale.Px(preferredWidth);
             }
 
             if (flexibleWidth >= 0f)
@@ -476,7 +510,25 @@ namespace UabMeto.App.UI
             rect.anchorMax = new Vector2(1f, 1f);
             rect.pivot = new Vector2(0.5f, 1f);
             rect.anchoredPosition = Vector2.zero;
-            rect.sizeDelta = new Vector2(0f, height);
+            rect.sizeDelta = new Vector2(0f, UiScale.Px(height));
+        }
+
+        /// <summary>Ukuran desain (dp) ke unit kanvas setelah skala font.</summary>
+        public static float Px(float value) => UiScale.Px(value);
+
+        /// <summary>Salinan padding yang sudah diskalakan.</summary>
+        public static RectOffset ScalePadding(RectOffset padding)
+        {
+            if (padding == null)
+            {
+                return new RectOffset();
+            }
+
+            return new RectOffset(
+                Mathf.RoundToInt(UiScale.Px(padding.left)),
+                Mathf.RoundToInt(UiScale.Px(padding.right)),
+                Mathf.RoundToInt(UiScale.Px(padding.top)),
+                Mathf.RoundToInt(UiScale.Px(padding.bottom)));
         }
 
         public static Sprite RoundedSprite(int radius)
@@ -569,6 +621,7 @@ namespace UabMeto.App.UI
             float height = 6f)
         {
             value = Mathf.Clamp01(value);
+            height = UiScale.Px(height);
             var radius = Mathf.Max(1, Mathf.RoundToInt(height / 2f));
             var track = CreatePanel(name, parent, theme.SurfaceHigh, radius);
             var layout = track.gameObject.AddComponent<LayoutElement>();
